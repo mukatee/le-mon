@@ -1,0 +1,676 @@
+<!--
+  ~ Copyright (C) 2010-2011 VTT Technical Research Centre of Finland.
+  ~
+  ~ This library is free software; you can redistribute it and/or
+  ~ modify it under the terms of the GNU Lesser General Public
+  ~ License as published by the Free Software Foundation;
+  ~ version 2.1 of the License.
+  ~
+  ~ This library is distributed in the hope that it will be useful,
+  ~ but WITHOUT ANY WARRANTY; without even the implied warranty of
+  ~ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+  ~ Lesser General Public License for more details.
+  ~
+  ~ You should have received a copy of the GNU Lesser General Public
+  ~ License along with this library; if not, write to the Free Software
+  ~ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
+  -->
+
+<project name="noen-p2p" default="cleandist" basedir=".">
+  <property environment="env"/>
+  <property name="prod-src" value="src"/>
+  <property name="meta-dir" value="meta"/>
+  <property name="test-src" value="test"/>
+  <property name="main-output" value="ant-out"/>
+  <property name="prod-dest" value="${main-output}/production"/>
+  <property name="prod-inst-dest" value="${main-output}/production-instrumented"/>
+  <property name="test-dest" value="${main-output}/testing"/>
+  <property name="test-report" value="junit-report"/>
+  <property name="config-file" value="noen-mfw.properties"/>
+  <property name="schema-dest" value="${main-output}/schema"/>
+  <property name="checkstyle-dir" value="${main-output}/checkstyle"/>
+
+  <property name="main-distro-dir" value="distro"/>
+  <property name="server-distro-dir" value="${main-distro-dir}/server"/>
+  <property name="probe-distro-dir" value="${main-distro-dir}/probe"/>
+  <property name="testprobe-distro-dir" value="${main-distro-dir}/testprobe"/>
+  <property name="configurable-testprobe-distro-dir" value="${main-distro-dir}/conf-testprobe"/>
+  <property name="sshprobe-distro-dir" value="${main-distro-dir}/sshprobe"/>
+  <property name="customprobe-distro-dir" value="${main-distro-dir}/customprobe"/>
+  <property name="httpprobe-distro-dir" value="${main-distro-dir}/httpprobe"/>
+  <property name="superbundle-distro-dir" value="${main-distro-dir}/super"/>
+
+  <!-- TODO: remove all these, change to use "bundles" etc as a property with main dir -->
+  <property name="bundledir-server" value="${server-distro-dir}/bundles"/>
+  <property name="bundledir-probe" value="${probe-distro-dir}/bundles"/>
+  <property name="bundledir-testprobe" value="${testprobe-distro-dir}/bundles"/>
+  <property name="bundledir-configurable-testprobe" value="${configurable-testprobe-distro-dir}/bundles"/>
+  <property name="bundledir-sshprobe" value="${sshprobe-distro-dir}/bundles"/>
+  <property name="bundledir-customprobe" value="${customprobe-distro-dir}/bundles"/>
+  <property name="bundledir-httpprobe" value="${httpprobe-distro-dir}/bundles"/>
+  <property name="bundledir-superbundle" value="${superbundle-distro-dir}/bundles"/>
+
+  <property name="cachedir-server" value="${server-distro-dir}/felix-cache"/>
+  <property name="cachedir-probe" value="${probe-distro-dir}/felix-cache"/>
+  <property name="cachedir-testprobe" value="${testprobe-distro-dir}/felix-cache"/>
+  <property name="cachedir-sshprobe" value="${sshprobe-distro-dir}/felix-cache"/>
+  <property name="cachedir-customprobe" value="${customprobe-distro-dir}/felix-cache"/>
+  <property name="cachedir-httpprobe" value="${httpprobe-distro-dir}/felix-cache"/>
+  <property name="cachedir-superbundle" value="${superbundle-distro-dir}/felix-cache"/>
+
+  <property name="bindir" value="bin"/>
+  <property name="coverage-dir" value="${main-output}/coverage"/>
+
+  <property name="jar-file" value="noen-p2p.jar"/>
+  <property name="felix.home" value="${env.FELIX_HOME}"/>
+  <property name="update-bundle1" value="update-tester1.jar"/>
+  <property name="update-bundle2" value="update-tester2.jar"/>
+  <!-- Old bundles, should be removed.. -->
+  <property name="server-bundle-jar" value="mfw-server.jar"/>
+  <property name="probe-bundle-jar" value="mfw-probe.jar"/>
+
+  <taskdef name="schemagen" classname="com.sun.tools.jxc.SchemaGenTask">
+    <classpath>
+      <fileset dir="lib/jaxb" includes="*.jar"/>
+    </classpath>
+  </taskdef>
+
+  <taskdef resource="checkstyletask.properties" classpath="lib/checkstyle-5.3-all.jar"/>
+
+  <path id="class.path">
+    <!--pathelement path="${currentenv.classpath}"/-->
+    <fileset dir="lib">
+      <include name="**/*.jar"/>
+    </fileset>
+    <path location="${prod-dest}"/>
+  </path>
+
+  <!-- CLEAN -->
+  <target name="clean">
+    <echo message="Removing old directory structure..."/>
+    <delete dir="${main-output}"/>
+    <delete file="${update-bundle1}"/>
+    <delete file="${update-bundle2}"/>
+    <delete dir="${main-distro-dir}"/>
+  </target>
+
+  <!-- MK DEPLOY DIR -->
+  <target name="init">
+    <mkdir dir="${prod-dest}"/>
+    <mkdir dir="${test-dest}"/>
+    <mkdir dir="${test-report}"/>
+    <mkdir dir="${schema-dest}"/>
+    <mkdir dir="${checkstyle-dir}/input"/>
+    <mkdir dir="${checkstyle-dir}/report"/>
+    <mkdir dir="${server-distro-dir}/${bindir}"/>
+    <mkdir dir="${probe-distro-dir}/${bindir}"/>
+    <mkdir dir="${testprobe-distro-dir}/${bindir}"/>
+    <mkdir dir="${sshprobe-distro-dir}/${bindir}"/>
+    <mkdir dir="${customprobe-distro-dir}/${bindir}"/>
+    <mkdir dir="${bundledir-server}"/>
+    <mkdir dir="${bundledir-probe}"/>
+    <mkdir dir="${bundledir-testprobe}"/>
+    <mkdir dir="${bundledir-sshprobe}"/>
+    <mkdir dir="${bundledir-customprobe}"/>
+    <mkdir dir="${cachedir-testprobe}"/>
+    <mkdir dir="${cachedir-sshprobe}"/>
+    <mkdir dir="${cachedir-customprobe}"/>
+    <mkdir dir="${cachedir-httpprobe}"/>
+    <mkdir dir="${cachedir-server}"/>
+    <mkdir dir="${cachedir-probe}"/>
+    <mkdir dir="${cachedir-superbundle}"/>
+  </target>
+
+  <target name="compile" depends="init">
+    <echo message="Compiling prod..."/>
+    <javac source="1.5" target="1.5" debug="true" classpathref="class.path" srcdir="${prod-src}"
+           destdir="${prod-dest}"/>
+    <echo message="Compiling tests..."/>
+    <javac source="1.5" target="1.5" classpathref="class.path" srcdir="${test-src}" destdir="${test-dest}"/>
+  </target>
+
+  <target name="rest-schema-gen" depends="init" description="Generate XML schema for the JAXB annotations in the REST plugin classes">
+    <schemagen srcdir="${prod-src}" destdir="${schema-dest}">
+      <include name="fi/vtt/noen/mfw/bundle/server/plugins/rest/Availability.java"/>
+      <include name="fi/vtt/noen/mfw/bundle/server/plugins/rest/BM.java"/>
+      <include name="fi/vtt/noen/mfw/bundle/server/plugins/rest/BMValue.java"/>
+      <include name="fi/vtt/noen/mfw/bundle/server/plugins/rest/SubscriptionRequest.java"/>
+    </schemagen>
+  </target>
+
+  <target name="test-jars" depends="compile" description="Create jar files for test bundles">
+    <jar destfile="${bundledir-server}/tester.jar" basedir="${test-dest}" manifest="meta/test/tester-manifest.mf">
+      <fileset dir=".">
+        <include name="lib/junit-4.9b2.jar"/>
+      </fileset>
+    </jar>
+    <jar destfile="${bundledir-server}/update-tester1.jar" basedir="${test-dest}" manifest="${meta-dir}/test/updatetester1-manifest.mf"/>
+    <jar destfile="${update-bundle1}" basedir="${test-dest}" manifest="meta/test/updatetester1_1-manifest.mf"/>
+    <jar destfile="${update-bundle2}" basedir="${test-dest}" manifest="meta/test/updatetester2-manifest.mf"/>
+  </target>
+
+  <!-- CLEANDIST-->
+  <target name="cleandist"
+          depends="clean, init, compile, copyresources, build.server.plugins, build.probe.plugins, build.testprobe, build.configurabletestprobe, build.sshprobe, build.customprobe, build.superbundle">
+  </target>
+
+  <target name="copyresources" depends="init,compile">
+    <copy todir="${prod-dest}">
+      <fileset dir="${prod-src}">
+        <include name="**/*.html"/>
+        <include name="**/*.css"/>
+        <include name="**/*.xml"/>
+      </fileset>
+    </copy>
+    <copy todir="${test-dest}">
+      <fileset dir="${test-src}">
+        <include name="**/*.txt"/>
+        <include name="**/*.xml"/>
+      </fileset>
+    </copy>
+  </target>
+
+  <target name="test" depends="cleandist">
+    <!-- TODO: fix this to use JUnit "dir" attribute to capture the WSDL files if needed -->
+    <copy file="SAC_MFW_proposal_v2.4.wsdl" todir="${prod-inst-dest}"/>
+    <copy file="MFW_SAC_EADS_proposal_v3.1.wsdl" todir="${prod-inst-dest}"/>
+
+    <junit printsummary="yes" haltonfailure="no">
+      <classpath>
+        <pathelement location="${prod-inst-dest}"/>
+        <pathelement location="${test-dest}"/>
+        <path refid="class.path"/>
+      </classpath>
+
+      <formatter type="xml"/>
+
+      <batchtest fork="once" todir="${test-report}">
+        <fileset dir="${test-src}">
+          <include name="**/*Tests.java"/>
+          <exclude name="**/*Interface*.java"/>
+          <exclude name="**/TestObject.java"/>
+        </fileset>
+      </batchtest>
+    </junit>
+  </target>
+
+  <!--target name="test-server">
+    <exec executable="cmd" os="Windows 7">
+      <arg value="/c"/>
+      <arg value="${superbundle-distro-dir}/start-mfw.bat"/>
+    </exec>
+    <property name="executable-full-path" location="${superbundle-distro-dir}/start-mfw.sh"/>
+    <exec executable="${executable-full-path}" os="Linux"/>
+  </target-->
+
+  <target name="build.server.logger.bundle" depends="compile"
+          description="creates the bundle jar for the shared SLF4J logger jar files">
+    <jar destfile="${bundledir-server}/slf4j-loggerbundle.jar" manifest="meta/shared/slf4j-logger.mf">
+      <fileset dir=".">
+        <include name="lib/logback-core-*.jar"/>
+        <include name="lib/slf4j-api-*.jar"/>
+        <include name="lib/logback-classic-*.jar"/>
+        <include name="lib/trace-component.jar"/>
+      </fileset>
+      <fileset dir="${prod-src}">
+        <include name="logback.xml"/>
+      </fileset>
+    </jar>
+  </target>
+
+  <target name="build.server.blackboard.bundle" depends="compile"
+          description="creates the bundle jar for the MFW blackboard">
+    <jar destfile="${bundledir-server}/blackboard.jar" manifest="meta/shared/blackboard.mf">
+      <fileset dir="${prod-dest}">
+        <include name="fi/vtt/noen/mfw/bundle/blackboard/**"/>
+      </fileset>
+    </jar>
+  </target>
+
+  <target name="build.server.common.bundle" depends="compile"
+          description="creates the bundle jar for the MFW common classes">
+    <jar destfile="${bundledir-server}/mfw-common.jar" manifest="meta/shared/common.mf">
+      <fileset dir="${prod-dest}">
+        <include name="fi/vtt/noen/mfw/bundle/common/**"/>
+      </fileset>
+      <fileset dir=".">
+        <include name="lib/xmlrpc*.jar"/>
+        <include name="lib/commons-logging*.jar"/>
+        <include name="lib/ws-commons*.jar"/>
+      </fileset>
+    </jar>
+  </target>
+
+  <target name="build.server.shared.bundle" depends="compile"
+          description="creates the bundle jar for the MFW common classes">
+    <property name="temp-dir" value="temp"/>
+    <copy todir="${temp-dir}/lib">
+      <fileset dir="lib/hibernate">
+        <include name="*jpa*.jar"/>
+      </fileset>
+    </copy>
+    <jar destfile="${bundledir-server}/server-shared.jar" manifest="meta/server/server-shared.mf">
+      <fileset dir="${prod-dest}">
+        <include name="fi/vtt/noen/mfw/bundle/server/shared/**"/>
+      </fileset>
+      <fileset dir="${temp-dir}">
+        <include name="lib/*.jar"/>
+      </fileset>
+    </jar>
+    <copy file="${bundledir-server}/server-shared.jar" toDir="${bundledir-probe}"/>
+  </target>
+
+  <target name="build.server.registry.bundle" depends="compile"
+          description="creates the bundle jar for the Registry plugin">
+    <jar destfile="${bundledir-server}/registry-plugin.jar" manifest="meta/server/registry-plugin.mf">
+      <fileset dir="${prod-dest}">
+        <include name="fi/vtt/noen/mfw/bundle/server/plugins/registry/*"/>
+      </fileset>
+    </jar>
+  </target>
+
+  <target name="build.server.persistence.bundle" depends="compile"
+          description="creates the bundle jar for the Persistence plugin">
+    <!--this creates a temporary "lib" folder to have it included in the jar file with that name-->
+    <property name="temp-dir" value="temp"/>
+    <copy todir="${temp-dir}/lib">
+      <fileset dir="lib/hibernate">
+        <include name="*.jar"/>
+        <exclude name="*jpa*.jar"/>
+      </fileset>
+    </copy>
+    <jar destfile="${bundledir-server}/persistence-plugin.jar" manifest="meta/server/persistence-plugin.mf">
+      <fileset dir="${prod-dest}">
+        <include name="fi/vtt/noen/mfw/bundle/server/plugins/persistence/*"/>
+      </fileset>
+      <fileset dir="${prod-src}">
+        <include name="META-INF/persistence.xml"/>
+      </fileset>
+      <fileset dir=".">
+        <include name="lib/mysql*.jar"/>
+      </fileset>
+      <fileset dir="${temp-dir}">
+        <include name="lib/*.jar"/>
+      </fileset>
+    </jar>
+    <!--copy todir="${bundledir-server}">
+      <fileset dir="lib/eclipselink">
+        <include name="*.jar"/>
+      </fileset>
+    </copy-->
+    <delete dir="${temp-dir}"/>
+  </target>
+
+  <target name="build.server.sac.bundle" depends="compile" description="creates the bundle jar for the SAC plugin">
+    <jar destfile="${bundledir-server}/sac-plugin.jar" manifest="meta/server/sac-plugin.mf">
+      <fileset dir="${prod-dest}">
+        <include name="fi/vtt/noen/mfw/bundle/server/plugins/sac/**"/>
+      </fileset>
+      <fileset dir=".">
+        <include name="cxflib/*.jar"/>
+      </fileset>
+    </jar>
+  </target>
+
+  <target name="build.server.sac-emulator.bundle" depends="compile"
+          description="creates the bundle jar for the SAC emulator plugin">
+    <jar destfile="${bundledir-server}/sac-emulator-plugin.jar" manifest="meta/server/sac-emulator-plugin.mf">
+      <fileset dir="${prod-dest}">
+        <include name="fi/vtt/noen/mfw/bundle/server/plugins/tester/*"/>
+      </fileset>
+    </jar>
+  </target>
+
+  <target name="build.server.xmlrpc.bundle" depends="compile"
+          description="creates the bundle jar for the server-agent XMLRPC bundle">
+    <jar destfile="${bundledir-server}/server-xmlrpc-plugin.jar" manifest="meta/server/xmlrpc-plugin.mf">
+      <fileset dir="${prod-dest}">
+        <include name="fi/vtt/noen/mfw/bundle/server/plugins/xmlrpc/**"/>
+      </fileset>
+    </jar>
+  </target>
+
+  <target name="build.server.webui.bundle" depends="compile" description="creates the bundle jar for the Web UI plugin">
+    <jar destfile="${bundledir-server}/webui-plugin.jar" manifest="meta/server/webui-plugin.mf">
+      <fileset dir="${prod-dest}">
+        <include name="fi/vtt/noen/mfw/bundle/server/plugins/webui/**"/>
+      </fileset>
+      <fileset dir=".">
+        <include name="lib/wicket-1.4.10.jar"/>
+        <include name="lib/wicket-extensions-1.4.10.jar"/>
+        <!--include name="cxflib/*.jar"/-->
+      </fileset>
+    </jar>
+  </target>
+
+  <target name="build.server.dm.bundle" depends="compile"
+          description="creates the bundle jar for the Derived Measures plugin">
+    <jar destfile="${bundledir-server}/dm-plugin.jar" manifest="meta/server/dm-plugin.mf">
+      <fileset dir="${prod-dest}">
+        <include name="fi/vtt/noen/mfw/bundle/server/plugins/derivedmeasure/**"/>
+      </fileset>
+    </jar>
+  </target>
+
+  <target name="build.server.rest.bundle" depends="compile"
+          description="creates the bundle jar for the REST plugin">
+    <jar destfile="${bundledir-server}/rest-plugin.jar" manifest="meta/server/rest-plugin.mf">
+      <fileset dir="${prod-dest}">
+        <include name="fi/vtt/noen/mfw/bundle/server/plugins/rest/**"/>
+      </fileset>
+      <fileset dir=".">
+        <include name="lib/jersey/*.jar"/>
+      </fileset>
+    </jar>
+  </target>
+
+  <target name="build.server.event.bundle" depends="compile"
+          description="creates the bundle jar for the Event plugin">
+    <jar destfile="${bundledir-server}/event-plugin.jar" manifest="meta/server/event-plugin.mf">
+      <fileset dir="${prod-dest}">
+        <include name="fi/vtt/noen/mfw/bundle/server/plugins/event/**"/>
+      </fileset>
+    </jar>
+  </target>
+
+  <target name="build.probe.blackboard.bundle" depends="build.server.blackboard.bundle"
+          description="creates the bundle jar for the MFW blackboard">
+    <copy file="${bundledir-server}/blackboard.jar" toDir="${bundledir-probe}"/>
+  </target>
+
+  <target name="build.probe.common.bundle" depends="build.server.common.bundle"
+          description="creates the bundle jar for the MFW common classes">
+    <copy file="${bundledir-server}/mfw-common.jar" toDir="${bundledir-probe}"/>
+  </target>
+
+  <target name="build.probe.shared.bundle" depends="compile"
+          description="creates the bundle jar for the MFW common classes">
+    <jar destfile="${bundledir-probe}/probe-shared.jar" manifest="meta/probe/probe-shared.mf">
+      <fileset dir="${prod-dest}">
+        <include name="fi/vtt/noen/mfw/bundle/probe/shared/**"/>
+      </fileset>
+    </jar>
+    <copy file="${bundledir-probe}/probe-shared.jar" toDir="${bundledir-server}"/>
+  </target>
+
+  <target name="build.probe.logger.bundle" depends="build.server.logger.bundle"
+          description="creates the bundle jar for the shared SLF4J logger jar files">
+    <copy file="${bundledir-server}/slf4j-loggerbundle.jar" toDir="${bundledir-probe}"/>
+  </target>
+
+  <target name="build.probe.xmlrpc.bundle" depends="compile"
+          description="creates the bundle jar for the probe-agent XMLRPC bundle">
+    <jar destfile="${bundledir-probe}/probe-xmlrpc-plugin.jar" manifest="meta/probe/xmlrpc-plugin.mf">
+      <fileset dir="${prod-dest}">
+        <include name="fi/vtt/noen/mfw/bundle/probe/plugins/xmlrpc/**"/>
+      </fileset>
+    </jar>
+  </target>
+
+  <target name="build.probe.communication.bundle" depends="compile"
+          description="creates the bundle jar for the probe-agent communication bundle">
+    <jar destfile="${bundledir-probe}/communication-plugin.jar" manifest="meta/probe/communication-plugin.mf">
+      <fileset dir="${prod-dest}">
+        <include name="fi/vtt/noen/mfw/bundle/probe/plugins/communication/**"/>
+      </fileset>
+    </jar>
+  </target>
+
+  <target name="build.probe.measurement.bundle" depends="compile"
+          description="creates the bundle jar for the probe-agent measurement bundle">
+    <jar destfile="${bundledir-probe}/measurement-plugin.jar" manifest="meta/probe/measurement-plugin.mf">
+      <fileset dir="${prod-dest}">
+        <include name="fi/vtt/noen/mfw/bundle/probe/plugins/measurement/**"/>
+      </fileset>
+    </jar>
+  </target>
+
+  <target name="build.server.plugins">
+    <antcall target="build.server.blackboard.bundle"/>
+    <antcall target="build.server.common.bundle"/>
+    <antcall target="build.server.shared.bundle"/>
+    <antcall target="build.server.logger.bundle"/>
+    <antcall target="build.server.registry.bundle"/>
+    <antcall target="build.server.webui.bundle"/>
+    <antcall target="build.server.sac.bundle"/>
+    <antcall target="build.server.xmlrpc.bundle"/>
+    <antcall target="build.server.dm.bundle"/>
+    <antcall target="build.server.persistence.bundle"/>
+    <antcall target="build.server.rest.bundle"/>
+    <antcall target="build.server.event.bundle"/>
+    <antcall target="build.server.sac-emulator.bundle"/>
+
+    <!-- This property definition uses meta/felix-config.properties as default, otherwise the previously set value in environment variables. -->
+    <property name="env.MFW_FELIX_CONFIG_FILE" value="${meta-dir}/felix-config.properties"/>
+    <copy file="${env.MFW_FELIX_CONFIG_FILE}" tofile="${server-distro-dir}/felix-config.properties"/>
+    <!--copy file="${meta-dir}/felix-config.properties" todir="${server-distro-dir}"/-->
+    <copy file="lib/felix.jar" todir="${server-distro-dir}/${bindir}"/>
+    <copy file="${meta-dir}/demo/server-agent.properties" tofile="${server-distro-dir}/${config-file}"/>
+    <copy file="${meta-dir}/start-mfw.bat" todir="${server-distro-dir}"/>
+    <copy file="${meta-dir}/start-mfw.sh" todir="${server-distro-dir}"/>
+    <copy file="SAC_MFW_proposal_v2.4.wsdl" todir="${server-distro-dir}"/>
+    <copy file="MFW_SAC_EADS_proposal_v3.1.wsdl" todir="${server-distro-dir}"/>
+    <copy file="SAC_MFW_proposal_v2.4.wsdl" todir="${superbundle-distro-dir}"/>
+    <copy file="MFW_SAC_EADS_proposal_v3.1.wsdl" todir="${superbundle-distro-dir}"/>
+
+    <copy todir="${bundledir-server}">
+      <!--fileset dir="${felix.home}/bundle">
+        <include name="*.jar"/>
+      </fileset-->
+      <fileset dir="lib">
+        <include name="org.apache.felix.log-1.0.0.jar"/>
+        <include name="org.apache.felix.http.bundle-2.0.4.jar"/>
+        <include name="org.apache.felix.configadmin-1.2.4.jar"/>
+      </fileset>
+    </copy>
+  </target>
+
+  <target name="build.probe.plugins">
+    <antcall target="build.probe.blackboard.bundle"/>
+    <antcall target="build.probe.common.bundle"/>
+    <antcall target="build.probe.shared.bundle"/>
+    <antcall target="build.probe.logger.bundle"/>
+    <antcall target="build.probe.xmlrpc.bundle"/>
+    <antcall target="build.probe.communication.bundle"/>
+    <antcall target="build.probe.measurement.bundle"/>
+
+    <copy file="lib/felix.jar" todir="${probe-distro-dir}/${bindir}"/>
+    <copy file="${meta-dir}/demo/probe-agent.felix-config.properties"
+          tofile="${probe-distro-dir}/felix-config.properties"/>
+    <copy file="${meta-dir}/start-mfw.bat" todir="${probe-distro-dir}"/>
+    <copy file="${meta-dir}/demo/template-probe-agent.properties" tofile="${probe-distro-dir}/${config-file}"/>
+
+    <copy todir="${bundledir-probe}">
+      <fileset dir="${felix.home}/bundle">
+        <include name="*.jar"/>
+      </fileset>
+      <fileset dir="lib">
+        <include name="org.apache.felix.log-1.0.0.jar"/>
+        <include name="org.apache.felix.http.bundle-2.0.4.jar"/>
+        <include name="org.apache.felix.configadmin-1.2.4.jar"/>
+      </fileset>
+    </copy>
+  </target>
+
+  <target name="build.testprobe">
+    <copy file="${meta-dir}/demo/test-probe-agent.properties" tofile="${testprobe-distro-dir}/${config-file}"/>
+    <copy file="lib/felix.jar" todir="${testprobe-distro-dir}/${bindir}"/>
+    <copy file="${meta-dir}/start-mfw.bat" todir="${testprobe-distro-dir}"/>
+
+    <copy todir="${bundledir-testprobe}">
+      <fileset dir="${bundledir-probe}">
+        <include name="*.jar"/>
+      </fileset>
+    </copy>
+
+    <copy file="${meta-dir}/demo/probe-agent.felix-config.properties"
+          tofile="${testprobe-distro-dir}/felix-config.properties"/>
+    <copy file="${meta-dir}/start-mfw.bat" todir="${testprobe-distro-dir}"/>
+
+    <copy todir="${bundledir-testprobe}">
+      <fileset dir="${felix.home}/bundle">
+        <include name="*.jar"/>
+      </fileset>
+    </copy>
+
+    <jar destfile="${bundledir-testprobe}/test-probes.jar" manifest="meta/demo/test-probes.mf">
+      <fileset dir="${prod-dest}">
+        <include name="fi/vtt/noen/mfw/probes/tester/**"/>
+      </fileset>
+    </jar>
+  </target>
+
+  <target name="build.configurabletestprobe">
+    <copy file="${meta-dir}/demo/configurable-testprobe-agent.properties" tofile="${configurable-testprobe-distro-dir}/${config-file}"/>
+    <copy file="lib/felix.jar" todir="${configurable-testprobe-distro-dir}/${bindir}"/>
+    <copy file="${meta-dir}/start-mfw.bat" todir="${configurable-testprobe-distro-dir}"/>
+
+    <copy todir="${bundledir-configurable-testprobe}">
+      <fileset dir="${bundledir-probe}">
+        <include name="*.jar"/>
+      </fileset>
+    </copy>
+
+    <copy file="${meta-dir}/demo/probe-agent.felix-config.properties"
+          tofile="${configurable-testprobe-distro-dir}/felix-config.properties"/>
+    <copy file="${meta-dir}/start-mfw.bat" todir="${configurable-testprobe-distro-dir}"/>
+
+    <copy todir="${bundledir-configurable-testprobe}">
+      <fileset dir="${felix.home}/bundle">
+        <include name="*.jar"/>
+      </fileset>
+    </copy>
+
+    <jar destfile="${bundledir-configurable-testprobe}/test-probes.jar" manifest="meta/demo/configurable-test-probes.mf">
+      <fileset dir="${prod-dest}">
+        <include name="fi/vtt/noen/mfw/probes/configurabletester/**"/>
+      </fileset>
+    </jar>
+  </target>
+
+  <!--todo: add description to all targets-->
+  <target name="build.sshprobe">
+    <copy file="${meta-dir}/demo/ssh-probe-agent.properties" tofile="${sshprobe-distro-dir}/${config-file}"/>
+    <copy file="lib/felix.jar" todir="${sshprobe-distro-dir}/${bindir}"/>
+    <copy file="ssh_test_script" todir="${sshprobe-distro-dir}"/>
+    <copy file="ssh_test_script2" todir="${sshprobe-distro-dir}"/>
+
+    <copy todir="${bundledir-sshprobe}">
+      <fileset dir="${bundledir-probe}">
+        <include name="*.jar"/>
+      </fileset>
+    </copy>
+
+    <copy file="${meta-dir}/demo/probe-agent.felix-config.properties"
+          tofile="${sshprobe-distro-dir}/felix-config.properties"/>
+    <copy file="${meta-dir}/start-mfw.bat" todir="${sshprobe-distro-dir}"/>
+
+    <copy todir="${bundledir-sshprobe}">
+      <fileset dir="${felix.home}/bundle">
+        <include name="*.jar"/>
+      </fileset>
+    </copy>
+
+    <jar destfile="${bundledir-sshprobe}/ssh-agent.jar" manifest="meta/demo/ssh-agent.mf">
+      <fileset dir="${prod-dest}">
+        <include name="fi/vtt/noen/mfw/probes/ssh/**"/>
+      </fileset>
+      <fileset dir=".">
+        <include name="lib/ganymed-ssh2-build251beta1.jar"/>
+      </fileset>
+    </jar>
+  </target>
+
+  <target name="build.customprobe">
+    <copy file="${meta-dir}/demo/custom-probe-agent.properties" tofile="${customprobe-distro-dir}/${config-file}"/>
+    <copy file="lib/felix.jar" todir="${customprobe-distro-dir}/${bindir}"/>
+
+    <copy todir="${bundledir-customprobe}">
+      <fileset dir="${bundledir-probe}">
+        <include name="*.jar"/>
+      </fileset>
+    </copy>
+
+    <copy file="${meta-dir}/demo/probe-agent.felix-config.properties"
+          tofile="${customprobe-distro-dir}/felix-config.properties"/>
+    <copy file="${meta-dir}/start-mfw.bat" todir="${customprobe-distro-dir}"/>
+
+    <copy todir="${bundledir-customprobe}">
+      <fileset dir="${felix.home}/bundle">
+        <include name="*.jar"/>
+      </fileset>
+    </copy>
+
+    <jar destfile="${bundledir-customprobe}/ssh-agent.jar" manifest="meta/demo/custom-agent.mf">
+      <fileset dir="${prod-dest}">
+        <include name="fi/vtt/noen/mfw/probes/custom/**"/>
+      </fileset>
+      <fileset dir=".">
+        <include name="lib/ganymed-ssh2-build251beta1.jar"/>
+      </fileset>
+    </jar>
+  </target>
+
+
+  <target name="build.httpprobe">
+    <copy file="${meta-dir}/demo/http-probe-agent.properties" tofile="${httpprobe-distro-dir}/${config-file}"/>
+    <copy file="lib/felix.jar" todir="${httpprobe-distro-dir}/${bindir}"/>
+
+    <copy todir="${bundledir-httpprobe}">
+      <fileset dir="${bundledir-probe}">
+        <include name="*.jar"/>
+      </fileset>
+    </copy>
+
+    <copy file="${meta-dir}/demo/http-agent.felix-config.properties"
+          tofile="${httpprobe-distro-dir}/felix-config.properties"/>
+    <copy file="${meta-dir}/start-mfw.bat" todir="${httpprobe-distro-dir}"/>
+
+    <copy todir="${bundledir-httpprobe}">
+      <fileset dir="${felix.home}/bundle">
+        <include name="*.jar"/>
+      </fileset>
+      <fileset dir="lib">
+        <include name="org.apache.felix.log-1.0.0.jar"/>
+        <include name="org.apache.felix.http.bundle-2.0.4.jar"/>
+        <include name="org.apache.felix.configadmin-1.2.4.jar"/>
+      </fileset>
+    </copy>
+
+    <jar destfile="${bundledir-httpprobe}/http-agent.jar" manifest="meta/demo/http-agent.mf">
+      <fileset dir="${prod-dest}">
+        <include name="fi/vtt/noen/mfw/probes/http/**"/>
+      </fileset>
+    </jar>
+  </target>
+
+  <target name="build.superbundle">
+    <copy file="${meta-dir}/demo/super.properties" tofile="${superbundle-distro-dir}/${config-file}"/>
+    <copy file="lib/felix.jar" todir="${superbundle-distro-dir}/${bindir}"/>
+
+    <copy todir="${bundledir-superbundle}">
+      <fileset dir="${bundledir-probe}">
+        <include name="*.jar"/>
+      </fileset>
+      <fileset dir="${bundledir-server}">
+        <include name="*.jar"/>
+      </fileset>
+    </copy>
+
+    <copy file="${meta-dir}/felix-config.properties" todir="${superbundle-distro-dir}"/>
+    <copy file="${meta-dir}/start-mfw.bat" todir="${superbundle-distro-dir}"/>
+    <copy file="${bundledir-testprobe}/test-probes.jar" todir="${bundledir-superbundle}"/>
+
+    <copy todir="${bundledir-superbundle}">
+      <fileset dir="${felix.home}/bundle">
+        <include name="*.jar"/>
+      </fileset>
+      <fileset dir="lib">
+        <include name="org.apache.felix.log-1.0.0.jar"/>
+        <include name="org.apache.felix.http.bundle-2.0.4.jar"/>
+        <include name="org.apache.felix.configadmin-1.2.4.jar"/>
+      </fileset>
+    </copy>
+  </target>
+
+</project>

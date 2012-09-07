@@ -1,0 +1,101 @@
+<!--
+  ~ Copyright (C) 2010-2011 VTT Technical Research Centre of Finland.
+  ~
+  ~ This library is free software; you can redistribute it and/or
+  ~ modify it under the terms of the GNU Lesser General Public
+  ~ License as published by the Free Software Foundation;
+  ~ version 2.1 of the License.
+  ~
+  ~ This library is distributed in the hope that it will be useful,
+  ~ but WITHOUT ANY WARRANTY; without even the implied warranty of
+  ~ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+  ~ Lesser General Public License for more details.
+  ~
+  ~ You should have received a copy of the GNU Lesser General Public
+  ~ License along with this library; if not, write to the Free Software
+  ~ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
+  -->
+
+<configuration>
+  <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
+    <layout class="ch.qos.logback.classic.PatternLayout">
+      <!--Pattern>TEEMU:%d{HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n</Pattern-->
+      <Pattern>%d{HH:mm:ss.SSS} - %msg%n</Pattern>
+    </layout>
+    <!-- deny all events with a level below INFO, that is TRACE and DEBUG -->
+    <filter class="ch.qos.logback.classic.filter.ThresholdFilter">
+      <level>INFO</level>
+    </filter>
+  </appender>
+
+  <appender name="FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
+    <File>noen-p2p.log</File>
+
+    <rollingPolicy class="ch.qos.logback.core.rolling.FixedWindowRollingPolicy">
+      <FileNamePattern>noen-p2p.%i.log.zip</FileNamePattern>
+      <MinIndex>1</MinIndex>
+      <MaxIndex>2</MaxIndex>
+    </rollingPolicy>
+
+    <triggeringPolicy class="ch.qos.logback.core.rolling.SizeBasedTriggeringPolicy">
+      <MaxFileSize>5MB</MaxFileSize>
+    </triggeringPolicy>
+
+    <layout class="ch.qos.logback.classic.PatternLayout">
+      <Pattern>%d{HH:mm:ss.SSS} %-5level %logger{10} - %msg%n</Pattern>
+    </layout>
+  </appender>
+
+  <appender name="FILE2" class="ch.qos.logback.core.rolling.RollingFileAppender">
+    <File>noen-apache.log</File>
+
+    <rollingPolicy class="ch.qos.logback.core.rolling.FixedWindowRollingPolicy">
+      <FileNamePattern>noen-apache.%i.log.zip</FileNamePattern>
+      <MinIndex>1</MinIndex>
+      <MaxIndex>2</MaxIndex>
+    </rollingPolicy>
+
+    <triggeringPolicy class="ch.qos.logback.core.rolling.SizeBasedTriggeringPolicy">
+      <MaxFileSize>5MB</MaxFileSize>
+    </triggeringPolicy>
+
+    <layout class="ch.qos.logback.classic.PatternLayout">
+      <Pattern>%d{HH:mm:ss.SSS} %-5level %logger{10} - %msg%n</Pattern>
+    </layout>
+  </appender>
+
+  <appender name="FILE3" class="ch.qos.logback.core.rolling.RollingFileAppender">
+    <File>noen-hibernate.log</File>
+
+    <rollingPolicy class="ch.qos.logback.core.rolling.FixedWindowRollingPolicy">
+      <FileNamePattern>noen-hibernate.%i.log.zip</FileNamePattern>
+      <MinIndex>1</MinIndex>
+      <MaxIndex>2</MaxIndex>
+    </rollingPolicy>
+
+    <triggeringPolicy class="ch.qos.logback.core.rolling.SizeBasedTriggeringPolicy">
+      <MaxFileSize>5MB</MaxFileSize>
+    </triggeringPolicy>
+
+    <layout class="ch.qos.logback.classic.PatternLayout">
+      <Pattern>%d{HH:mm:ss.SSS} %-5level %logger{10} - %msg%n</Pattern>
+    </layout>
+  </appender>
+
+  <logger name="fi.vtt" level="debug">
+    <appender-ref ref="STDOUT"/>
+    <appender-ref ref="FILE"/>
+  </logger>
+
+  <logger name="org.apache.wicket" level="info">
+    <appender-ref ref="FILE2"/>
+  </logger>
+
+  <logger name="org.apache.cxf" level="info">
+    <appender-ref ref="FILE2"/>
+  </logger>
+
+  <logger name="org.hibernate" level="info">
+    <appender-ref ref="FILE3"/>
+  </logger>
+</configuration>
