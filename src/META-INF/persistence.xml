@@ -22,11 +22,11 @@
              version="2.0">
   <persistence-unit name="mfw-persistence-manager" transaction-type="RESOURCE_LOCAL">
     <provider>org.hibernate.ejb.HibernatePersistence</provider>
-    <class>fi.vtt.noen.mfw.bundle.server.shared.datamodel.BMDescription</class>
-    <class>fi.vtt.noen.mfw.bundle.server.shared.datamodel.ProbeDescription</class>
-    <class>fi.vtt.noen.mfw.bundle.server.shared.datamodel.TargetDescription</class>
-    <class>fi.vtt.noen.mfw.bundle.server.shared.datamodel.Value</class>
-    <class>fi.vtt.noen.mfw.bundle.server.shared.datamodel.ServerEvent</class>
+    <class>fi.vtt.lemon.server.shared.datamodel.BMDescription</class>
+    <class>fi.vtt.lemon.server.shared.datamodel.ProbeDescription</class>
+    <class>fi.vtt.lemon.server.shared.datamodel.TargetDescription</class>
+    <class>fi.vtt.lemon.server.shared.datamodel.Value</class>
+    <class>fi.vtt.lemon.server.shared.datamodel.ServerEvent</class>
     <exclude-unlisted-classes/>
     <properties>
       <property name="hibernate.dialect" value="org.hibernate.dialect.MySQL5InnoDBDialect"/>

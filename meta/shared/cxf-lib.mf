@@ -1,7 +1,7 @@
 Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: CXF Library Bundle
-Bundle-SymbolicName: fi.vtt.noen.server.CXFLib
+Bundle-SymbolicName: fi.vtt.lemon.server.CXFLib
 Bundle-Version: 1.0.0
 Bundle-Classpath: cxflib/cxf-2.3.2.jar,
  cxflib/cxf-manifest.jar,

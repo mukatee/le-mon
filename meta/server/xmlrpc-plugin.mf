@@ -1,18 +1,18 @@
 Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: MFW Server XMLRPC Plugin
-Bundle-SymbolicName: fi.vtt.noen.server.xmlrpc.plugin
+Bundle-SymbolicName: fi.vtt.lemon.server.xmlrpc.plugin
 Bundle-Version: 1.0.0
-Bundle-Activator: fi.vtt.noen.mfw.bundle.server.plugins.xmlrpc.SAXmlRpcPluginActivator
+Bundle-Activator: fi.vtt.lemon.server.plugins.xmlrpc.SAXmlRpcPluginActivator
 Bundle-Classpath: .
 Import-Package: org.osgi.framework;version="1.3.0",
   org.slf4j,
-  fi.vtt.noen.mfw.bundle.blackboard,
-  fi.vtt.noen.mfw.bundle.common,
-  fi.vtt.noen.mfw.bundle.probe.shared,
-  fi.vtt.noen.mfw.bundle.server.shared,
-  fi.vtt.noen.mfw.bundle.server.shared.datamodel,
-  fi.vtt.noen.mfw.bundle.server.registry,
+  fi.vtt.lemon.mfw.bundle.blackboard,
+  fi.vtt.lemon.common,
+  fi.vtt.lemon.probe.shared,
+  fi.vtt.lemon.server.shared,
+  fi.vtt.lemon.server.shared.datamodel,
+  fi.vtt.lemon.server.registry,
   javax.xml.parsers,
   org.apache.xmlrpc.server,
   org.apache.xmlrpc.webserver,
@@ -22,4 +22,4 @@ Import-Package: org.osgi.framework;version="1.3.0",
   sf.net.sinve.trace.data,
   javax.servlet,
   javax.servlet.http
-Export-Package: fi.vtt.noen.mfw.bundle.server.plugins.xmlrpc
+Export-Package: fi.vtt.lemon.server.plugins.xmlrpc
