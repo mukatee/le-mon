@@ -19,46 +19,47 @@ package fi.vtt.lemon.server.rest.external;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
-import fi.vtt.lemon.server.rest.external.resources.ClientRequest;
+import fi.vtt.lemon.server.rest.external.resources.Session;
 
 public class ClientSubscriptionRegistry {
-  private Map<Long, ArrayList<ClientRequest>> subs;
+  private Map<Long, List<Session>> subscriptions;
 
   public ClientSubscriptionRegistry() {
-    subs = new HashMap<Long, ArrayList<ClientRequest>>();
+    subscriptions = new HashMap<>();
   }
 
-  public void add(long subscribeId, ClientRequest client) {
-    if (subs.containsKey(subscribeId)) {
-      ArrayList<ClientRequest> clients = subs.get(subscribeId);
-      if (!clients.contains(client)) {
-        clients.add(client);
-        subs.put(subscribeId, clients);
+  public void add(long subscribeId, Session client) {
+    if (subscriptions.containsKey(subscribeId)) {
+      List<Session> sessions = subscriptions.get(subscribeId);
+      if (!sessions.contains(client)) {
+        sessions.add(client);
+        subscriptions.put(subscribeId, sessions);
       }
     } else {
-      ArrayList<ClientRequest> clients = new ArrayList<ClientRequest>();
+      List<Session> clients = new ArrayList<>();
       clients.add(client);
-      subs.put(subscribeId, clients);
+      subscriptions.put(subscribeId, clients);
     }
   }
 
-  public void remove(long subscribeId, ClientRequest client) {
-    if (subs.containsKey(subscribeId)) {
-      ArrayList<ClientRequest> clients = subs.get(subscribeId);
-      if (clients == null) {
-        subs.remove(subscribeId);
+  public void remove(long subscribeId, Session session) {
+    if (subscriptions.containsKey(subscribeId)) {
+      List<Session> sessions = subscriptions.get(subscribeId);
+      if (sessions == null) {
+        subscriptions.remove(subscribeId);
       } else {
-        clients.remove(client);
-        if (clients.size() == 0) {
-          subs.remove(subscribeId);
+        sessions.remove(session);
+        if (sessions.size() == 0) {
+          subscriptions.remove(subscribeId);
         }
       }
     }
   }
 
-  public ArrayList<ClientRequest> get(long subscribeId) {
-    return subs.get(subscribeId);
+  public List<Session> get(long subscribeId) {
+    return subscriptions.get(subscribeId);
   }
 }

@@ -16,7 +16,7 @@ import java.util.List;
 import static fi.vtt.lemon.server.rest.RESTConst.*;
 
 /** @author Teemu Kanstren */
-@Path("/client/availability")
+@Path(PATH_AVAILABILITY)
 public class AvailabilityJSON {
   private static Logger log = new Logger(AvailabilityJSON.class);
 
@@ -28,7 +28,6 @@ public class AvailabilityJSON {
       for (BMDescription bmDesc : bms) {
         JSONObject bm = new JSONObject();
         try {
-          //TODO: all strings to Const.java
           bm.put(BM_ID, bmDesc.getBmId());
           bm.put(BM_CLASS, bmDesc.getBmClass());
           bm.put(BM_NAME, bmDesc.getBmName());

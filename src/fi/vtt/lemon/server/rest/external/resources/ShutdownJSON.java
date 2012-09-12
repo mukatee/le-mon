@@ -18,27 +18,27 @@
 
 package fi.vtt.lemon.server.rest.external.resources;
 
-import javax.xml.bind.annotation.XmlElement;
-import javax.xml.bind.annotation.XmlRootElement;
-import javax.xml.bind.annotation.XmlType;
+import osmo.common.log.Logger;
 
-@XmlRootElement(name = "subscriptionRequest")
-@XmlType(propOrder = {"interval"})
-public class SubscriptionRequest {
-  //sampling interval in milliseconds
-  private long interval;
+import javax.ws.rs.GET;
+import javax.ws.rs.Path;
+import javax.ws.rs.Produces;
+import javax.ws.rs.core.MediaType;
 
-  public SubscriptionRequest() {
+import static fi.vtt.lemon.server.rest.RESTConst.*;
+
+/**
+ * @author Teemu Kanstren
+ */
+@Path(PATH_SHUTDOWN)
+public class ShutdownJSON {
+  private final static Logger log = new Logger(ShutdownJSON.class);
+
+  @GET
+  @Produces(MediaType.TEXT_PLAIN)
+  public String shutdown() {
+    log.debug("SHUTDOWN initiated via REST service");
+    System.exit(0);
+    return "OK, shutting down. (this should never show since system should have exited already..)";
   }
-
-  @XmlElement(name = "interval")
-  public long getInterval() {
-    return interval;
-  }
-
-  public void setInterval(long interval) {
-    this.interval = interval;
-  }
-
-
 }

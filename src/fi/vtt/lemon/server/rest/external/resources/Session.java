@@ -20,24 +20,26 @@ package fi.vtt.lemon.server.rest.external.resources;
 
 import java.util.UUID;
 
-import javax.xml.bind.annotation.XmlElement;
-import javax.xml.bind.annotation.XmlRootElement;
-
-@XmlRootElement(name = "session")
-public class Session
-{
-  @XmlElement
+public class Session {
   private UUID id;
-  
-  public Session(){}
-  
-  public Session( UUID id )
-  {
+  private String name;
+  private String endpoint;
+
+  public Session(UUID id, String name, String endpoint) {
     this.id = id;
+    this.name = name;
+    this.endpoint = endpoint;
   }
 
-  public UUID getId()
-  {
+  public UUID getId() {
     return id;
+  }
+
+  public String getName() {
+    return name;
+  }
+
+  public String getEndpoint() {
+    return endpoint;
   }
 }

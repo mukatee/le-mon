@@ -32,8 +32,6 @@ import fi.vtt.lemon.common.ProbeConfiguration;
 import fi.vtt.lemon.probe.shared.ProbeEvent;
 import fi.vtt.lemon.server.ServerPlugin;
 import fi.vtt.lemon.server.registry.RegistryPlugin;
-import fi.vtt.lemon.server.rest.external.resources.ClientRequest;
-import fi.vtt.lemon.server.rest.external.resources.FrameworkInfo;
 import fi.vtt.lemon.server.rest.external.resources.Session;
 import fi.vtt.lemon.server.shared.datamodel.BMDescription;
 import fi.vtt.lemon.server.shared.datamodel.ProbeDescription;
@@ -57,7 +55,7 @@ public class RestPlugin {
   //(sac)Id for measurement subscriptions
   private long restId = -2;
   // registered clients
-  private Map<String, ClientRequest> clients;
+  private Map<String, Session> sessions;
   // client subsciptions
   private ClientSubscriptionRegistry subs;
 
@@ -68,7 +66,7 @@ public class RestPlugin {
   public RestPlugin() {
     restPlugin = this;
 
-    clients = new LinkedHashMap<String, ClientRequest>();
+    sessions = new LinkedHashMap<>();
     subs = new ClientSubscriptionRegistry();
   }
 
@@ -107,8 +105,8 @@ public class RestPlugin {
   }
 
   public void requestBaseMeasure(String base64auth, long bmId) {
-    ClientRequest client = clients.get(extractAuthentication(base64auth));
-    log.debug("Client (" + client.getName() + ") is requesting base measure, id=" + bmId);
+    Session session = sessions.get(extractAuthentication(base64auth));
+    log.debug("Client (" + session.getName() + ") is requesting base measure, id=" + bmId);
     ProbeDescription probe = registry.getProbeForBM(bmId);
     long subscriptionId = registry.addMeasurementRequest(restId, probe.getBm(), probe.getProbeId());
     server.requestBM(bmId, subscriptionId);
@@ -128,7 +126,7 @@ public class RestPlugin {
     long subscriptionId = registry.addSubscription(restId, probe.getBm(), interval, probe.getProbeId());
     server.subscribeToBM(id, interval, subscriptionId);
 
-    ClientRequest client = clients.get(extractAuthentication(authHeader));
+    Session client = sessions.get(extractAuthentication(authHeader));
     subs.add(subscriptionId, client);
   }
 
@@ -145,7 +143,7 @@ public class RestPlugin {
     server.unSubscribeToBM(id, subscriptionId);
     registry.removeSubscription(restId, subscriptionId);
 
-    ClientRequest client = clients.get(extractAuthentication(authHeader));
+    Session client = sessions.get(extractAuthentication(authHeader));
     subs.remove(subscriptionId, client);
   }
 
@@ -157,19 +155,19 @@ public class RestPlugin {
 
     if (sacId == restId) {
       log.debug("subscriptionId: " + subscriptionId + ", sacId: " + sacId);
-      ArrayList<ClientRequest> clients = subs.get(subscriptionId);
+      List<Session> sessions = subs.get(subscriptionId);
       //if one time measurement remove subscription from registry
       if (registry.getFrequencyForSubscription(subscriptionId) == 0) {
         registry.removeSubscription(restId, subscriptionId);
-        for (ClientRequest client : clients) {
-          subs.remove(subscriptionId, client);
+        for (Session session : sessions) {
+          subs.remove(subscriptionId, session);
         }
       }
 
-      for (ClientRequest client : clients) {
-        log.debug("send value to: " + client.getName() + ",(" + client.getEndpoint() + ")");
+      for (Session session : sessions) {
+        log.debug("send value to: " + session.getName() + ",(" + session.getEndpoint() + ")");
         try {
-          new RestClientEndpoint(client.getEndpoint()).measurement(value);
+          new RestClientEndpoint(session.getEndpoint()).measurement(value);
         } catch (Exception e) {
           e.printStackTrace();
         }
@@ -191,7 +189,7 @@ public class RestPlugin {
       pd = (ProbeDisabled) data;
     }
 
-    for (ClientRequest client : clients.values()) {
+    for (Session client : sessions.values()) {
       log.debug("send value to: " + client.getName() + ",(" + client.getEndpoint() + ")");
       try {
         RestClientEndpoint rce = new RestClientEndpoint(client.getEndpoint());
@@ -218,13 +216,13 @@ public class RestPlugin {
     return RestPlugin.class.getName();
   }
 
-  public Session registerClient(String base64auth, ClientRequest client) {
-    log.debug("Registering client: " + client);
+  public String registerClient(String base64auth, String name, String endpoint) {
+    log.debug("Registering client: " + name+", "+endpoint);
     String authentication = extractAuthentication(base64auth);
 
     // if client has already registered, all subscriptions should be released
-    if (clients.containsKey(authentication)) {
-      clients.remove(authentication);
+    if (sessions.containsKey(authentication)) {
+      sessions.remove(authentication);
 
       //TODO: release all subsciptions here:
 
@@ -233,16 +231,15 @@ public class RestPlugin {
 
     // create new session for the client
     UUID id = UUID.randomUUID();
-    Session session = new Session(id);
-    client.setSession(session);
+    Session session = new Session(id, name, endpoint);
 
-    clients.put(authentication, client);
+    sessions.put(authentication, session);
 
-    return session;
+    return session.getId().toString();
   }
 
   public boolean isAlive(String base64auth) {
-    return clients.containsKey(extractAuthentication(base64auth));
+    return sessions.containsKey(extractAuthentication(base64auth));
   }
 
   public boolean isAuthorized(String base64auth) {
@@ -315,9 +312,8 @@ public class RestPlugin {
     return success;
   }
 
-  public FrameworkInfo getFrameworkInfo() {
-    FrameworkInfo info = new FrameworkInfo("-1", getName());
-    return info;
+  public String getFrameworkInfo() {
+    return getName();
   }
 
   public List<Value> getHistory(long start, long end, Collection<Long> bmIds) {

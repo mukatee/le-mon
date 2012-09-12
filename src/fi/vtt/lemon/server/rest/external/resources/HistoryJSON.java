@@ -21,7 +21,7 @@ import java.util.List;
 import static fi.vtt.lemon.server.rest.RESTConst.*;
 
 /** @author Teemu Kanstren */
-@Path("/client/history")
+@Path(PATH_HISTORY)
 public class HistoryJSON {
   private static Logger log = new Logger(HistoryJSON.class);
 
@@ -31,7 +31,6 @@ public class HistoryJSON {
   public Response requestHistory(@HeaderParam("authorization") String authHeader, JSONObject req) {
     RestPlugin restPlugin = RestPlugin.getInstance();
     log.debug("History request");
-
     JSONArray root = new JSONArray();
 
     if (restPlugin.isAlive(authHeader)) {
