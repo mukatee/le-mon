@@ -19,7 +19,7 @@
 package fi.vtt.lemon.probes.tester;
 
 import osmo.common.log.Logger;
-import fi.vtt.lemon.common.ProbeConfiguration;
+import fi.vtt.lemon.probe.ProbeConfiguration;
 import fi.vtt.lemon.probe.shared.BaseMeasure;
 
 /**

@@ -18,15 +18,7 @@
 
 package fi.vtt.lemon.mfw.unittests.system;
 
-import fi.vtt.lemon.common.Const;
-import fi.vtt.lemon.server.shared.datamodel.BMDescription;
-import fi.vtt.lemon.server.shared.datamodel.Value;
 import org.junit.Test;
-
-import java.util.List;
-import java.util.Properties;
-
-import static junit.framework.Assert.*;
 
 /**
  * @author Teemu Kanstren

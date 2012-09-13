@@ -18,8 +18,6 @@
 
 package fi.vtt.lemon.server.webui;
 
-import fi.vtt.lemon.common.DataObject;
-import fi.vtt.lemon.server.ServerPlugin;
 import osmo.common.log.Logger;
 import fi.vtt.lemon.server.registry.RegistryPlugin;
 import fi.vtt.lemon.server.webui.bmreportspage.BMReportsStorage;
@@ -31,7 +29,6 @@ import fi.vtt.lemon.server.webui.mfwclient.MFW;
 import fi.vtt.lemon.server.webui.mfwclient.MFWClient;
 import fi.vtt.lemon.server.webui.mfwclient.ProbeParameter;
 import fi.vtt.lemon.server.webui.mfwclient.ProbeParameters;
-import fi.vtt.lemon.server.shared.datamodel.BMReport;
 
 import fi.vtt.lemon.server.shared.datamodel.Value;
 
@@ -54,21 +51,11 @@ public class WebUIPlugin {
   private static WebUIPlugin webui = null;
   //stores dm values and provides access to them on the DM page
   private DMMonitorPlugin dmMonitor = null;
-  //  private AlertLabel alert = null;
   private boolean initialized = false;
   private BMResultsStorage bmresults;
   private MFWClient mfwClient;
-  private ServerPlugin server;
   private BMReportsStorage bmreports;
   private Map<String, String> latestValues = new HashMap<String, String>();
-
-  public void setServer(ServerPlugin server) {
-    this.server = server;
-  }
-
-  public void setRegistry(RegistryPlugin registry) {
-//    this.registry = registry;
-  }
 
   public static WebUIPlugin getInstance() {
     return webui;
@@ -78,19 +65,6 @@ public class WebUIPlugin {
     webui = this;
     bmresults = new BMResultsStorage();
     bmreports = new BMReportsStorage();
-  }
-
-  public void process(DataObject data) {
-    if (data instanceof BMReport) {
-      BMReport bmReport = (BMReport) data;
-      log.debug("received bm report:" + bmReport);
-      bmreports.addBMReport(bmReport);
-    }
-    if (data instanceof Value) {
-      Value value = (Value) data;
-      String uri = value.getMeasureURI();
-      latestValues.put(uri, value.getString());
-    }
   }
 
   public void terminate() {
@@ -175,18 +149,6 @@ public class WebUIPlugin {
   public MFW getMFWInformation() {
     MFW mfwInfo = mfwClient.getMFW();
     return mfwInfo;
-  }
-
-  public void setReference(BMReport bmReport) {
-    server.setReference(bmReport.getSubscriptionId(), bmReport.getCurrentValue());
-  }
-
-  public List<BMReport> getBMReports() {
-    return bmreports.getBmReports();
-  }
-
-  public void addBMReport(BMReport bmReport) {
-    bmreports.addBMReport(bmReport);
   }
 
   public void clearBMReports() {

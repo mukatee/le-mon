@@ -18,7 +18,7 @@
 
 package fi.vtt.lemon.probe.shared;
 
-import fi.vtt.lemon.common.ProbeConfiguration;
+import fi.vtt.lemon.probe.ProbeConfiguration;
 
 import java.util.Collection;
 import java.util.Map;
@@ -38,12 +38,6 @@ public interface Probe {
   /** Return the descriptions for the probe. */
   public ProbeInformation getInformation();
   /** Called by the MFW components when a measurement is needed. */
-  public BaseMeasure measure();
-  /** start and stop a probe if supported */
-  public void startProbe();
-  public void stopProbe();
-  /** Same as getConfiguration but used to set the values from the SAC. */
-  public void setConfiguration(Map<String, String> configuration);
-  public Collection<ProbeConfiguration> getConfigurationParameters();
+  public String measure();
   public void init(Properties properties);
 }

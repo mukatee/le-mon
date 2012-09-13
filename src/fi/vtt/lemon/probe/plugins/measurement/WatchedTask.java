@@ -18,8 +18,9 @@
 
 package fi.vtt.lemon.probe.plugins.measurement;
 
+import fi.vtt.lemon.probe.plugins.xmlrpc.ServerClient;
+import fi.vtt.lemon.probe.shared.Probe;
 import fi.vtt.lemon.probe.shared.ProbeInformation;
-import fi.vtt.lemon.server.shared.ServerAgent;
 import osmo.common.log.Logger;
 
 import java.util.Map;
@@ -32,16 +33,12 @@ public class WatchedTask {
   private final static Logger log = new Logger(WatchedTask.class);
   private final Future future;
   private final MeasurementTask task;
-  private final Map<Long, WatchedTask> subscriptions;
-  private final boolean oneTime;
-  private final ServerAgent serverAgent;
+  private final Map<Probe, WatchedTask> subscriptions;
 
-  public WatchedTask(Future future, MeasurementTask task, Map<Long, WatchedTask> subscriptions, boolean oneTime, ServerAgent serverAgent) {
+  public WatchedTask(Future future, MeasurementTask task, Map<Probe, WatchedTask> subscriptions) {
     this.future = future;
     this.task = task;
     this.subscriptions = subscriptions;
-    this.oneTime = oneTime;
-    this.serverAgent = serverAgent;
   }
 
   public long getRunningTime() {
@@ -50,27 +47,13 @@ public class WatchedTask {
 
   public void cancel() {
     future.cancel(true);
-    subscriptions.remove(task.getSubscriptionId());
+    subscriptions.remove(task.getProbe());
   }
 
   public ProbeInformation getProbeInfo() {
     return task.getProbeInfo();
   }
 
-  public void checkState() {
-    if (!oneTime) {
-      return;
-    }
-    if (!task.isRunning() && task.getStartTime() > 0) {
-      //this means it has finished
-      subscriptions.remove(task.getSubscriptionId());
-    }
-  }
-
-  public ServerAgent getServerAgent() {
-    return serverAgent;
-  }
-  
   public MeasurementTask getMeasurementTask() {
     return task;
   }

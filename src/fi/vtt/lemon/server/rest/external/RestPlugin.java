@@ -18,7 +18,6 @@
 
 package fi.vtt.lemon.server.rest.external;
 
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -27,16 +26,10 @@ import java.util.UUID;
 
 import fi.vtt.lemon.server.PersistencePlugin;
 
-import fi.vtt.lemon.common.DataObject;
-import fi.vtt.lemon.common.ProbeConfiguration;
-import fi.vtt.lemon.probe.shared.ProbeEvent;
-import fi.vtt.lemon.server.ServerPlugin;
 import fi.vtt.lemon.server.registry.RegistryPlugin;
 import fi.vtt.lemon.server.rest.external.resources.Session;
 import fi.vtt.lemon.server.shared.datamodel.BMDescription;
 import fi.vtt.lemon.server.shared.datamodel.ProbeDescription;
-import fi.vtt.lemon.server.shared.datamodel.ProbeDisabled;
-import fi.vtt.lemon.server.shared.datamodel.ProbeRegistered;
 import fi.vtt.lemon.server.shared.datamodel.TargetDescription;
 import fi.vtt.lemon.server.shared.datamodel.Value;
 import fi.vtt.lemon.server.shared.datamodel.Value.SortKey;
@@ -46,8 +39,6 @@ import osmo.common.log.Logger;
 public class RestPlugin {
   private final static Logger log = new Logger(RestPlugin.class);
   private static RestPlugin restPlugin = null;
-  //for the server-agent to communicate with the probe-agents
-  private ServerPlugin server;
   //for accessing runtime state
   private RegistryPlugin registry;
   //provides bundle to database
@@ -68,10 +59,6 @@ public class RestPlugin {
 
     sessions = new LinkedHashMap<>();
     subs = new ClientSubscriptionRegistry();
-  }
-
-  public void setServer(ServerPlugin server) {
-    this.server = server;
   }
 
   public void setRegistry(RegistryPlugin registry) {
@@ -100,7 +87,6 @@ public class RestPlugin {
     log.debug("requestBM");
     ProbeDescription probe = registry.getProbeForBM(bmId);
     long subscriptionId = registry.addMeasurementRequest(restId, probe.getBm(), probe.getProbeId());
-    server.requestBM(bmId, subscriptionId);
     return true;
   }
 
@@ -109,7 +95,6 @@ public class RestPlugin {
     log.debug("Client (" + session.getName() + ") is requesting base measure, id=" + bmId);
     ProbeDescription probe = registry.getProbeForBM(bmId);
     long subscriptionId = registry.addMeasurementRequest(restId, probe.getBm(), probe.getProbeId());
-    server.requestBM(bmId, subscriptionId);
   }
 
   //Requests for a given measurement to be provided
@@ -117,14 +102,12 @@ public class RestPlugin {
     log.debug("subscribeToBM");
     ProbeDescription probe = registry.getProbeForBM(bmId);
     long subscriptionId = registry.addSubscription(restId, probe.getBm(), interval, probe.getProbeId());
-    server.subscribeToBM(bmId, interval, subscriptionId);
   }
 
   public void subscribeBaseMeasure(String authHeader, long id, long interval) {
     ProbeDescription probe = registry.getProbeForBM(id);
 
     long subscriptionId = registry.addSubscription(restId, probe.getBm(), interval, probe.getProbeId());
-    server.subscribeToBM(id, interval, subscriptionId);
 
     Session client = sessions.get(extractAuthentication(authHeader));
     subs.add(subscriptionId, client);
@@ -134,82 +117,15 @@ public class RestPlugin {
   public void unSubscribeToBM(long bmId) {
     log.debug("unSubscribeToBM");
     long subscriptionId = registry.getIdForSubscription(restId, bmId);
-    server.unSubscribeToBM(bmId, subscriptionId);
     registry.removeSubscription(restId, subscriptionId);
   }
 
   public void unsubscribeBaseMeasure(String authHeader, long id) {
     long subscriptionId = registry.getIdForSubscription(restId, id);
-    server.unSubscribeToBM(id, subscriptionId);
     registry.removeSubscription(restId, subscriptionId);
 
     Session client = sessions.get(extractAuthentication(authHeader));
     subs.remove(subscriptionId, client);
-  }
-
-  public void bmValue(Value value) {
-    log.debug("received BM value");
-
-    long subscriptionId = value.getSubscriptionId();
-    long sacId = registry.getSacIdForSubscription(subscriptionId);
-
-    if (sacId == restId) {
-      log.debug("subscriptionId: " + subscriptionId + ", sacId: " + sacId);
-      List<Session> sessions = subs.get(subscriptionId);
-      //if one time measurement remove subscription from registry
-      if (registry.getFrequencyForSubscription(subscriptionId) == 0) {
-        registry.removeSubscription(restId, subscriptionId);
-        for (Session session : sessions) {
-          subs.remove(subscriptionId, session);
-        }
-      }
-
-      for (Session session : sessions) {
-        log.debug("send value to: " + session.getName() + ",(" + session.getEndpoint() + ")");
-        try {
-          new RestClientEndpoint(session.getEndpoint()).measurement(value);
-        } catch (Exception e) {
-          e.printStackTrace();
-        }
-      }
-    }
-  }
-
-  public void event(DataObject data) {
-    log.debug("received probe event");
-    ProbeEvent pe = null;
-    ProbeRegistered pr = null;
-    ProbeDisabled pd = null;
-
-    if (data instanceof ProbeEvent) {
-      pe = (ProbeEvent) data;
-    } else if (data instanceof ProbeRegistered) {
-      pr = (ProbeRegistered) data;
-    } else if (data instanceof ProbeDisabled) {
-      pd = (ProbeDisabled) data;
-    }
-
-    for (Session client : sessions.values()) {
-      log.debug("send value to: " + client.getName() + ",(" + client.getEndpoint() + ")");
-      try {
-        RestClientEndpoint rce = new RestClientEndpoint(client.getEndpoint());
-        if (pe != null) rce.probeEvent(pe);
-        if (pr != null) rce.probeRegistered(pr);
-        if (pd != null) rce.probeDisabled(pd);
-      } catch (Exception e) {
-        e.printStackTrace();
-      }
-    }
-  }
-
-  public void process(DataObject data) {
-    if (data instanceof Value) {
-      Value value = (Value) data;
-      log.debug("received value:" + value);
-      bmValue(value);
-    } else if (data instanceof ProbeEvent || data instanceof ProbeRegistered || data instanceof ProbeDisabled) {
-      event(data);
-    }
   }
 
   public String getName() {
@@ -217,16 +133,12 @@ public class RestPlugin {
   }
 
   public String registerClient(String base64auth, String name, String endpoint) {
-    log.debug("Registering client: " + name+", "+endpoint);
+    log.debug("Registering client: " + name + ", " + endpoint);
     String authentication = extractAuthentication(base64auth);
 
     // if client has already registered, all subscriptions should be released
     if (sessions.containsKey(authentication)) {
       sessions.remove(authentication);
-
-      //TODO: release all subsciptions here:
-
-      //TODO: add mechanism for outdating session
     }
 
     // create new session for the client
@@ -258,22 +170,6 @@ public class RestPlugin {
       String pass = "password";
       String user = "username";
 
-//      try
-//      {
-//        MessageDigest md5 = MessageDigest.getInstance( "SHA-256" );
-//        pass = new String( md5.digest( "password".getBytes() ) );
-//        
-//        log.debug( "Accepted password md5 digest: " + pass );
-//      }
-//      catch ( NoSuchAlgorithmException e )
-//      {
-//        // TODO Auto-generated catch block
-//        e.printStackTrace();
-//      }
-
-
-      // check username and password from database?
-
       if (user.equals(userpass[0]) && pass.equals(userpass[1])) {
         authorized = true;
       }
@@ -295,21 +191,6 @@ public class RestPlugin {
     }
 
     return result;
-  }
-
-  public Collection<ProbeConfiguration> getProbeConfiguration(long probeId) {
-    return server.requestProbeConfigurationParameters(probeId);
-  }
-
-  public boolean setProbeConfiguration(long probeId, Map<String, String> configuration) {
-    boolean success = false;
-    try {
-      success = server.setProbeConfiguration(probeId, configuration);
-    } catch (Exception e) {
-      log.error("Failed to set probe (" + probeId + ") configuration.", e);
-    }
-
-    return success;
   }
 
   public String getFrameworkInfo() {

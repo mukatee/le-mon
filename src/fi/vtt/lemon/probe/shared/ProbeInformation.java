@@ -18,7 +18,7 @@
 
 package fi.vtt.lemon.probe.shared;
 
-import fi.vtt.lemon.common.Const;
+import fi.vtt.lemon.RabbitConst;
 
 /**
  * This describes a probe. It is basically the same as a base measure description since at this point a base measure is the same
@@ -88,7 +88,7 @@ public class ProbeInformation {
   }
 
   public String getMeasureURI() {
-    return Const.createMeasureURI(targetType, targetName, bmClass, bmName);
+    return RabbitConst.createMeasureURI(targetType, targetName, bmClass, bmName);
   }
 
   public String getXmlRpcUrl() {

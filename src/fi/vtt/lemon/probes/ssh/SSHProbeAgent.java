@@ -22,9 +22,9 @@ import ch.ethz.ssh2.Connection;
 import ch.ethz.ssh2.SCPClient;
 import ch.ethz.ssh2.Session;
 import ch.ethz.ssh2.StreamGobbler;
-import fi.vtt.lemon.common.Const;
+import fi.vtt.lemon.RabbitConst;
 import osmo.common.log.Logger;
-import fi.vtt.lemon.common.ProbeConfiguration;
+import fi.vtt.lemon.probe.ProbeConfiguration;
 import fi.vtt.lemon.probe.shared.BaseMeasure;
 import fi.vtt.lemon.probe.shared.BaseProbeAgent;
 
@@ -60,17 +60,17 @@ public class SSHProbeAgent extends BaseProbeAgent {
 
   public void init(Properties properties) {
     super.init(properties);
-    filename = properties.getProperty((Const.SSH_SCRIPT_FILENAME));
-    username = properties.getProperty((Const.SSH_USERNAME));
-    password = properties.getProperty((Const.SSH_PASSWORD));
-    command = properties.getProperty((Const.SSH_SCRIPT_COMMAND));
+    filename = properties.getProperty((RabbitConst.SSH_SCRIPT_FILENAME));
+    username = properties.getProperty((RabbitConst.SSH_USERNAME));
+    password = properties.getProperty((RabbitConst.SSH_PASSWORD));
+    command = properties.getProperty((RabbitConst.SSH_SCRIPT_COMMAND));
   }
 
-  public BaseMeasure measure() {
+  public String measure() {
     try {
       String result = executeScript();
       log.debug("measurement result:" + result);
-      return new BaseMeasure(result);
+      return result;
     } catch (Exception e) {
       throw new RuntimeException("Failed to perform measure for " + pi.getTargetName()+ ", " + pi.getBmClass() + ", ", e);
     }
@@ -91,24 +91,24 @@ public class SSHProbeAgent extends BaseProbeAgent {
     try {
       FileInputStream file = new FileInputStream(filename);
       String commands = readOutput(file);
-      config.add(new ProbeConfiguration(Const.SSH_SCRIPT_FILE_CONTENTS, "Script to collect the BM", true, commands));
+      config.add(new ProbeConfiguration(RabbitConst.SSH_SCRIPT_FILE_CONTENTS, "Script to collect the BM", true, commands));
     } catch (IOException e) {
       log.error("Error while reading file:" + filename, e);
       throw new RuntimeException("Error reading file:" + filename, e);
     }
     //with hashset this replaces the original
-    config.add(new ProbeConfiguration(Const.PROBE_TARGET_NAME, "Target IP address", true, pi.getTargetName()));
-    config.add(new ProbeConfiguration(Const.SSH_SCRIPT_FILENAME, "Script file name", true, filename));
-    config.add(new ProbeConfiguration(Const.SSH_USERNAME, "User name for login", true, username));
-    config.add(new ProbeConfiguration(Const.SSH_PASSWORD, "Password for login", true, password));
-    config.add(new ProbeConfiguration(Const.SSH_SCRIPT_COMMAND, "Command to execute script", true, command));
+    config.add(new ProbeConfiguration(RabbitConst.PROBE_TARGET_NAME, "Target IP address", true, pi.getTargetName()));
+    config.add(new ProbeConfiguration(RabbitConst.SSH_SCRIPT_FILENAME, "Script file name", true, filename));
+    config.add(new ProbeConfiguration(RabbitConst.SSH_USERNAME, "User name for login", true, username));
+    config.add(new ProbeConfiguration(RabbitConst.SSH_PASSWORD, "Password for login", true, password));
+    config.add(new ProbeConfiguration(RabbitConst.SSH_SCRIPT_COMMAND, "Command to execute script", true, command));
     return config;
   }
 
   public void setConfiguration(Map<String, String> config) {
     setBaseConfigurationParameters(config);
     try {
-      String commands = config.get(Const.SSH_SCRIPT_FILE_CONTENTS);
+      String commands = config.get(RabbitConst.SSH_SCRIPT_FILE_CONTENTS);
       FileOutputStream file = new FileOutputStream(filename);
       file.write(commands.getBytes());
       file.close();

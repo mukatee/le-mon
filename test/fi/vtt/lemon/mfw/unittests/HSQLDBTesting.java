@@ -18,19 +18,17 @@
 
 package fi.vtt.lemon.mfw.unittests;
 
-import fi.vtt.lemon.common.Const;
+import fi.vtt.lemon.RabbitConst;
 import fi.vtt.lemon.server.shared.datamodel.BMDescription;
-import fi.vtt.lemon.server.shared.datamodel.ServerEvent;
 import fi.vtt.lemon.server.shared.datamodel.ProbeDescription;
 import fi.vtt.lemon.server.shared.datamodel.TargetDescription;
-import fi.vtt.lemon.server.shared.datamodel.Value;
+
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.Statement;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 /**
@@ -59,13 +57,13 @@ public class HSQLDBTesting {
   public static void main(String[] args) {
     HSQLDBTesting testing = new HSQLDBTesting();
     Map<String, String> props = new HashMap<String, String>();
-    props.put(Const.PROBE_BM_CLASS, "bmclass");
-    props.put(Const.PROBE_BM_NAME, "bmname");
-    props.put(Const.PROBE_NAME, "probe name");
-    props.put(Const.PROBE_TARGET_TYPE, "target type");
-    props.put(Const.PROBE_TARGET_NAME, "target name");
-    props.put(Const.PROBE_BM_DESCRIPTION, "bm description");
-    props.put(Const.PROBE_PRECISION, "1");
+    props.put(RabbitConst.PROBE_BM_CLASS, "bmclass");
+    props.put(RabbitConst.PROBE_BM_NAME, "bmname");
+    props.put(RabbitConst.PROBE_NAME, "probe name");
+    props.put(RabbitConst.PROBE_TARGET_TYPE, "target type");
+    props.put(RabbitConst.PROBE_TARGET_NAME, "target name");
+    props.put(RabbitConst.PROBE_BM_DESCRIPTION, "bm description");
+    props.put(RabbitConst.PROBE_PRECISION, "1");
     ProbeDescription pd = testing.createProbeDescription(props);
 //    BMDescription bm = testing.createBMDescription(props);
 //    ProbeDescription pd = testing.createProbeDescription(props);

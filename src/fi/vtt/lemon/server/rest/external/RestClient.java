@@ -19,7 +19,7 @@
 package fi.vtt.lemon.server.rest.external;
 
 
-import fi.vtt.lemon.common.Const;
+import fi.vtt.lemon.RabbitConst;
 import fi.vtt.lemon.server.shared.datamodel.Value;
 import osmo.common.log.Logger;
 
@@ -38,15 +38,15 @@ public class RestClient {
   public RestClient() {
     String url = null;
     try {
-      InputStream in = new FileInputStream(Const.CONFIGURATION_FILENAME);
+      InputStream in = new FileInputStream(RabbitConst.CONFIGURATION_FILENAME);
       Properties props = new Properties();
       props.load(in);
-      url = props.getProperty(Const.REST_CLIENT_ENDPOINT_URL);
+      url = props.getProperty(RabbitConst.REST_CLIENT_ENDPOINT_URL);
       if (url == null) {
         throw new IllegalArgumentException("No URL defined for REST client endpoint. Unable to start REST plugin.");
       }
     } catch (IOException e) {
-      throw new RuntimeException("Failed to read configuration file '" + Const.CONFIGURATION_FILENAME + "'", e);
+      throw new RuntimeException("Failed to read configuration file '" + RabbitConst.CONFIGURATION_FILENAME + "'", e);
     }
     log.debug("Initializing REST plugin with endpoint "+url);
     log.debug("REST plugin initialized");

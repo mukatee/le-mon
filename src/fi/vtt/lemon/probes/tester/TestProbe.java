@@ -19,7 +19,7 @@
 package fi.vtt.lemon.probes.tester;
 
 import osmo.common.log.Logger;
-import fi.vtt.lemon.common.ProbeConfiguration;
+import fi.vtt.lemon.probe.ProbeConfiguration;
 import fi.vtt.lemon.probe.shared.BaseMeasure;
 import fi.vtt.lemon.probe.shared.Probe;
 import fi.vtt.lemon.probe.shared.ProbeInformation;
@@ -67,9 +67,9 @@ public class TestProbe implements Probe {
     return new ProbeInformation(targetName, targetType, bmClass, bmName, bmDescription, probeDescription, precision, null);
   }
 
-  public BaseMeasure measure() {
+  public String measure() {
     log.debug("Testprobe provides measure:" + result);
-    return new BaseMeasure(result);
+    return result;
   }
 
   public void startProbe() {

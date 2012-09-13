@@ -18,18 +18,9 @@
 
 package fi.vtt.lemon.mfw.unittests.agent.probe;
 
-import fi.vtt.lemon.common.Const;
-import fi.vtt.lemon.common.KnowledgeSource;
-import fi.vtt.lemon.probe.plugins.measurement.MeasurementProvider;
-import fi.vtt.lemon.probe.shared.BaseMeasure;
-import fi.vtt.lemon.probe.shared.MeasurementRequest;
-import fi.vtt.lemon.probe.shared.MeasurementResponse;
-import fi.vtt.lemon.probe.shared.ProbeInformation;
-import fi.vtt.lemon.probes.tester.TestProbe;
-import fi.vtt.lemon.mfw.unittests.system.TestServerAgent;
+import fi.vtt.lemon.RabbitConst;
 import org.junit.BeforeClass;
 import org.junit.Test;
-import static org.junit.Assert.*;
 
 /**
  * @author Teemu Kanstren
@@ -48,8 +39,8 @@ public class MeasurementRequestTests {
 
   @BeforeClass
   public static void setup() {
-    measureURI1 = Const.createMeasureURI(targetType1, targetName1, bmClass1, bmName1);
-    measureURI2 = Const.createMeasureURI(targetType2, targetName2, bmClass2, bmName2);
+    measureURI1 = RabbitConst.createMeasureURI(targetType1, targetName1, bmClass1, bmName1);
+    measureURI2 = RabbitConst.createMeasureURI(targetType2, targetName2, bmClass2, bmName2);
   }
 
   /**

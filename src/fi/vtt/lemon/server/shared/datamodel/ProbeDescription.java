@@ -18,7 +18,7 @@
 
 package fi.vtt.lemon.server.shared.datamodel;
 
-import fi.vtt.lemon.common.Const;
+import fi.vtt.lemon.RabbitConst;
 import osmo.common.log.Logger;
 import java.util.Map;
 
@@ -50,23 +50,13 @@ public class ProbeDescription {
   }
 
   public ProbeDescription(Map<String, String> properties, TargetDescription target, BMDescription bm) {
-    String probeUrl = properties.get(Const.XMLRPC_URL);
+    String probeUrl = properties.get(RabbitConst.SERVER_URL);
     setEndpoint(probeUrl);
     this.target = target;
     this.bm = bm;
-    this.probeName = properties.get(Const.PROBE_NAME);
-    this.precision = Integer.parseInt(properties.get(Const.PROBE_PRECISION));
+    this.probeName = properties.get(RabbitConst.PROBE_NAME);
+    this.precision = Integer.parseInt(properties.get(RabbitConst.PROBE_PRECISION));
     resetDelay();
-  }
-
-  //typically we do not change the probe endpoint address but when we read the existing data from the database,
-  //we need to update the endpoint with the actual current endpoint that may wary. the basic scenario is the
-  //change of the HTTP server port but other changes are also possible. Reading the values from the DB is needed
-  //in order the ensure that the probe identifier numbers are persistent for the clients. The probe is identified
-  //by its base measure, that is, the bm class, bm name, target type, target name = measureURI
-  public void updateEndpoint(Map<String, String> properties) {
-    String probeUrl = properties.get(Const.XMLRPC_URL);
-    setEndpoint(probeUrl);
   }
 
   public long getProbeId() {
@@ -90,7 +80,7 @@ public class ProbeDescription {
   }
 
   public String getMeasureURI() {
-    return Const.createMeasureURI(target.getTargetType(), target.getTargetName(), bm.getBmClass(), bm.getBmName());
+    return RabbitConst.createMeasureURI(target.getTargetType(), target.getTargetName(), bm.getBmClass(), bm.getBmName());
   }
 
   public int getPrecision() {

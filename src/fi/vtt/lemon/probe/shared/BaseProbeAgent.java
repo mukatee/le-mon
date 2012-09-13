@@ -18,8 +18,8 @@
 
 package fi.vtt.lemon.probe.shared;
 
-import fi.vtt.lemon.common.Const;
-import fi.vtt.lemon.common.ProbeConfiguration;
+import fi.vtt.lemon.RabbitConst;
+import fi.vtt.lemon.probe.ProbeConfiguration;
 
 import java.util.Collection;
 import java.util.HashSet;
@@ -37,14 +37,14 @@ public abstract class BaseProbeAgent implements Probe {
   protected ProbeInformation pi;
 
   public void init(Properties properties) {
-    String targetName = properties.getProperty(Const.PROBE_TARGET_NAME);
-    String targetType = properties.getProperty(Const.PROBE_TARGET_TYPE);
-    String bmClass = properties.getProperty(Const.PROBE_BM_CLASS);
-    String bmName = properties.getProperty(Const.PROBE_BM_NAME);
-    String bmDescription = properties.getProperty(Const.PROBE_BM_DESCRIPTION);
-    String probeName = properties.getProperty(Const.PROBE_NAME);
-    int precision = Integer.parseInt(properties.getProperty(Const.PROBE_PRECISION));
-    String xmlRpcUrl = properties.getProperty(Const.XMLRPC_URL);
+    String targetName = properties.getProperty(RabbitConst.PROBE_TARGET_NAME);
+    String targetType = properties.getProperty(RabbitConst.PROBE_TARGET_TYPE);
+    String bmClass = properties.getProperty(RabbitConst.PROBE_BM_CLASS);
+    String bmName = properties.getProperty(RabbitConst.PROBE_BM_NAME);
+    String bmDescription = properties.getProperty(RabbitConst.PROBE_BM_DESCRIPTION);
+    String probeName = properties.getProperty(RabbitConst.PROBE_NAME);
+    int precision = Integer.parseInt(properties.getProperty(RabbitConst.PROBE_PRECISION));
+    String xmlRpcUrl = properties.getProperty(RabbitConst.SERVER_URL);
     pi = new ProbeInformation(targetName, targetType, bmClass, bmName, bmDescription, probeName, precision, xmlRpcUrl);
   }
 
@@ -53,26 +53,26 @@ public abstract class BaseProbeAgent implements Probe {
   }
 
   public void setBaseConfigurationParameters(Map<String, String> configuration) {
-    String targetName = configuration.get(Const.PROBE_TARGET_NAME);
-    String targetType = configuration.get(Const.PROBE_TARGET_TYPE);
-    String bmClass = configuration.get(Const.PROBE_BM_CLASS);
-    String bmName = configuration.get(Const.PROBE_BM_NAME);
-    String bmDescription = configuration.get(Const.PROBE_BM_DESCRIPTION);
-    String probeName = configuration.get(Const.PROBE_NAME);
-    int precision = Integer.parseInt(configuration.get(Const.PROBE_PRECISION));
-    String xmlRpcUrl = configuration.get(Const.XMLRPC_URL);
+    String targetName = configuration.get(RabbitConst.PROBE_TARGET_NAME);
+    String targetType = configuration.get(RabbitConst.PROBE_TARGET_TYPE);
+    String bmClass = configuration.get(RabbitConst.PROBE_BM_CLASS);
+    String bmName = configuration.get(RabbitConst.PROBE_BM_NAME);
+    String bmDescription = configuration.get(RabbitConst.PROBE_BM_DESCRIPTION);
+    String probeName = configuration.get(RabbitConst.PROBE_NAME);
+    int precision = Integer.parseInt(configuration.get(RabbitConst.PROBE_PRECISION));
+    String xmlRpcUrl = configuration.get(RabbitConst.SERVER_URL);
     pi = new ProbeInformation(targetName, targetType, bmClass, bmName, bmDescription, probeName, precision, xmlRpcUrl);
   }
 
   public Collection<ProbeConfiguration> getBaseConfigurationParameters() {
     Collection<ProbeConfiguration> config = new HashSet<ProbeConfiguration>();
-    config.add(new ProbeConfiguration(Const.PROBE_TARGET_TYPE, "Target type", false, pi.getTargetType()));
-    config.add(new ProbeConfiguration(Const.PROBE_BM_CLASS, "BM Class", false, pi.getBmClass()));
-    config.add(new ProbeConfiguration(Const.PROBE_BM_NAME, "BM Name", false, pi.getBmName()));
-    config.add(new ProbeConfiguration(Const.PROBE_BM_DESCRIPTION, "BM Description", false, pi.getBmDescription()));
-    config.add(new ProbeConfiguration(Const.PROBE_NAME, "Probe name", false, pi.getProbeName()));
-    config.add(new ProbeConfiguration(Const.PROBE_PRECISION, "Probe precision", true, pi.getPrecision()));
-    config.add(new ProbeConfiguration(Const.XMLRPC_URL, "XMLRPC URL", true, pi.getXmlRpcUrl()));
+    config.add(new ProbeConfiguration(RabbitConst.PROBE_TARGET_TYPE, "Target type", false, pi.getTargetType()));
+    config.add(new ProbeConfiguration(RabbitConst.PROBE_BM_CLASS, "BM Class", false, pi.getBmClass()));
+    config.add(new ProbeConfiguration(RabbitConst.PROBE_BM_NAME, "BM Name", false, pi.getBmName()));
+    config.add(new ProbeConfiguration(RabbitConst.PROBE_BM_DESCRIPTION, "BM Description", false, pi.getBmDescription()));
+    config.add(new ProbeConfiguration(RabbitConst.PROBE_NAME, "Probe name", false, pi.getProbeName()));
+    config.add(new ProbeConfiguration(RabbitConst.PROBE_PRECISION, "Probe precision", true, pi.getPrecision()));
+    config.add(new ProbeConfiguration(RabbitConst.SERVER_URL, "Server URL", true, pi.getXmlRpcUrl()));
     return config;
   }
 }

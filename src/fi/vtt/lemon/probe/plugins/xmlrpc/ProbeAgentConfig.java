@@ -18,14 +18,11 @@
 
 package fi.vtt.lemon.probe.plugins.xmlrpc;
 
-import fi.vtt.lemon.common.Const;
-import fi.vtt.lemon.server.shared.ServerAgent;
+import fi.vtt.lemon.RabbitConst;
 import osmo.common.log.Logger;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.net.MalformedURLException;
-import java.net.URL;
 import java.util.Properties;
 
 /**
@@ -35,9 +32,7 @@ import java.util.Properties;
  */
 public class ProbeAgentConfig {
   private final static Logger log = new Logger(ProbeAgentConfig.class);
-  //only initialize it once
-  private boolean initialized = false;
-  //port where the xmlrpc server will listen to the incoming messages
+  //port where the RabbitMQ will listen to the incoming messages
   private int port = -1;
   //default interval between sending the keep-alive messages
   private static final int DEFAULT_KEEPALIVE_INTERVAL = 1000;
@@ -46,79 +41,39 @@ public class ProbeAgentConfig {
   //actual keep alive interval for this thread
   private int keepAliveInterval;
   //the server-agent where the keep-alive messages are sent
-  private ServerAgent destination = null;
+  private ServerClient rabbit = null;
   //time to wait between retrying a failed connection to a server-agent
   private int retryDelay;
-  //is this a local connection or distributed
-  private boolean localInUse = false;
-  //default subscription check interval
-  private static final int DEFAULT_SUBSCRIPTION_CHECK_INTERVAL = 20000;
-  //subscription checking interval
-  private int subscriptionCheckInterval;
 
-  public ProbeAgentConfig(int port, String destinationUrl, int keepAliveInterval, int retryDelay, int subscriptionCheckInterval) {
-    init(port, destinationUrl, keepAliveInterval, retryDelay, subscriptionCheckInterval);
-  }
-
-  public ProbeAgentConfig(int port, ServerAgent server, int keepAliveInterval, int retryDelay, int subscriptionCheckInterval) {
-    init(port, server, keepAliveInterval, retryDelay, subscriptionCheckInterval);
+  public ProbeAgentConfig(int port, String destinationUrl, int keepAliveInterval, int retryDelay) {
+    init(port, destinationUrl, keepAliveInterval, retryDelay);
   }
 
   public ProbeAgentConfig(InputStream in) {
     init(in);
   }
 
-  public ProbeAgentConfig() {
+  private void init(int port, String destinationUrl, int keepAliveInterval, int retryDelay) {
+    log.debug("Creating connection to RabbitMQ server at:"+destinationUrl);
+    ServerClient server = new ServerClient(destinationUrl);
+    init(port, server, keepAliveInterval, retryDelay);
   }
 
-  private void init(int port, String destinationUrl, int keepAliveInterval, int retryDelay, int subscriptionCheckInterval) {
-    if (port < 0) {
-      //this means we need to use a local connection
-      init(port, (ServerAgent)null, keepAliveInterval, retryDelay, subscriptionCheckInterval);
-      return;
-    }
-    URL url = null;
-    try {
-      log.debug("Creating connection to server agent at:"+destinationUrl);
-      url = new URL(destinationUrl);
-    } catch (MalformedURLException e) {
-      log.error("Unable to create connection with URL:" + destinationUrl, e);
-    }
-    //create the component to send XMLRPC requests to the server-agent
-    XmlRpcServerClient server = new XmlRpcServerClient(url);
-    init(port, server, keepAliveInterval, retryDelay, subscriptionCheckInterval);
-  }
-
-  private void init(int port, ServerAgent server, int keepAliveInterval, int retryDelay, int subscriptionCheckInterval) {
-    if (initialized) {
-      throw new IllegalStateException("Trying to initialize configuration twice");
-    }
-    log.debug("initializing: XMLRPC server port = " + port);
+  private void init(int port, ServerClient server, int keepAliveInterval, int retryDelay) {
+    log.debug("initializing: RabbitMQ client, port = " + port);
+    //TODO: make this port useful
     this.port = port;
-    if (port < 0) {
-      localInUse = true;
-    }
     this.keepAliveInterval = keepAliveInterval;
-    this.destination = server;
+    this.rabbit = server;
     this.retryDelay = retryDelay;
-    this.subscriptionCheckInterval = subscriptionCheckInterval;
-    initialized = true;
   }
 
-  public boolean isLocalInUse() {
-    return localInUse;
+  public ServerClient getServerClient() {
+    return rabbit;
   }
 
-  public ServerAgent getDestination() {
-    return destination;
-  }
-
-  public void setDestination(ServerAgent destination) {
-    this.destination = destination;
-  }
-
-  public int getProbeAgentServerPort() {
-    return port;
+  public void setServerClient(ServerClient rabbit) {
+    this.rabbit = rabbit;
   }
 
   public int getKeepAliveInterval() {
@@ -129,19 +84,12 @@ public class ProbeAgentConfig {
     return retryDelay;
   }
   
-  public int getSubscriptionCheckInterval() {
-    return subscriptionCheckInterval;
-  }
-
   /**
    * Reads the initial configuration from the properties file given as the input stream.
    *
    * @param in The data for the properties file.
    */
   private void init(InputStream in) {
-    if (initialized) {
-      throw new IllegalStateException("Trying to initialize configuration twice");
-    }
     Properties properties = new Properties();
     try {
       properties.load(in);
@@ -149,14 +97,8 @@ public class ProbeAgentConfig {
       throw new RuntimeException("Failed to load properties from given inputstream", e);
     }
     log.debug("Loaded properties:" + properties);
-    String destinationUrl = properties.getProperty(Const.MFW_SERVER_URL_KEY);
-    String portValue = properties.getProperty(Const.PROBE_AGENT_PORT_KEY);
-    int port = -1;
-    if (portValue != null) {
-      //we leave it at -1 as undefined if nothing found in configuration. this defaults to local node connection.
-      port = Integer.parseInt(portValue);
-    }
-    String reportIntervalValue = properties.getProperty(Const.KEEP_ALIVE_INTERVAL);
+    String destinationUrl = properties.getProperty(RabbitConst.SERVER_URL);
+    String reportIntervalValue = properties.getProperty(RabbitConst.MEASURE_INTERVAL);
     int reportInterval = DEFAULT_KEEPALIVE_INTERVAL;
     if (reportIntervalValue != null) {
       try {
@@ -165,7 +107,7 @@ public class ProbeAgentConfig {
         log.error("Failed to read report interval from config, got:" + reportIntervalValue + ". Using defaults.", e);
       }
     }
-    String retryDelayValue = properties.getProperty(Const.RETRY_DELAY);
+    String retryDelayValue = properties.getProperty(RabbitConst.RETRY_DELAY);
     int retryDelay = DEFAULT_RETRY_DELAY;
     if (retryDelayValue != null) {
       try {
@@ -174,19 +116,10 @@ public class ProbeAgentConfig {
         log.error("Failed to read retry delay from config, got:"+retryDelayValue+". Using defaults.", e);
       }
     }
-    String checkIntervalValue = properties.getProperty(Const.SUBSCRIPTION_CHECK_INTERVAL);
-    int checkInterval = DEFAULT_SUBSCRIPTION_CHECK_INTERVAL;
-    if (checkIntervalValue != null) {
-      try {
-        checkInterval = Integer.parseInt(checkIntervalValue);
-      } catch (NumberFormatException e) {
-        log.error("Failed to read subscription check interval from config, got:" + checkIntervalValue + ". Using defaults.", e);
-      }
-    }
     if (destinationUrl == null) {
-      init (-1, (ServerAgent)null, reportInterval, retryDelay, checkInterval);
+      throw new IllegalArgumentException("No server URL defined. Unable to start.");
     } else {
-      init(port, destinationUrl, reportInterval, retryDelay, checkInterval);
+      init(port, destinationUrl, reportInterval, retryDelay);
     }
   }
 }

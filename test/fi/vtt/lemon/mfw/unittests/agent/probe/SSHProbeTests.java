@@ -18,7 +18,7 @@
 
 package fi.vtt.lemon.mfw.unittests.agent.probe;
 
-import fi.vtt.lemon.common.Const;
+import fi.vtt.lemon.RabbitConst;
 import fi.vtt.lemon.probe.shared.Probe;
 import fi.vtt.lemon.probe.shared.ProbeInformation;
 import fi.vtt.lemon.probes.ssh.SSHProbeAgent;
@@ -36,13 +36,13 @@ import static org.junit.Assert.*;
 public class SSHProbeTests {
   public void sendAndExecuteFile() {
     Properties props = new Properties();
-    props.put(Const.PROBE_TARGET_NAME, "192.168.112.129");
-    props.put(Const.PROBE_PRECISION, "1");
-    props.put(Const.SSH_SCRIPT_FILENAME, "ssh_test_script");
-    props.put(Const.SSH_SCRIPT_COMMAND, "bash");
-    props.put(Const.SSH_USERNAME, "bob");
-    props.put(Const.SSH_PASSWORD, "builder");
-    props.put(Const.PROBE_BM_CLASS, "firewall");
+    props.put(RabbitConst.PROBE_TARGET_NAME, "192.168.112.129");
+    props.put(RabbitConst.PROBE_PRECISION, "1");
+    props.put(RabbitConst.SSH_SCRIPT_FILENAME, "ssh_test_script");
+    props.put(RabbitConst.SSH_SCRIPT_COMMAND, "bash");
+    props.put(RabbitConst.SSH_USERNAME, "bob");
+    props.put(RabbitConst.SSH_PASSWORD, "builder");
+    props.put(RabbitConst.PROBE_BM_CLASS, "firewall");
     SSHProbeAgent ssh = new SSHProbeAgent();
     ssh.init(props);
     String measure = (String) ssh.measure().getMeasure();
@@ -56,17 +56,17 @@ public class SSHProbeTests {
     String targetType = "nice device";
     String bmClass = "firewall";
     String bmName = "bm name here";
-    props.put(Const.PROBE_TARGET_NAME, targetName);
-    props.put(Const.PROBE_TARGET_TYPE, targetType);
-    props.put(Const.PROBE_PRECISION, "1");
-    props.put(Const.SSH_SCRIPT_FILENAME, "ssh_test_script");
-    props.put(Const.SSH_SCRIPT_COMMAND, "bash");
-    props.put(Const.SSH_USERNAME, "bob");
-    props.put(Const.SSH_PASSWORD, "builder");
+    props.put(RabbitConst.PROBE_TARGET_NAME, targetName);
+    props.put(RabbitConst.PROBE_TARGET_TYPE, targetType);
+    props.put(RabbitConst.PROBE_PRECISION, "1");
+    props.put(RabbitConst.SSH_SCRIPT_FILENAME, "ssh_test_script");
+    props.put(RabbitConst.SSH_SCRIPT_COMMAND, "bash");
+    props.put(RabbitConst.SSH_USERNAME, "bob");
+    props.put(RabbitConst.SSH_PASSWORD, "builder");
     String probeDescription = "nice probe";
-    props.put(Const.PROBE_NAME, probeDescription);
-    props.put(Const.PROBE_BM_CLASS, bmClass);
-    props.put(Const.PROBE_BM_NAME, bmName);
+    props.put(RabbitConst.PROBE_NAME, probeDescription);
+    props.put(RabbitConst.PROBE_BM_CLASS, bmClass);
+    props.put(RabbitConst.PROBE_BM_NAME, bmName);
     SSHProbeAgent ssh = new SSHProbeAgent();
     ssh.init(props);
     ProbeInformation information = ssh.getInformation();

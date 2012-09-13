@@ -21,7 +21,6 @@ package fi.vtt.lemon.server.rest.external;
 
 import fi.vtt.lemon.common.DataType;
 import fi.vtt.lemon.probe.shared.ProbeEvent;
-import fi.vtt.lemon.server.rest.external.resources.Event;
 import fi.vtt.lemon.server.shared.datamodel.ProbeDisabled;
 import fi.vtt.lemon.server.shared.datamodel.ProbeRegistered;
 import fi.vtt.lemon.server.shared.datamodel.Value;

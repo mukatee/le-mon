@@ -26,7 +26,6 @@ package fi.vtt.lemon.server.shared.datamodel;
  * @author Teemu Kanstren
  */
 public class TargetDescription {
-  private Long targetId;
   private String targetType;
   private String targetName;
 
@@ -36,10 +35,6 @@ public class TargetDescription {
   public TargetDescription(String targetType, String targetName) {
     this.targetType = targetType;
     this.targetName = targetName;
-  }
-
-  public long getTargetId() {
-    return targetId;
   }
 
   public String getTargetName() {

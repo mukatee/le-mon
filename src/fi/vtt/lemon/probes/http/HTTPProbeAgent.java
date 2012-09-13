@@ -18,13 +18,24 @@
 
 package fi.vtt.lemon.probes.http;
 
-import fi.vtt.lemon.common.ProbeConfiguration;
+import fi.vtt.lemon.probe.ProbeConfiguration;
+import fi.vtt.lemon.probe.plugins.xmlrpc.ServerClient;
 import fi.vtt.lemon.probe.shared.BaseMeasure;
 import fi.vtt.lemon.probe.shared.BaseProbeAgent;
+import osmo.common.log.Logger;
 
+import javax.servlet.Filter;
+import javax.servlet.FilterChain;
+import javax.servlet.FilterConfig;
+import javax.servlet.ServletException;
+import javax.servlet.ServletRequest;
+import javax.servlet.ServletResponse;
+import javax.servlet.http.HttpServletRequest;
 import java.io.BufferedReader;
 import java.io.DataOutputStream;
+import java.io.IOException;
 import java.io.InputStreamReader;
+import java.io.PrintWriter;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.List;
@@ -36,22 +47,51 @@ import java.util.Map;
  *
  * @author Teemu Kanstren
  */
-public class HTTPProbeAgent extends BaseProbeAgent {
-  public BaseMeasure measure() {
-    return BaseMeasureFilter.values.get(getInformation().getBmName());
+public class HTTPProbeAgent extends BaseProbeAgent implements Filter {
+  private final ServerClient server;
+  private final static Logger log = new Logger(HTTPProbeAgent.class);
+
+  public HTTPProbeAgent(ServerClient server) {
+    this.server = server;
   }
 
-  public void startProbe() {
+  public String measure() {
+    throw new UnsupportedOperationException("HTTP Probe does not support pull measurements.");
   }
 
-  public void stopProbe() {
+  public void doFilter(ServletRequest servletRequest, ServletResponse resp, FilterChain chain) throws IOException, ServletException {
+    HttpServletRequest req = (HttpServletRequest) servletRequest;
+    resp.setContentType("text/plain");
+    String name = req.getRequestURL().toString();
+    int index = name.lastIndexOf('/');
+    //todo: error handling if < 0 index is received
+    //we take the name of the base measure, that which is after the last "/" character
+    name = name.substring(index+1);
+
+    // Get response data.
+    BufferedReader br = new BufferedReader(new InputStreamReader(req.getInputStream()));
+    String str;
+    String content = "";
+    //read the body, the base measure content
+    while (null != ((str = br.readLine()))) {
+      content += str;
+    }
+    br.close();
+
+    server.measurement(pi.getMeasureURI(), pi.getPrecision(), content);
+    log.debug("Received BM '"+name+"' from '"+req.getRemoteAddr()+" with value:"+content);
+
+    PrintWriter out = resp.getWriter();
+    out.println("hello:"+name+" -- "+content);
+    out.close();
   }
 
-  public void setConfiguration(Map<String, String> configuration) {
+  @Override
+  public void init(FilterConfig filterConfig) throws ServletException {
   }
 
-  public List<ProbeConfiguration> getConfigurationParameters() {
-    return null;
+  @Override
+  public void destroy() {
   }
 
   //for self-testing

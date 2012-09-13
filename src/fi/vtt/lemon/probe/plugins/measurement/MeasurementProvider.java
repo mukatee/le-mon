@@ -19,18 +19,15 @@
 package fi.vtt.lemon.probe.plugins.measurement;
 
 import fi.vtt.lemon.Config;
-import fi.vtt.lemon.common.Const;
-import fi.vtt.lemon.common.DataObject;
-import fi.vtt.lemon.common.ProbeConfiguration;
-import fi.vtt.lemon.probe.shared.MeasurementRequest;
+import fi.vtt.lemon.RabbitConst;
+import fi.vtt.lemon.probe.ProbeConfiguration;
+import fi.vtt.lemon.probe.plugins.xmlrpc.ServerClient;
 import fi.vtt.lemon.probe.shared.Probe;
-import fi.vtt.lemon.probe.shared.UnsubscriptionRequest;
 import osmo.common.log.Logger;
 
 import java.io.IOException;
 import java.util.Map;
 import java.util.Properties;
-import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.Future;
 import java.util.concurrent.FutureTask;
@@ -50,14 +47,16 @@ public class MeasurementProvider {
   //used for synchronization
 //  private final Object lock = new Object();
   private ScheduledThreadPoolExecutor executor = null;
-  private Map<Long, WatchedTask> subscriptions = new ConcurrentHashMap<Long, WatchedTask>();
+  private Map<Probe, WatchedTask> subscriptions = new ConcurrentHashMap<>();
   //default size of the thread pool for performing measurements
   private int threadPoolSize = 5;
   //how long until a measurement task times out if becoming unresponsive
   private int taskTimeOut = 5;
   private WatchDog watchDog = null;
+  private final ServerClient server;
 
-  public MeasurementProvider(int threadPoolSize, int taskTimeOut) throws Exception {
+  public MeasurementProvider(ServerClient server, int threadPoolSize, int taskTimeOut) throws Exception {
+    this.server = server;
     if (threadPoolSize <= 0) {
       initFromFile();
     } else {
@@ -68,14 +67,14 @@ public class MeasurementProvider {
 
   private void initFromFile() throws IOException {
     Properties properties = Config.get();
-    String threads = properties.getProperty(Const.THREAD_POOL_SIZE);
+    String threads = properties.getProperty(RabbitConst.THREAD_POOL_SIZE);
     if (threads != null) {
       threadPoolSize = Integer.parseInt(threads);
       log.debug("Initialized thread pool size to "+threadPoolSize+" threads.");
     } else {
       log.debug("No thread pool size defined, using default of "+threadPoolSize+" threads.");
     }
-    String time = properties.getProperty(Const.TASK_TIMEOUT);
+    String time = properties.getProperty(RabbitConst.TASK_TIMEOUT);
     if (time != null) {
       taskTimeOut = Integer.parseInt(time);
       log.debug("Initialized task timeout to "+taskTimeOut+ " seconds");
@@ -84,18 +83,13 @@ public class MeasurementProvider {
     }
   }
 
-  public Map<Long, WatchedTask> getSubscriptions() {
+  public Map<Probe, WatchedTask> getSubscriptions() {
     return subscriptions;
   }
 
-  /*
-  public Collection<MeasurementRequest> getRequests() {
-    return requests;
-  }*/
-
   public void start() {
     executor = new ScheduledThreadPoolExecutor(threadPoolSize, new MeasurementThreadFactory());
-    watchDog = new WatchDog(subscriptions, taskTimeOut);
+    watchDog = new WatchDog(server, subscriptions, taskTimeOut);
   }
 
   /**
@@ -108,103 +102,12 @@ public class MeasurementProvider {
 
   /**
    * Add a new measurement request to be sampled at a given interval.
-   *
-   * @param req The request to be sampled.
    */
-  public void addSamplingRequest(MeasurementRequest req) {   
-    //if subscriptionId is found remove the old subscription first.
-    //this is for changing sampling frequency without sending separate unsubscription request 
-    //and not getting multiple subscriptions for the same sac/bm
-    if (req.getSubscriptionId() > 0) {
-      WatchedTask watchedTask = subscriptions.get(req.getSubscriptionId());
-      if (watchedTask != null) {
-        watchedTask.cancel();
-      }
-    }
-    MeasurementTask task = new MeasurementTask(req);
+  public void startMeasuring(Probe probe) {
+    MeasurementTask task = new MeasurementTask(server, probe);
     Future future = null;
-    //one time requests have interval of -1
-    boolean oneTime = (req.getInterval() <= 0);
-    if (oneTime) {
-      //one-time measure
-      log.debug("adding one-time measure");
-      future = new FutureTask(task, null);
-      executor.execute(task);
-    } else {
-      log.debug("scheduling recurring measurement with interval of "+req.getInterval()+"ms.");
-      future = executor.scheduleAtFixedRate(task, 0, req.getInterval(), TimeUnit.MILLISECONDS);
-    }
-    WatchedTask watchMe = new WatchedTask(future, task, subscriptions, oneTime, req.getServer());
-    subscriptions.put(req.getSubscriptionId(), watchMe);
-    log.debug("added request:" + req);
-  }
-
-  /**
-   * Provides means to remove previous subscriptions.
-   *
-   * @param subscriptionId Identifying the measurement request to be removed.
-   */ 
-  public void unsubscribeTo(long subscriptionId) {
-    WatchedTask task = subscriptions.get(subscriptionId);
-    task.cancel();
-  }
-  
-/*
-  public List<Long> getSubscriptionIdsForProbe(Probe probe) {
-    List<Long> subscriptionIds = new ArrayList<Long>();
-    for (Map.Entry<Long, WatchedTask> entry : subscriptions.entrySet()) {      
-      WatchedTask watchedTask = entry.getValue();
-      MeasurementTask task = watchedTask.getMeasurementTask();
-      if (probe == task.getProbe()) {
-        subscriptionIds.add(entry.getKey());
-      }
-    }
-    return subscriptionIds;
-  }
-*/
-  
-  public void setReference(long subscriptionId, String reference) {   
-    for (Map.Entry<Long, WatchedTask> entry : subscriptions.entrySet()) {      
-      WatchedTask watchedTask = entry.getValue();
-      MeasurementTask task = watchedTask.getMeasurementTask();
-      if (subscriptionId == task.getSubscriptionId()) {
-        task.setReference(reference);
-        break;
-      }
-    }
-  }
-  
-  
-  public void setConfiguration(Probe probe, Map<String, String> configuration) {
-    String mode = configuration.get("mode");
-    if (mode != null) {
-      for (Map.Entry<Long, WatchedTask> entry : subscriptions.entrySet()) {      
-        WatchedTask watchedTask = entry.getValue();
-        MeasurementTask task = watchedTask.getMeasurementTask();
-        if (probe == task.getProbe()) {
-          for (ProbeConfiguration probeConfig : probe.getConfigurationParameters()) {
-            if (probeConfig.getName().equals("mode")) {
-              if (mode.equals("compare")) {
-                task.setCompare(true);
-              } else if (mode.equals("normal")){
-                task.setCompare(false);
-              }
-              break;
-            }
-          }
-        }
-      }
-    }
-  }
-  
-  public void process(DataObject data) {
-    log.debug("processing...");
-    if (data instanceof UnsubscriptionRequest) {
-      UnsubscriptionRequest ur = (UnsubscriptionRequest) data;
-      unsubscribeTo(ur.getSubscriptionId());
-    } else {
-      MeasurementRequest req = (MeasurementRequest) data;
-      addSamplingRequest(req);
-    }
+    WatchedTask watchMe = new WatchedTask(future, task, subscriptions);
+    subscriptions.put(probe, watchMe);
+    log.debug("measuring probe:" + probe);
   }
 }

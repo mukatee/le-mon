@@ -18,12 +18,9 @@
 
 package fi.vtt.lemon.server;
 
-import fi.vtt.lemon.common.Const;
-import fi.vtt.lemon.common.DataObject;
-import fi.vtt.lemon.common.KnowledgeSource;
+import fi.vtt.lemon.RabbitConst;
 import osmo.common.log.Logger;
 import fi.vtt.lemon.server.shared.datamodel.BMDescription;
-import fi.vtt.lemon.server.shared.datamodel.ServerEvent;
 import fi.vtt.lemon.server.shared.datamodel.ProbeDescription;
 import fi.vtt.lemon.server.shared.datamodel.TargetDescription;
 import fi.vtt.lemon.server.shared.datamodel.Value;
@@ -32,13 +29,11 @@ import java.sql.Date;
 import java.text.SimpleDateFormat;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 /**
  * Persists measurement data, events, derivedmeasure, etc.
  *
  * @author Teemu Kanstren
- * @see KnowledgeSource
  */
 public class PersistencePlugin {
   private final static Logger log = new Logger(PersistencePlugin.class);
@@ -55,6 +50,7 @@ public class PersistencePlugin {
    * @param ascending Whether the results should be sorted in ascending or descending order.
    * @return The set of Event objects matching the given criteria.
    */
+/*
   public List<ServerEvent> getEvents(int first, int count, ServerEvent.SortKey sortKey, boolean ascending) {
     String sortBy = null;
     if (sortKey == ServerEvent.SortKey.MESSAGE) {
@@ -76,6 +72,7 @@ public class PersistencePlugin {
     sortBy += " " + order;
     return null;
   }
+*/
 
   /**
    * Gives the number of events stored in the database.
@@ -197,18 +194,17 @@ public class PersistencePlugin {
     ProbeDescription probe;
       String query = "select distinct pd from ProbeDescription pd where pd.probeName = :pname and pd.target.targetName = :tname " +
               "and pd.target.targetType = :ttype and pd.bm.bmClass = :bmClass and pd.bm.bmName = :bmName";
-      String probeName = properties.get(Const.PROBE_NAME);
-      String targetName = properties.get(Const.PROBE_TARGET_NAME);
-      String targetType = properties.get(Const.PROBE_TARGET_TYPE);
-      String bmClass = properties.get(Const.PROBE_BM_CLASS);
-      String bmName = properties.get(Const.PROBE_BM_NAME);
+      String probeName = properties.get(RabbitConst.PROBE_NAME);
+      String targetName = properties.get(RabbitConst.PROBE_TARGET_NAME);
+      String targetType = properties.get(RabbitConst.PROBE_TARGET_TYPE);
+      String bmClass = properties.get(RabbitConst.PROBE_BM_CLASS);
+      String bmName = properties.get(RabbitConst.PROBE_BM_NAME);
 
       List<ProbeDescription> resultList = null;
       assert resultList.size() <= 1 : "There should be maximum of one probe description in the database with unique probe name, target type, target name, bm class and bm name." +
               " had " + resultList.size() + " for {" + probeName + "," + targetType + "," + targetName + "," + bmClass + "," + bmName + "}";
       if (resultList.size() == 1) {
         probe = resultList.get(0);
-        probe.updateEndpoint(properties);
         return probe;
       }
       //get the target object for the probedescription
@@ -231,11 +227,11 @@ public class PersistencePlugin {
   public BMDescription createBMDescription(Map<String, String> properties) {
     BMDescription bm;
     try {
-      String targetType = properties.get(Const.PROBE_TARGET_TYPE);
-      String targetName = properties.get(Const.PROBE_TARGET_NAME);
-      String bmClass = properties.get(Const.PROBE_BM_CLASS);
-      String bmName = properties.get(Const.PROBE_BM_NAME);
-      String bmDescription = properties.get(Const.PROBE_BM_DESCRIPTION);
+      String targetType = properties.get(RabbitConst.PROBE_TARGET_TYPE);
+      String targetName = properties.get(RabbitConst.PROBE_TARGET_NAME);
+      String bmClass = properties.get(RabbitConst.PROBE_BM_CLASS);
+      String bmName = properties.get(RabbitConst.PROBE_BM_NAME);
+      String bmDescription = properties.get(RabbitConst.PROBE_BM_DESCRIPTION);
       if (targetType == null || targetName == null || bmClass == null || bmName == null) {
         throw new IllegalArgumentException("BM cannot be created with null values for any of TargetType, TargetName, BMClass, BMName. " +
                 "Got "+targetType+", "+targetName+", "+bmClass+", "+bmName+".");
@@ -266,8 +262,8 @@ public class PersistencePlugin {
   public TargetDescription createTargetDescription(Map<String, String> properties) {
     TargetDescription target;
     try {
-      String targetType = properties.get(Const.PROBE_TARGET_TYPE);
-      String targetName = properties.get(Const.PROBE_TARGET_NAME);
+      String targetType = properties.get(RabbitConst.PROBE_TARGET_TYPE);
+      String targetName = properties.get(RabbitConst.PROBE_TARGET_NAME);
       if (targetType == null || targetName == null) {
         throw new IllegalArgumentException("Target cannot be created with null values for any of TargetType, TargetName. " +
                 "Got "+targetType+", "+targetName+".");

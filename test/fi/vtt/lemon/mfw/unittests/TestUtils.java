@@ -18,7 +18,7 @@
 
 package fi.vtt.lemon.mfw.unittests;
 
-import fi.vtt.lemon.common.Const;
+import fi.vtt.lemon.RabbitConst;
 
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
@@ -62,12 +62,12 @@ public class TestUtils {
 
   public static Map<String, String> createProbeProperties(String probeName, String targetType, String targetName, String bmClass, String bmName, int precision) {
     Map<String, String> properties = new HashMap<String, String>();
-    properties.put(Const.PROBE_NAME, probeName);
-    properties.put(Const.PROBE_TARGET_TYPE, targetType);
-    properties.put(Const.PROBE_TARGET_NAME, targetName);
-    properties.put(Const.PROBE_BM_CLASS, bmClass);
-    properties.put(Const.PROBE_BM_NAME, bmName);
-    properties.put(Const.PROBE_PRECISION, "" + precision);
+    properties.put(RabbitConst.PROBE_NAME, probeName);
+    properties.put(RabbitConst.PROBE_TARGET_TYPE, targetType);
+    properties.put(RabbitConst.PROBE_TARGET_NAME, targetName);
+    properties.put(RabbitConst.PROBE_BM_CLASS, bmClass);
+    properties.put(RabbitConst.PROBE_BM_NAME, bmName);
+    properties.put(RabbitConst.PROBE_PRECISION, "" + precision);
     return properties;
   }
 

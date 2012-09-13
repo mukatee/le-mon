@@ -18,7 +18,7 @@
 
 package fi.vtt.lemon.server.shared.datamodel;
 
-import fi.vtt.lemon.common.Const;
+import fi.vtt.lemon.RabbitConst;
 import osmo.common.log.Logger;
 
 /**
@@ -64,7 +64,7 @@ public class BMDescription implements Comparable {
   }
 
   public String getMeasureURI() {
-    return Const.createMeasureURI(target.getTargetType(), target.getTargetName(), bmClass, bmName);
+    return RabbitConst.createMeasureURI(target.getTargetType(), target.getTargetName(), bmClass, bmName);
   }
 
   public String getBmDescription() {

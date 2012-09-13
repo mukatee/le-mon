@@ -16,7 +16,7 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
-package fi.vtt.lemon.common;
+package fi.vtt.lemon.probe;
 
 /**
  * Describes a probe configuration parameter.

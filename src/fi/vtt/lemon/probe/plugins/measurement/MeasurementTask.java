@@ -18,85 +18,51 @@
 
 package fi.vtt.lemon.probe.plugins.measurement;
 
-import fi.vtt.lemon.common.EventType;
-import fi.vtt.lemon.common.ProbeConfiguration;
-import fi.vtt.lemon.probe.shared.BaseMeasure;
-import fi.vtt.lemon.probe.shared.MeasurementReport;
-import fi.vtt.lemon.probe.shared.MeasurementRequest;
-import fi.vtt.lemon.probe.shared.MeasurementResponse;
+import fi.vtt.lemon.probe.plugins.xmlrpc.ServerClient;
 import fi.vtt.lemon.probe.shared.Probe;
-import fi.vtt.lemon.probe.shared.ProbeEvent;
 import fi.vtt.lemon.probe.shared.ProbeInformation;
-import fi.vtt.lemon.server.shared.ServerAgent;
 import osmo.common.log.Logger;
+
+import static fi.vtt.lemon.RabbitConst.*;
 
 /** @author Teemu Kanstren */
 public class MeasurementTask implements Runnable {
   private final static Logger log = new Logger(MeasurementProvider.class);
   private final Probe probe;
-  private final ServerAgent server;
-  private final Long subscriptionId;
+  private final String measureURI;
+  private final ServerClient server;
   private long startTime;
   private boolean running = false;
-  private boolean compareMode = false;
-  private String reference;
 
-  public MeasurementTask(MeasurementRequest req) {
-    //actual probe instance is saved with the request when it is created when an xmlrpc request was received
-    this.probe = req.getProbe();
-    this.server = req.getServer();
-    this.subscriptionId = req.getSubscriptionId();
-    this.compareMode = isCompareMode();
+  public MeasurementTask(ServerClient server, Probe probe) {
+    this.probe = probe;
+    this.measureURI = probe.getInformation().getMeasureURI();
+    this.server = server;
   }
 
   public void run() {
     log.debug("Calling measure on:" + probe);
     startTime = System.currentTimeMillis();
     running = true;
-    BaseMeasure measure = null;
+    String measure = null;
     try {
       measure = probe.measure();
     } catch (Exception e) {
-      log.error("Error while performing measurement on probe " + probe.getInformation().getMeasureURI(), e);
+      log.error("Error while performing measurement for " + measureURI, e);
     }
     running = false;
     log.debug("Received measure:" + measure + " from:" + probe);
     int precision = probe.getInformation().getPrecision();
 
-    if (measure == null || measure.getMeasure() == null) {
-      ProbeEvent event = new ProbeEvent(server, EventType.NO_VALUE_FOR_BM, probe.getInformation().getMeasureURI(), "No valid measurement value available.", subscriptionId);
-//      bb.process(event);
+    if (measure == null) {
+      server.event(EVENT_NO_VALUE_FOR_BM, measureURI, "No valid measure available.");
       return;
     }
-
-    //if compare mode is used current measure value needs to be compared with reference  
-    if (compareMode) {
-      log.debug("probe in compare mode");
-      //log.debug("mode:"+probe.getConfigurationParameters().iterator().next().getValue());
-      boolean matchReference = false;
-      if (reference == null) {
-        this.reference = measure.getMeasure();
-      }
-      if (reference.equals(measure.getMeasure())) {
-        matchReference = true;
-      }
-      MeasurementReport report = new MeasurementReport(measure, server, probe.getInformation(), subscriptionId, matchReference, reference);
-//      bb.process(report);
-      MeasurementResponse resp = new MeasurementResponse(new BaseMeasure("" + matchReference), server, probe.getInformation(), precision, subscriptionId);
-//      bb.process(resp);    
-    } else {
-      MeasurementResponse resp = new MeasurementResponse(measure, server, probe.getInformation(), precision, subscriptionId);
-//      bb.process(resp);
-    }
-
+    server.measurement(measureURI, precision, measure);
   }
 
   public ProbeInformation getProbeInfo() {
     return probe.getInformation();
-  }
-
-  public Long getSubscriptionId() {
-    return subscriptionId;
   }
 
   public long getRunningTime() {
@@ -118,26 +84,5 @@ public class MeasurementTask implements Runnable {
 
   public Probe getProbe() {
     return probe;
-  }
-
-  public synchronized void setReference(String reference) {
-    log.debug("setReference");
-    this.reference = reference;
-  }
-
-  public synchronized void setCompare(boolean compare) {
-    log.debug("setCompare");
-    this.compareMode = compare;
-  }
-
-  private boolean isCompareMode() {
-    if (probe.getConfigurationParameters() != null) {
-      for (ProbeConfiguration param : probe.getConfigurationParameters()) {
-        if (param.getName().equals("mode") && param.getValue().equals("compare")) {
-          return true;
-        }
-      }
-    }
-    return false;
   }
 }

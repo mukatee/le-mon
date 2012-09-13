@@ -63,7 +63,6 @@ public class ProbesJSON {
       try {
         for (TargetDescription td : tds) {
           JSONObject target = new JSONObject();
-          target.put(TARGET_ID, td.getTargetId());
           target.put(NAME, td.getTargetName());
           target.put(TYPE, td.getTargetType());
           targets.put(target);
@@ -71,7 +70,6 @@ public class ProbesJSON {
 
         for (BMDescription bmd : bmds) {
           JSONObject bm = new JSONObject();
-          bm.put(TARGET_ID, bmd.getTarget().getTargetId());
           bm.put(BM_ID, bmd.getBmId());
           bm.put(BM_NAME, bmd.getBmName());
           bm.put(BM_CLASS, bmd.getBmClass());

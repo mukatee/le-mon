@@ -18,7 +18,7 @@
 
 package fi.vtt.lemon.probes.configurabletester;
 
-import fi.vtt.lemon.common.ProbeConfiguration;
+import fi.vtt.lemon.probe.ProbeConfiguration;
 import fi.vtt.lemon.probe.shared.BaseMeasure;
 import fi.vtt.lemon.probe.shared.BaseProbeAgent;
 
@@ -39,9 +39,9 @@ public class ConfigurableTestProbeAgent extends BaseProbeAgent {
     name = properties.getProperty("name");
   }
 
-  public BaseMeasure measure() {
+  public String measure() {
     count++;
-    return new BaseMeasure(name+" measure "+count);
+    return name+" measure "+count;
   }
 
   public void startProbe() {

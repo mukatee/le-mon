@@ -16,26 +16,17 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
-package fi.vtt.lemon.common;
+package fi.vtt.lemon;
 
 /**
  * Contains shared constant values for the different MFW implementation elements.
  *
  * @author Teemu Kanstren
  */
-public class Const {
+public class RabbitConst {
   //server-agent xmlrpc address in probe-agent configuration
-  public static final String MFW_SERVER_URL_KEY = "server_agent_url";
-  //configuration port for where probe-agent will listen to xmlrpc messages
-  public static final String PROBE_AGENT_PORT_KEY = "probe_agent_xmlrpc_port";
-  //configuration port for where server-agent will listen to xmlrpc messages
-  public static final String SERVER_AGENT_PORT_KEY = "server_agent_xmlrpc_port";
-  //configuration parameter for how often the probe-agent sends keep-alive messages to the server-agent
-  public static final String KEEP_ALIVE_INTERVAL = "keep-alive_interval";
-  //configuration parameter for how often the probe-agent checks for new measurement requests if no notify() is done
-  public static final String MEASUREMENT_CHECK_INTERVAL = "measurement_check_interval";
-  //a property given by probe-agent when registering to the server-agent. defines the probe-agent xmlrpc address.
-  public static final String XMLRPC_URL = "xmlrpc_url";
+  public static final String SERVER_URL = "server_agent_url";
+  public static final String MEASURE_INTERVAL = "measure_interval";
   //describes the base measure "class" for a probe
   public static final String PROBE_BM_CLASS = "bm_class";
   //base measure name for a probe
@@ -60,28 +51,8 @@ public class Const {
   public static final String SSH_PASSWORD = "ssh_password";
   //configuration key for ssh probe giving the shell command to execute the given script
   public static final String SSH_SCRIPT_COMMAND = "ssh_command";
-  //prefix for ssh probe-agent configuration file
-  public static final String SSH_CONFIG_PREFIX = "ssh";
-  //prefix for http probe-agent configuration file
-  public static final String HTTP_CONFIG_PREFIX = "http";
   //prefix for test probe-agent configuration file
   public static final String TEST_PROBE_AGENT_CONFIG_PREFIX = "test";
-  //provided as an error msg to the server-agent when a probe-agent is unable to produce a suitable measurement value.
-  public static final String ERROR_MSG_NO_VALID_VALUE = "No valid measurement value available.";
-  //not used atm but left here as a reminder that java.util.Formatter can be used to format this type of a string
-  public static final String ERROR_UNSUPPORTED_MEASURE_TYPE = "Probe returned unsupported data type for value:%1$.";
-  //the port where the server-agent provides the WSDL interface
-//  public static final String MFW_WS_PORT = "mfw_ws_port";
-  //the address to the MFW web service
-  public static final String MFW_WS_URL = "mfw_ws_url";
-  //the address to the SAC web service
-  public static final String SAC_WS_URL = "sac_ws_url_";
-  //the identifier of the SAC
-  public static final String SAC_ID = "sac_id_";
-  //the address to the web ui SAC webservice
-  public static final String WEB_UI_WS_URL = "web_ui_ws_url";
-  //the identifier of the web ui (sac id)
-  public static final String WEB_UI_ID = "web_ui_id";
   //name of the filename from which all the configuration of agents is always read
   public static final String CONFIGURATION_FILENAME = "noen-mfw.properties";
   public static final int ERROR_CODE_ILLEGAL_ARGUMENTS_FOR_PROBE = -1;
@@ -89,16 +60,29 @@ public class Const {
   public static final String MAX_KEEPALIVE_DELAY = "max_keepalive_delay";
   //time to wait between trying to reconnect to server
   public static final String RETRY_DELAY = "retry_delay";
-  //a configuration file property that describes a probe-agent and a server-agent connecting locally
-  public static final String LOCAL_LINK_IN_USE = "local_link";
-  //a url that describes a probe-agent and a server-agent connecting locally
-  public static final String LOCAL_LINK_ENDPOINT_URL = "mfw://local";
-  public static final String XMLRPC_PORT = "xmlrpc_port";
   public static final String REST_CLIENT_ENDPOINT_URL = "rest_client_endpoint";
   public static final String THREAD_POOL_SIZE = "thread_pool_size";
   public static final String TASK_TIMEOUT = "task_timeout";
-  public static final String SUBSCRIPTION_CHECK_INTERVAL = "subscription_check_interval";
-  public static final String AVAILABILITY_INTERVAL = "availability_interval";
+
+  public static final String PARAM_TIME = "time";
+  public static final String PARAM_MEASURE_URI = "measure_uri";
+  public static final String PARAM_PRECISION = "precision";
+  public static final String PARAM_VALUE = "value";
+  public static final String PARAM_EVENT_TYPE = "event_type";
+  public static final String PARAM_EVENT_SOURCE = "event_source";
+  public static final String PARAM_EVENT_MSG = "event_msg";
+  public static final String PARAM_PUBLIC_KEY = "public_key";
+
+  public static final String SERVER_QUEUE = "le-mon_server_queue";
+
+  //property that defines the type of message being sent
+  public static final String MSGTYPE = "msg_name";
+  public static final String MSG_MEASUREMENT = "msg_measurement";
+  public static final String MSG_EVENT = "msg_event";
+  public static final String MSG_REGISTER = "msg_register";
+
+  public static final String EVENT_NO_VALUE_FOR_BM = "event_no_valid_value";
+  public static final String EVENT_PROBE_HANGS = "event_probe_hangs";
 
   public static String createMeasureURI(String targetType, String targetName, String bmClass, String bmName) {
     return "MFW://"+targetType+"/"+targetName+"/"+bmClass+"/"+bmName;

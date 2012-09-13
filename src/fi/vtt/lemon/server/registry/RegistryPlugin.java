@@ -19,21 +19,14 @@
 package fi.vtt.lemon.server.registry;
 
 import fi.vtt.lemon.Config;
-import fi.vtt.lemon.common.Const;
-import fi.vtt.lemon.common.EventType;
+import fi.vtt.lemon.RabbitConst;
 import fi.vtt.lemon.server.PersistencePlugin;
-import fi.vtt.lemon.server.ServerPlugin;
 import fi.vtt.lemon.server.shared.datamodel.BMDescription;
-import fi.vtt.lemon.server.shared.datamodel.DMDefinition;
-import fi.vtt.lemon.server.shared.datamodel.ServerEvent;
 import fi.vtt.lemon.server.shared.datamodel.MeasurementSubscription;
 import fi.vtt.lemon.server.shared.datamodel.ProbeDescription;
-import fi.vtt.lemon.server.shared.datamodel.ProbeDisabled;
-import fi.vtt.lemon.server.shared.datamodel.ProbeRegistered;
 import fi.vtt.lemon.server.shared.datamodel.TargetDescription;
 import osmo.common.log.Logger;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -56,8 +49,6 @@ public class RegistryPlugin implements Runnable {
   private final Map<String, TargetDescription> targets = new HashMap<String, TargetDescription>();
   //key = probeId, value = ProbeDescription
   private final Map<Long, ProbeDescription> probes = new HashMap<Long, ProbeDescription>();
-  //all DM definitions created
-  private final Collection<DMDefinition> dms = new HashSet<DMDefinition>();
   private int nextDmId = 1;
   //maximum delay for receiving keep-alive messages before a probe-agent is reported as lost
   private int maxDelay = DEFAULT_DELAY;
@@ -71,7 +62,6 @@ public class RegistryPlugin implements Runnable {
   private boolean shouldRun = true;
   //access to the persistent state
   private PersistencePlugin persistence = null;
-  private ServerPlugin server = null;
   private SubscriptionRegistry subscriptionRegistry;
 
   public RegistryPlugin(int maxDelay, int delayIncrement) {
@@ -81,7 +71,7 @@ public class RegistryPlugin implements Runnable {
       this.delayIncrement = delayIncrement;
     } else {
         Properties props = Config.get();
-        this.maxDelay = Integer.parseInt(props.getProperty(Const.MAX_KEEPALIVE_DELAY));
+        this.maxDelay = Integer.parseInt(props.getProperty(RabbitConst.MAX_KEEPALIVE_DELAY));
     }
     //start a thread to monitor keep-alive messages
     Thread t = new Thread(this);
@@ -97,10 +87,6 @@ public class RegistryPlugin implements Runnable {
 
   public void setPersistence(PersistencePlugin persistence) {
     this.persistence = persistence;
-  }
-
-  public void setServer(ServerPlugin server) {
-    this.server = server;
   }
 
   //get the BMDescription for the given measureURI (measure identifier)
@@ -125,27 +111,12 @@ public class RegistryPlugin implements Runnable {
     return result;
   }
 
-  //list of all currently defined DM
-  public synchronized List<DMDefinition> getDerivedMeasures() {
-    //create copy of current state to avoid breaking on concurrent access etc.
-    List<DMDefinition> result = new ArrayList<DMDefinition>(dms.size());
-    result.addAll(dms);
-    return result;
-  }
-
   //list of all active targets (with probes registered for them)
   public Collection<TargetDescription> getTargets() {
     //create copy of current state to avoid breaking on concurrent access etc.
     List<TargetDescription> targets = new ArrayList<TargetDescription>();
     targets.addAll(this.targets.values());
     return targets;
-  }
-
-  //create a derived measure. currently not a core feature, not persisted, etc.
-  public void createDM(String name, String script) {
-    DMDefinition newDm = new DMDefinition(nextDmId++, name, script);
-    dms.add(newDm);
-    log.debug("Registered DM:" + name);
   }
 
   //gives probe description for given probeid
@@ -171,20 +142,6 @@ public class RegistryPlugin implements Runnable {
       }
     }
     return result;
-  }
-
-  //find the target id for the given measureURI
-  public long targetIdFor(String measureURI) {
-    //parse type from uri
-    String targetType = parseTargetType(measureURI);
-    //parse name from uri
-    String targetName = parseTargetName(measureURI);
-    //get the name from the target map
-    TargetDescription target = targets.get(targetType + targetName);
-    if (target == null) {
-      throw new IllegalArgumentException("No target found for measureURI:" + measureURI);
-    }
-    return target.getTargetId();
   }
 
   //parse target type from a measureURI
@@ -251,7 +208,7 @@ public class RegistryPlugin implements Runnable {
       bm = persistence.createBMDescription(properties);
     } catch (Exception e) {
       log.error("Failed to create target/bm for probe description.", e);
-      return Const.ERROR_CODE_ILLEGAL_ARGUMENTS_FOR_PROBE;
+      return RabbitConst.ERROR_CODE_ILLEGAL_ARGUMENTS_FOR_PROBE;
     }
     if (!bmIds.containsKey(bm.getBmId())) {
       newBM = true;
@@ -264,9 +221,6 @@ public class RegistryPlugin implements Runnable {
     ProbeDescription desc = persistence.createProbeDescription(properties);
     //we keep a mapping from id to desc to ease access in other functions
     probes.put(desc.getProbeId(), desc);
-
-    // send probe registered data object to blackboard 
-    ProbeRegistered pr = new ProbeRegistered(desc, newBM, newTarget);
 
     return desc.getProbeId();
   }
@@ -320,8 +274,6 @@ public class RegistryPlugin implements Runnable {
               bmIds.remove(bmDesc.getBmId());
               bmDisabled = true;
             }
-            // send probe disabled data object to blackboard
-            ProbeDisabled pd = new ProbeDisabled(probe, bmDisabled, targetDisabled);
           }
         }
       }
@@ -361,8 +313,6 @@ public class RegistryPlugin implements Runnable {
       bmIds.remove(bmDesc.getBmId());
       bmDisabled = true;
     }
-    // send probe disabled data object to blackboard
-    ProbeDisabled pd = new ProbeDisabled(probe, bmDisabled, targetDisabled);
   }
 
   public ProbeDescription getProbeForSubscription(long subscriptionId) {
@@ -405,52 +355,4 @@ public class RegistryPlugin implements Runnable {
 //    bb.process(new ServerEvent(System.currentTimeMillis(), EventType.NEW_MEASUREMENT_REQUEST, "SAC " + sacId, msg));
     return subscriptionRegistry.addSubscription(sacId, bm, 0, probeId);
   }
-
-  public void checkSubscriptions(long probeId, List<Long> subscriptionIds) {
-    log.debug("checkSubscriptions (probeId:" + probeId + ") - subscriptions:" + subscriptionIds);
-    //check if some other probe is better for the bm 
-    //should be done only once after probe registration?
-    //get the best available probe for bm
-    long bmId = probes.get(probeId).getBm().getBmId();
-    ProbeDescription probe = getProbeForBM(bmId);
-    List<MeasurementSubscription> subscriptions = subscriptionRegistry.getSubscriptionsForBM(bmId);
-    log.debug("Probe BM subscriptions:" + subscriptions);
-    for (MeasurementSubscription subscription : subscriptions) {
-      if (subscription.getProbeId() != probe.getProbeId()) {
-        log.debug("Probe with higher precision found");
-        subscriptionRegistry.setProbeForSubscription(subscription.getSubscriptionId(), probe.getProbeId());
-      }
-    }
-    subscriptions = subscriptionRegistry.getSubscriptionsForProbe(probeId);
-    log.debug("Subscriptions for probe:" + subscriptions);
-    for (MeasurementSubscription ms : subscriptions) {
-      //log.debug("Subscription on server (ID:"+ms.getSubscriptionId()+")");
-      //if there is a new subscription
-      if (!subscriptionIds.contains(ms.getSubscriptionId())) {
-        log.debug("New subscription found (bmId:" + ms.getBmId() + ") while checking existing ones");
-        //send subscription request to probe
-        if (server != null) {
-          server.subscribeToBM(ms.getBmId(), ms.getFrequency(), ms.getSubscriptionId());
-        } else {
-          log.debug("Could not request bm, server null");
-        }
-      }
-    }
-    //if probes current subscription is not found on the server it should be removed from the probe    
-    for (Long subscriptionId : subscriptionIds) {
-      //log.debug("Probes current subscription (ID:"+subscriptionId+")");
-      boolean found = false;
-      for (MeasurementSubscription ms : subscriptions) {
-        if (ms.getSubscriptionId() == subscriptionId) {
-          found = true;
-          break;
-        }
-      }
-      if (!found) {
-        log.debug("Probes (ID:" + probeId + ") current subscription (ID:" + subscriptionId + ") not found on server, sending unsubscription request to probe");
-        server.unSubscribeToBM(getProbeFor(probeId), subscriptionId);
-      }
-    }
-  }
-
 }

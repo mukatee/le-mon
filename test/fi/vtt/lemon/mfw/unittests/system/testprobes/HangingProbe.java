@@ -18,7 +18,7 @@
 
 package fi.vtt.lemon.mfw.unittests.system.testprobes;
 
-import fi.vtt.lemon.common.ProbeConfiguration;
+import fi.vtt.lemon.probe.ProbeConfiguration;
 import fi.vtt.lemon.probe.shared.BaseMeasure;
 import fi.vtt.lemon.probe.shared.Probe;
 import fi.vtt.lemon.probe.shared.ProbeInformation;
@@ -35,7 +35,7 @@ public class HangingProbe implements Probe {
     return new ProbeInformation("target1", "type1", "hanging bm", "bmname1", "bmdescription1", "probedescription1", 1, null);
   }
 
-  public BaseMeasure measure() {
+  public String measure() {
     try {
       Thread.sleep(20000);
     } catch (InterruptedException e) {
