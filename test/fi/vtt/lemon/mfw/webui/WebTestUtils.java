@@ -18,8 +18,6 @@
 
 package fi.vtt.lemon.mfw.webui;
 
-import com.sun.jersey.api.client.Client;
-import com.sun.jersey.api.client.WebResource;
 import net.sourceforge.jwebunit.junit.WebTester;
 
 import javax.ws.rs.core.MediaType;
@@ -47,10 +45,10 @@ public class WebTestUtils {
     if (serverProcess != null) {
       serverProcess.destroy();
     }
-    Client client = Client.create();
+//    Client client = Client.create();
     try {
-      WebResource wr = client.resource("http://localhost:"+port+"/rest/shutdown");
-      String response = wr.accept(MediaType.TEXT_PLAIN_TYPE).get(String.class);
+//      WebResource wr = client.resource("http://localhost:"+port+"/rest/shutdown");
+//      String response = wr.accept(MediaType.TEXT_PLAIN_TYPE).get(String.class);
     } catch (Exception e) {
       //this should fail since the remote VM should be shut down now..
     }

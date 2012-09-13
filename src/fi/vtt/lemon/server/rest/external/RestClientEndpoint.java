@@ -50,19 +50,19 @@ public class RestClientEndpoint {
   
   public void probeEvent( ProbeEvent pe )
   {
-    Event e = new Event( DataType.PROBE_EVENT.name(), "Probe event occurred." );
+//    Event e = new Event( DataType.PROBE_EVENT.name(), "Probe event occurred." );
 //    wr.path( "client/event" ).type( MediaType.APPLICATION_XML ).post( e );
   }
   
   public void probeRegistered( ProbeRegistered pr )
   {
-    Event e = new Event( DataType.PROBE_REGISTERED.name(), "Probe registered." );
+//    Event e = new Event( DataType.PROBE_REGISTERED.name(), "Probe registered." );
 //    wr.path( "client/event" ).type( MediaType.APPLICATION_XML ).post( e );
   }
   
   public void probeDisabled( ProbeDisabled pd )
   {
-    Event e = new Event( DataType.PROBE_DISABLED.name(), "Probe disabled." );
+//    Event e = new Event( DataType.PROBE_DISABLED.name(), "Probe disabled." );
 //    wr.path( "client/event" ).type( MediaType.APPLICATION_XML ).post( e );
   }
 }

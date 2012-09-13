@@ -20,7 +20,6 @@ package fi.vtt.lemon.server.rest.external;
 
 
 import fi.vtt.lemon.common.Const;
-import fi.vtt.lemon.server.rest.external.resources.BMValue;
 import fi.vtt.lemon.server.shared.datamodel.Value;
 import osmo.common.log.Logger;
 
@@ -54,9 +53,9 @@ public class RestClient {
   }
 
   public void bmResult(Value value) {
-    BMValue bm = new BMValue();
-    bm.setValue(value.getString());
-    bm.setTime(value.getTime());
+    //BMValue bm = new BMValue();
+    //bm.setValue(value.getString());
+    //bm.setTime(value.getTime());
     log.debug("Sending BM results via REST interface");
     long bmId = value.getBm().getBmId();
 //    wr.path("bmresult/" + bmId).type(MediaType.APPLICATION_XML).post(bm);
