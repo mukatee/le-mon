@@ -79,7 +79,6 @@ public class RabbitConst {
   public static final String MSGTYPE = "msg_name";
   public static final String MSG_MEASUREMENT = "msg_measurement";
   public static final String MSG_EVENT = "msg_event";
-  public static final String MSG_REGISTER = "msg_register";
 
   public static final String EVENT_NO_VALUE_FOR_BM = "event_no_valid_value";
   public static final String EVENT_PROBE_HANGS = "event_probe_hangs";

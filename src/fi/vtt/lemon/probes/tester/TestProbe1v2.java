@@ -50,11 +50,11 @@ public class TestProbe1v2 extends TestProbe {
     addConfigurationParameter(pc);
   }
 
-  public BaseMeasure measure() {
+  public String measure() {
     String result = "test probe1v2 measure " + counter;
     counter++;
     log.debug("Performed measure:" + result);
-    return new BaseMeasure(result);
+    return result;
   }
 
 }

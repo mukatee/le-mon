@@ -18,16 +18,9 @@
 
 package fi.vtt.lemon.server.rest.external;
 
-
-import fi.vtt.lemon.common.DataType;
-import fi.vtt.lemon.probe.shared.ProbeEvent;
-import fi.vtt.lemon.server.shared.datamodel.ProbeDisabled;
-import fi.vtt.lemon.server.shared.datamodel.ProbeRegistered;
 import fi.vtt.lemon.server.shared.datamodel.Value;
+import fi.vtt.lemon.server.webui.eventlistpage.ServerEvent;
 import osmo.common.log.Logger;
-
-import java.util.ArrayList;
-
 
 /**
  * @author Petri Heinonen
@@ -47,21 +40,9 @@ public class RestClientEndpoint {
     // measurement result sending time interval
   }
   
-  public void probeEvent( ProbeEvent pe )
+  public void probeEvent( ServerEvent se )
   {
 //    Event e = new Event( DataType.PROBE_EVENT.name(), "Probe event occurred." );
-//    wr.path( "client/event" ).type( MediaType.APPLICATION_XML ).post( e );
-  }
-  
-  public void probeRegistered( ProbeRegistered pr )
-  {
-//    Event e = new Event( DataType.PROBE_REGISTERED.name(), "Probe registered." );
-//    wr.path( "client/event" ).type( MediaType.APPLICATION_XML ).post( e );
-  }
-  
-  public void probeDisabled( ProbeDisabled pd )
-  {
-//    Event e = new Event( DataType.PROBE_DISABLED.name(), "Probe disabled." );
 //    wr.path( "client/event" ).type( MediaType.APPLICATION_XML ).post( e );
   }
 }

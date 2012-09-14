@@ -49,10 +49,10 @@ public class TestProbe1 extends TestProbe {
     addConfigurationParameter(pc);
   }
 
-  public BaseMeasure measure() {
+  public String measure() {
     String result = "test probe1 measure " + counter + " test to see if going over the limit of 100 characters ends up as truncating the text at a specific point";
     counter++;
     log.debug("Performed measure:" + result);
-    return new BaseMeasure(result);
+    return result;
   }
 }

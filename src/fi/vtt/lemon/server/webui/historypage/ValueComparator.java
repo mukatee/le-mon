@@ -43,7 +43,7 @@ public class ValueComparator implements Comparator<Value> {
       result = v1.getPrecision() - (v2.getPrecision());
     }
     if (sortKey.equals("value")) {
-      result = v1.getString().compareTo(v2.getString());
+      result = v1.valueString().compareTo(v2.valueString());
     }
     if (!ascending) {
       result = 0 - result;

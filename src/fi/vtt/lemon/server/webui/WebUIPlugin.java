@@ -19,11 +19,8 @@
 package fi.vtt.lemon.server.webui;
 
 import osmo.common.log.Logger;
-import fi.vtt.lemon.server.registry.RegistryPlugin;
-import fi.vtt.lemon.server.webui.bmreportspage.BMReportsStorage;
 import fi.vtt.lemon.server.webui.bmresultspage.BMResult;
 import fi.vtt.lemon.server.webui.bmresultspage.BMResultsStorage;
-import fi.vtt.lemon.server.webui.derivedmeasurepage.DMMonitorPlugin;
 import fi.vtt.lemon.server.webui.mfwclient.Availability;
 import fi.vtt.lemon.server.webui.mfwclient.MFW;
 import fi.vtt.lemon.server.webui.mfwclient.MFWClient;
@@ -49,12 +46,9 @@ public class WebUIPlugin {
   private final static Logger log = new Logger(WebUIPlugin.class);
   //service itself..
   private static WebUIPlugin webui = null;
-  //stores dm values and provides access to them on the DM page
-  private DMMonitorPlugin dmMonitor = null;
   private boolean initialized = false;
   private BMResultsStorage bmresults;
   private MFWClient mfwClient;
-  private BMReportsStorage bmreports;
   private Map<String, String> latestValues = new HashMap<String, String>();
 
   public static WebUIPlugin getInstance() {
@@ -64,7 +58,6 @@ public class WebUIPlugin {
   public WebUIPlugin() {
     webui = this;
     bmresults = new BMResultsStorage();
-    bmreports = new BMReportsStorage();
   }
 
   public void terminate() {
@@ -83,14 +76,6 @@ public class WebUIPlugin {
 //    service.registerFilter(new WebUIWicketFilter(), "/.*", props, 0, null);
     initialized = true;
     log.debug("wicket started");
-  }
-
-  public DMMonitorPlugin getDMMonitor() {
-    return dmMonitor;
-  }
-
-  public void setDMMonitor(DMMonitorPlugin dmMonitor) {
-    this.dmMonitor = dmMonitor;
   }
 
   public List<BMResult> getBMResults() {
@@ -149,9 +134,5 @@ public class WebUIPlugin {
   public MFW getMFWInformation() {
     MFW mfwInfo = mfwClient.getMFW();
     return mfwInfo;
-  }
-
-  public void clearBMReports() {
-    bmreports = new BMReportsStorage();
   }
 }

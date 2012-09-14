@@ -20,7 +20,6 @@ package fi.vtt.lemon.server.webui.bmlistpage;
 
 import osmo.common.log.Logger;
 import fi.vtt.lemon.server.registry.RegistryPlugin;
-import fi.vtt.lemon.server.webui.derivedmeasurepage.BMComparator;
 import fi.vtt.lemon.server.shared.datamodel.BMDescription;
 import org.apache.wicket.extensions.markup.html.repeater.util.SortParam;
 import org.apache.wicket.extensions.markup.html.repeater.util.SortableDataProvider;

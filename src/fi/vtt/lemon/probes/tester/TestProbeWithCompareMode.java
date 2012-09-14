@@ -49,10 +49,7 @@ public class TestProbeWithCompareMode extends TestProbe {
     addConfigurationParameter(pc);
   }
 
-  public BaseMeasure measure() {
-//    if (counter % 10 == 0) {
-//      value = counter;
-//    }
+  public String measure() {
     currentTime = System.currentTimeMillis();
     if (currentTime > (oldTime + DELAY)) {
       oldTime = currentTime;
@@ -60,6 +57,6 @@ public class TestProbeWithCompareMode extends TestProbe {
     }    
     String result = "compare mode test probe value " + value;    
     counter++;
-    return new BaseMeasure(result);
+    return result;
   }
 }

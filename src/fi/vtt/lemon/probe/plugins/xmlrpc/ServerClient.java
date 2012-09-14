@@ -79,16 +79,4 @@ public class ServerClient {
       log.error("Error while sending msg to server", e);
     }
   }
-
-  public void register(String publicKey, String measureURI) {
-    JSONObject json = new JSONObject();
-    try {
-      json.put(MSGTYPE, MSG_REGISTER);
-      json.put(PARAM_PUBLIC_KEY, publicKey);
-      json.put(PARAM_MEASURE_URI, measureURI);
-      channel.basicPublish("", SERVER_QUEUE, null, json.toString().getBytes("UTF8"));
-    } catch (Exception e) {
-      log.error("Error while sending msg to server", e);
-    }
-  }
 }

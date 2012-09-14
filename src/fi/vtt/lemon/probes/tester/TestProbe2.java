@@ -38,10 +38,10 @@ public class TestProbe2 extends TestProbe {
     super(TARGET_NAME, TARGET_TYPE, BM_CLASS, BM_NAME, BM_DESCRIPTION, PROBE_DESCRIPTION, 1);
   }
 
-  public BaseMeasure measure() {
+  public String measure() {
 //    String result = "test probe2 measure " + counter;
     String result = Integer.toString( counter % 100 );
     counter++;
-    return new BaseMeasure(result);
+    return result;
   }
 }

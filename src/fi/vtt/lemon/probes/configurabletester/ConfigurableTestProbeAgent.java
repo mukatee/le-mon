@@ -43,18 +43,5 @@ public class ConfigurableTestProbeAgent extends BaseProbeAgent {
     count++;
     return name+" measure "+count;
   }
-
-  public void startProbe() {
-  }
-
-  public void stopProbe() {
-  }
-
-  public void setConfiguration(Map<String, String> configuration) {
-  }
-
-  public Collection<ProbeConfiguration> getConfigurationParameters() {
-    return null;
-  }
 }
 

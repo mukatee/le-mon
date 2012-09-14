@@ -46,11 +46,11 @@ public class TestProbe3 extends TestProbe {
     random = new Random();
   }
 
-  public BaseMeasure measure() {
+  public String measure() {
     //String result = "test probe3 measure " + counter;
     String result = Integer.toString( random.nextInt( 100 ) + 1 );
     counter++;
-    return new BaseMeasure(result);
+    return result;
   }
 
 }

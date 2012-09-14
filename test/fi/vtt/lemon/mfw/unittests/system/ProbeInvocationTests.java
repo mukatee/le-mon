@@ -37,8 +37,6 @@ public class ProbeInvocationTests {
 
   @Test
   public void startProbe() throws Exception {
-    TestProbeAgent testProbe = new TestProbeAgent(new TestServerAgent());
-    int port = PortManager.next();
   }
 
 }

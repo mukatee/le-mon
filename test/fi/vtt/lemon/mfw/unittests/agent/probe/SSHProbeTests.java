@@ -45,7 +45,7 @@ public class SSHProbeTests {
     props.put(RabbitConst.PROBE_BM_CLASS, "firewall");
     SSHProbeAgent ssh = new SSHProbeAgent();
     ssh.init(props);
-    String measure = (String) ssh.measure().getMeasure();
+    String measure = ssh.measure();
     assertEquals("test file here\nline 2 of test file also here\n", measure);
   }
 

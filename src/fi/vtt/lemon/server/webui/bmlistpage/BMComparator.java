@@ -16,36 +16,39 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
-package fi.vtt.lemon.server.webui.bmreportspage;
-
-import fi.vtt.lemon.server.shared.datamodel.BMReport;
+package fi.vtt.lemon.server.webui.bmlistpage;
 
 import java.util.Comparator;
 
 /**
  * @author Teemu Kanstren
  */
-public class ValueComparator implements Comparator<BMReport> {
+public class BMComparator implements Comparator<BMListItem> {
   private final String sortKey;
   private final boolean ascending;
 
-  public ValueComparator(String sortKey, boolean ascending) {
+  public BMComparator(String sortKey, boolean ascending) {
     this.sortKey = sortKey;
     this.ascending = ascending;
   }
 
-  public int compare(BMReport result1, BMReport result2) {
+  public int compare(BMListItem a1, BMListItem a2) {
     int result = 0;
-    if (sortKey.equals("measure_uri")) {
-      result = result1.getMeasureURI().compareTo(result2.getMeasureURI());
+    if (sortKey.equals("bmId")) {
+      result = (int)(a1.getBmId() - a2.getBmId());
     }
-    if (sortKey.equals("time")) {
-      result = result1.getMeasureTime().compareTo(result2.getMeasureTime());
+    if (sortKey.equals("measureURI")) {
+      result = a1.getMeasureURI().compareTo(a2.getMeasureURI());
+    }
+    if (sortKey.equals("bmDescription")) {
+      result = a1.getBmDescription().compareTo(a2.getBmDescription());
+    }
+    if (sortKey.equals("value")) {
+      result = a1.getValue().compareTo(a2.getValue());
     }
     if (!ascending) {
       result = 0 - result;
     }
     return result;
   }
-
 }

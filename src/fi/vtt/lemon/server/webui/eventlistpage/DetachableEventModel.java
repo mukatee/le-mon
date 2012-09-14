@@ -18,7 +18,6 @@
 
 package fi.vtt.lemon.server.webui.eventlistpage;
 
-import fi.vtt.lemon.server.shared.datamodel.ServerEvent;
 import org.apache.wicket.model.LoadableDetachableModel;
 
 /**
