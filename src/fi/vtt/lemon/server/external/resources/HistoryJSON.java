@@ -1,6 +1,6 @@
 package fi.vtt.lemon.server.external.resources;
 
-import fi.vtt.lemon.server.external.RestPlugin;
+import fi.vtt.lemon.server.Registry;
 import fi.vtt.lemon.server.Value;
 import org.codehaus.jettison.json.JSONArray;
 import org.codehaus.jettison.json.JSONException;
@@ -29,11 +29,11 @@ public class HistoryJSON {
   @Consumes(MediaType.APPLICATION_JSON)
   @Produces(MediaType.APPLICATION_JSON)
   public Response requestHistory(@HeaderParam("authorization") String authHeader, JSONObject req) {
-    RestPlugin restPlugin = RestPlugin.getInstance();
+    Registry registry = Registry.getRegistry();
     log.debug("History request");
     JSONArray root = new JSONArray();
 
-    if (restPlugin.check(authHeader)) {
+    if (registry.check(authHeader)) {
       // read measurements history from database according to requested time interval
       // and push it to the client
       try {
@@ -41,7 +41,7 @@ public class HistoryJSON {
         long end = req.getLong(END_TIME);
         Collection<Long> bmIds = new ArrayList<>();
         JSONArray array = req.getJSONArray(BM_LIST);
-        List<Value> measurements = restPlugin.getHistory(start, end, bmIds);
+        List<Value> measurements = registry.getHistory(start, end, bmIds);
         // conversion to json
         for (Value value : measurements) {
           JSONObject obj = new JSONObject();

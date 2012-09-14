@@ -18,8 +18,8 @@
 
 package fi.vtt.lemon.server.webui.historypage;
 
+import fi.vtt.lemon.server.Persistence;
 import osmo.common.log.Logger;
-import fi.vtt.lemon.server.PersistencePlugin;
 import fi.vtt.lemon.server.Value;
 import org.apache.wicket.extensions.markup.html.repeater.data.table.DefaultDataTable;
 import org.apache.wicket.extensions.markup.html.repeater.data.table.IColumn;
@@ -38,14 +38,14 @@ import java.util.List;
  */
 public class HistoryPage extends WebPage {
   private transient final static Logger log = new Logger(HistoryPage.class);
-  private transient PersistencePlugin persistence;
+  private transient Persistence persistence;
 
   public HistoryPage() {
     add(new StyleSheetReference("listpageCSS", getClass(), "style.css"));
     createHistoryList();
   }
 
-  public void setPersistence(PersistencePlugin persistence) {
+  public void setPersistence(Persistence persistence) {
     this.persistence = persistence;
   }
 

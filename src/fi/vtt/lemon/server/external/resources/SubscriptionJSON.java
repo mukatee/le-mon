@@ -1,6 +1,6 @@
 package fi.vtt.lemon.server.external.resources;
 
-import fi.vtt.lemon.server.external.RestPlugin;
+import fi.vtt.lemon.server.Registry;
 import org.codehaus.jettison.json.JSONException;
 import org.codehaus.jettison.json.JSONObject;
 import osmo.common.log.Logger;
@@ -25,11 +25,11 @@ public class SubscriptionJSON {
   @Consumes(MediaType.APPLICATION_JSON)
   public Response subscribeToBM(@HeaderParam("authorization") String authHeader, JSONObject req) {
     log.debug("SubcribeToBM request received, " + req);
-    RestPlugin restPlugin = RestPlugin.getInstance();
+    Registry registry = Registry.getRegistry();
 
-    if (restPlugin.check(authHeader)) {
+    if (registry.check(authHeader)) {
       try {
-        restPlugin.subscribeBaseMeasure(req.getString(MEASURE_URI));
+        registry.addSubscription(req.getString(MEASURE_URI));
       } catch (JSONException e) {
         log.error("Failed to parse subscribe JSON", e);
         return Response.serverError().build();
@@ -44,10 +44,10 @@ public class SubscriptionJSON {
   @Consumes(MediaType.APPLICATION_JSON)
   public Response unsubscribeToBM(@HeaderParam("authorization") String authHeader, JSONObject req) {
     log.debug("UnsubcribeToBM request received, " + req);
-    RestPlugin restPlugin = RestPlugin.getInstance();
-    if (restPlugin.check(authHeader)) {
+    Registry registry = Registry.getRegistry();
+    if (registry.check(authHeader)) {
       try {
-        restPlugin.unSubscribeToBM(req.getString(MEASURE_URI));
+        registry.removeSubscription(req.getString(MEASURE_URI));
       } catch (JSONException e) {
         log.error("Failed to parse unsubscribe JSON", e);
         return Response.serverError().build();

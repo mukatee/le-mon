@@ -11,6 +11,7 @@ import org.eclipse.jetty.servlet.ServletContextHandler;
 import org.eclipse.jetty.servlet.ServletHolder;
 
 import javax.ws.rs.core.Application;
+import java.net.InetSocketAddress;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -28,7 +29,8 @@ public class JerseyApp extends Application {
   }
 
   public void start() throws Exception {
-    Server server = new Server(11111);
+    InetSocketAddress addr = new InetSocketAddress("0:0:0:0", 54640);
+    Server server = new Server(addr);
     //define what should be the HTTP root of our application
     ServletContextHandler handler = new ServletContextHandler();
     handler.setContextPath("/");
@@ -40,6 +42,5 @@ public class JerseyApp extends Application {
     handler.addServlet(holder, "/rest/*");
     server.setHandler(handler);
     server.start();
-    server.join();
   }
 }

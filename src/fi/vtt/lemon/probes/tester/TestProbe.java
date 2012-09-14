@@ -18,9 +18,9 @@
 
 package fi.vtt.lemon.probes.tester;
 
+import fi.vtt.lemon.probe.ServerClient;
+import fi.vtt.lemon.probe.measurement.MeasurementProvider;
 import osmo.common.log.Logger;
-import fi.vtt.lemon.probe.ProbeConfiguration;
-import fi.vtt.lemon.probe.shared.BaseMeasure;
 import fi.vtt.lemon.probe.shared.Probe;
 import fi.vtt.lemon.probe.shared.ProbeInformation;
 
@@ -46,7 +46,6 @@ public class TestProbe implements Probe {
   private final String result;
   private final int precision;
   private Properties properties;
-  private Map<String, ProbeConfiguration> configuration = new HashMap<String, ProbeConfiguration>();
 
   public TestProbe(String targetName, String targetType, String bmClass, String bmName, String bmDescription, String probeDescription, int precision) {
     this(targetName, targetType, bmClass, bmName, bmDescription, probeDescription, null, precision);
@@ -63,6 +62,11 @@ public class TestProbe implements Probe {
     this.precision = precision;
   }
 
+  public void start() throws Exception {
+    MeasurementProvider mp = new MeasurementProvider(new ServerClient("::1"), 5, 10);
+    mp.startMeasuring(this);
+  }
+
   public ProbeInformation getInformation() {
     return new ProbeInformation(targetName, targetType, bmClass, bmName, bmDescription, probeDescription, precision, null);
   }
@@ -72,16 +76,8 @@ public class TestProbe implements Probe {
     return result;
   }
 
-  public void startProbe() {
-
-  }
-
-  public void stopProbe() {
-
-  }
-
   public void init(Properties properties) {
-    log.debug("initializing with:"+properties);
+    log.debug("initializing with:" + properties);
     this.properties = properties;
   }
 
@@ -89,27 +85,4 @@ public class TestProbe implements Probe {
     return properties;
   }
 
-  protected void addConfigurationParameter(ProbeConfiguration pc) {
-    configuration.put(pc.getName(), pc);
-  }
-
-  public void setConfiguration(Map<String, String> newConfiguration) {
-    log.debug("Received values:"+newConfiguration);
-    for (String key : newConfiguration.keySet()) {
-      ProbeConfiguration config = this.configuration.get(key);
-      String value = newConfiguration.get(key);
-      if (config == null) {
-        config = new ProbeConfiguration(key, "Runtime added configuration option", false, value);
-        this.configuration.put(key, config);
-      } else {
-        config.setValue(value);
-      }
-    }
-  }
-
-  public Collection<ProbeConfiguration> getConfigurationParameters() {
-    Collection<ProbeConfiguration> result = new ArrayList<ProbeConfiguration>();
-    result.addAll(configuration.values());
-    return result;
-  }
 }

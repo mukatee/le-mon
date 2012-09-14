@@ -18,8 +18,8 @@
 
 package fi.vtt.lemon.server.webui.eventlistpage;
 
+import fi.vtt.lemon.server.Persistence;
 import osmo.common.log.Logger;
-import fi.vtt.lemon.server.PersistencePlugin;
 import org.apache.wicket.extensions.markup.html.repeater.data.table.DefaultDataTable;
 import org.apache.wicket.extensions.markup.html.repeater.data.table.IColumn;
 import org.apache.wicket.extensions.markup.html.repeater.data.table.PropertyColumn;
@@ -37,7 +37,7 @@ import java.util.List;
  */
 public class EventListPage extends WebPage {
   private final static Logger log = new Logger(EventListPage.class);
-  private PersistencePlugin persistence;
+  private Persistence persistence;
 
   public EventListPage() {
     add(new StyleSheetReference("listpageCSS", getClass(), "style.css"));
@@ -46,7 +46,7 @@ public class EventListPage extends WebPage {
   }
 
   //the persistenceplugin is used to access the event history from the DB
-  public void setPersistence(PersistencePlugin persistence) {
+  public void setPersistence(Persistence persistence) {
     this.persistence = persistence;
   }
 

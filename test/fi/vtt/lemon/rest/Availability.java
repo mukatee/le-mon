@@ -1,0 +1,29 @@
+package fi.vtt.lemon.rest;
+
+import com.sun.jersey.api.client.Client;
+import com.sun.jersey.api.client.WebResource;
+import fi.vtt.lemon.probes.tester.TestProbe;
+import fi.vtt.lemon.server.external.JerseyApp;
+import fi.vtt.lemon.server.external.RESTConst;
+import fi.vtt.lemon.server.internal.InternalServer;
+
+import javax.ws.rs.core.MediaType;
+
+/** @author Teemu Kanstren */
+public class Availability {
+  public static void main(String[] args) throws Exception {
+//    InternalServer server = new InternalServer();
+//    server.start();
+//
+//    TestProbe probe = new TestProbe("tn1", "tt1", "bmc", "bmn", "bmd", "pd", 1);
+//    probe.start();
+
+    JerseyApp jersey = new JerseyApp();
+    jersey.start();
+
+//    Client client = Client.create();
+//    WebResource wr = client.resource("http://localhost:11111/rest/");
+//    String data = wr.path(RESTConst.PATH_FRAMEWORK_INFO).accept(MediaType.APPLICATION_JSON).get(String.class);
+//    System.out.println("data:"+data);
+  }
+}

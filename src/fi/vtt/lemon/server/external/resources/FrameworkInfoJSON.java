@@ -1,6 +1,5 @@
 package fi.vtt.lemon.server.external.resources;
 
-import fi.vtt.lemon.server.external.RestPlugin;
 import org.codehaus.jettison.json.JSONException;
 import org.codehaus.jettison.json.JSONObject;
 import osmo.common.log.Logger;
@@ -21,7 +20,6 @@ public class FrameworkInfoJSON {
   @GET
   @Produces(MediaType.APPLICATION_JSON)
   public Response requestFrameworkInfo() {
-    RestPlugin restPlugin = RestPlugin.getInstance();
     JSONObject json = new JSONObject();
     try {
       json.put(INFO, "LE-MON v0.1");

@@ -24,8 +24,6 @@ import ch.ethz.ssh2.Session;
 import ch.ethz.ssh2.StreamGobbler;
 import fi.vtt.lemon.RabbitConst;
 import osmo.common.log.Logger;
-import fi.vtt.lemon.probe.ProbeConfiguration;
-import fi.vtt.lemon.probe.shared.BaseMeasure;
 import fi.vtt.lemon.probe.shared.BaseProbeAgent;
 
 import java.io.BufferedReader;
@@ -84,25 +82,6 @@ public class SSHProbeAgent extends BaseProbeAgent {
     for (Connection connection : connections.values()) {
       connection.close();
     }
-  }
-
-  public Collection<ProbeConfiguration> getConfigurationParameters() {
-    Collection<ProbeConfiguration> config = getBaseConfigurationParameters();
-    try {
-      FileInputStream file = new FileInputStream(filename);
-      String commands = readOutput(file);
-      config.add(new ProbeConfiguration(RabbitConst.SSH_SCRIPT_FILE_CONTENTS, "Script to collect the BM", true, commands));
-    } catch (IOException e) {
-      log.error("Error while reading file:" + filename, e);
-      throw new RuntimeException("Error reading file:" + filename, e);
-    }
-    //with hashset this replaces the original
-    config.add(new ProbeConfiguration(RabbitConst.PROBE_TARGET_NAME, "Target IP address", true, pi.getTargetName()));
-    config.add(new ProbeConfiguration(RabbitConst.SSH_SCRIPT_FILENAME, "Script file name", true, filename));
-    config.add(new ProbeConfiguration(RabbitConst.SSH_USERNAME, "User name for login", true, username));
-    config.add(new ProbeConfiguration(RabbitConst.SSH_PASSWORD, "Password for login", true, password));
-    config.add(new ProbeConfiguration(RabbitConst.SSH_SCRIPT_COMMAND, "Command to execute script", true, command));
-    return config;
   }
 
   public void setConfiguration(Map<String, String> config) {

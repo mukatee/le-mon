@@ -19,7 +19,6 @@
 package fi.vtt.lemon.probe.shared;
 
 import fi.vtt.lemon.RabbitConst;
-import fi.vtt.lemon.probe.ProbeConfiguration;
 
 import java.util.Collection;
 import java.util.HashSet;
@@ -64,15 +63,4 @@ public abstract class BaseProbeAgent implements Probe {
     pi = new ProbeInformation(targetName, targetType, bmClass, bmName, bmDescription, probeName, precision, xmlRpcUrl);
   }
 
-  public Collection<ProbeConfiguration> getBaseConfigurationParameters() {
-    Collection<ProbeConfiguration> config = new HashSet<ProbeConfiguration>();
-    config.add(new ProbeConfiguration(RabbitConst.PROBE_TARGET_TYPE, "Target type", false, pi.getTargetType()));
-    config.add(new ProbeConfiguration(RabbitConst.PROBE_BM_CLASS, "BM Class", false, pi.getBmClass()));
-    config.add(new ProbeConfiguration(RabbitConst.PROBE_BM_NAME, "BM Name", false, pi.getBmName()));
-    config.add(new ProbeConfiguration(RabbitConst.PROBE_BM_DESCRIPTION, "BM Description", false, pi.getBmDescription()));
-    config.add(new ProbeConfiguration(RabbitConst.PROBE_NAME, "Probe name", false, pi.getProbeName()));
-    config.add(new ProbeConfiguration(RabbitConst.PROBE_PRECISION, "Probe precision", true, pi.getPrecision()));
-    config.add(new ProbeConfiguration(RabbitConst.SERVER_URL, "Server URL", true, pi.getXmlRpcUrl()));
-    return config;
-  }
 }

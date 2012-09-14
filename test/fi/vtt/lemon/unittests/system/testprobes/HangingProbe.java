@@ -16,26 +16,31 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
-package fi.vtt.lemon.probe.shared;
+package fi.vtt.lemon.unittests.system.testprobes;
+
+import fi.vtt.lemon.probe.shared.Probe;
+import fi.vtt.lemon.probe.shared.ProbeInformation;
 
 import java.util.Collection;
 import java.util.Map;
 import java.util.Properties;
 
 /**
- * The interface for requesting the actual measurements from actual probes.
- * Called by the probe-agent to satisfy the measurement requests.
- * Sampling is expected to be done by the probe-agent through this interface.
- * The implementation of this interface itself can and needs to implement any functionality
- * to address specific needs set by a probe, such as handling any sampling done by the probe
- * itself, or custom protocols for the probe control.
- *
  * @author Teemu Kanstren
  */
-public interface Probe {
-  /** Return the descriptions for the probe. */
-  public ProbeInformation getInformation();
-  /** Called by the MFW components when a measurement is needed. */
-  public String measure();
-  public void init(Properties properties);
+public class HangingProbe implements Probe {
+  public ProbeInformation getInformation() {
+    return new ProbeInformation("target1", "type1", "hanging bm", "bmname1", "bmdescription1", "probedescription1", 1, null);
+  }
+
+  public String measure() {
+    try {
+      Thread.sleep(20000);
+    } catch (InterruptedException e) {
+    }
+    return null;
+  }
+
+  public void init(Properties properties) {
+  }
 }

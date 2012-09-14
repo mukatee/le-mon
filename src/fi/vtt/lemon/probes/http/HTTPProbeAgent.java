@@ -18,9 +18,7 @@
 
 package fi.vtt.lemon.probes.http;
 
-import fi.vtt.lemon.probe.ProbeConfiguration;
-import fi.vtt.lemon.probe.plugins.xmlrpc.ServerClient;
-import fi.vtt.lemon.probe.shared.BaseMeasure;
+import fi.vtt.lemon.probe.ServerClient;
 import fi.vtt.lemon.probe.shared.BaseProbeAgent;
 import osmo.common.log.Logger;
 
@@ -38,8 +36,6 @@ import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.HttpURLConnection;
 import java.net.URL;
-import java.util.List;
-import java.util.Map;
 
 /**
  * Grabs a base measure from a HTTP request posted at the address http://<address>/{bm-name}.

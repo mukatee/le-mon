@@ -19,8 +19,6 @@
 package fi.vtt.lemon.probes.tester;
 
 import osmo.common.log.Logger;
-import fi.vtt.lemon.probe.ProbeConfiguration;
-import fi.vtt.lemon.probe.shared.BaseMeasure;
 
 /**
  * Test probe to provide test data to the server-agent.
@@ -41,13 +39,6 @@ public class TestProbe1v2 extends TestProbe {
 
   public TestProbe1v2() {
     super(TARGET_NAME, TARGET_TYPE, BM_CLASS, BM_NAME, BM_DESCRIPTION, PROBE_DESCRIPTION, 2);
-    addConfig("x", "x coord", true, "0px");
-    addConfig("y", "y coord", true, "0px");
-  }
-
-  private void addConfig(String name, String description, boolean mandatory, String value) {
-    ProbeConfiguration pc = new ProbeConfiguration(name, description, mandatory, value);
-    addConfigurationParameter(pc);
   }
 
   public String measure() {

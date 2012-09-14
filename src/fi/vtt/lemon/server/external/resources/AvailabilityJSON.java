@@ -1,6 +1,6 @@
 package fi.vtt.lemon.server.external.resources;
 
-import fi.vtt.lemon.server.external.RestPlugin;
+import fi.vtt.lemon.server.Registry;
 import org.codehaus.jettison.json.JSONArray;
 import org.codehaus.jettison.json.JSONException;
 import org.codehaus.jettison.json.JSONObject;
@@ -21,7 +21,7 @@ public class AvailabilityJSON {
 
   @GET
   public Response getBMAvailability() {
-    List<String> bms = RestPlugin.getInstance().getAvailableBMList();
+    List<String> bms = Registry.getRegistry().getAvailableBM();
     JSONArray root = new JSONArray();
     if (!bms.isEmpty()) {
       for (String measureURI : bms) {

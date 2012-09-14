@@ -62,7 +62,7 @@ public class InternalServer implements Runnable {
     executor = new ScheduledThreadPoolExecutor(THREAD_POOL_SIZE);
 
     ConnectionFactory factory = new ConnectionFactory();
-    factory.setHost("localhost");
+    factory.setHost("::1");
     Connection connection = factory.newConnection();
     Channel channel = connection.createChannel();
 

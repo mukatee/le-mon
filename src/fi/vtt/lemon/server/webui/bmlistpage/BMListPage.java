@@ -18,8 +18,8 @@
 
 package fi.vtt.lemon.server.webui.bmlistpage;
 
+import fi.vtt.lemon.server.Registry;
 import osmo.common.log.Logger;
-import fi.vtt.lemon.server.registry.RegistryPlugin;
 import fi.vtt.lemon.server.webui.WebUIPlugin;
 import org.apache.wicket.ajax.AbstractAjaxTimerBehavior;
 import org.apache.wicket.ajax.AjaxRequestTarget;
@@ -46,7 +46,7 @@ public class BMListPage extends WebPage {
   //the table of BM information
   private transient DefaultDataTable bmTable;
   //provides access to overall runtime state
-  private transient RegistryPlugin registry;
+  private transient Registry registry;
   private WebUIPlugin webUIPlugin;
 
   public BMListPage() {
@@ -59,7 +59,7 @@ public class BMListPage extends WebPage {
     addAjaxUpdater();
   }
 
-  public void setRegistry(RegistryPlugin registry) {
+  public void setRegistry(Registry registry) {
     this.registry = registry;
   }
 

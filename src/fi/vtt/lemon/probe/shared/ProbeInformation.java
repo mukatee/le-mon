@@ -91,10 +91,6 @@ public class ProbeInformation {
     return RabbitConst.createMeasureURI(targetType, targetName, bmClass, bmName);
   }
 
-  public String getXmlRpcUrl() {
-    return xmlRpcUrl;
-  }
-
   @Override
   public String toString() {
     return "ProbeInformation{" +
