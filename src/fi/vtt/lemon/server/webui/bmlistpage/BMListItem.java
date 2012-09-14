@@ -18,46 +18,23 @@
 
 package fi.vtt.lemon.server.webui.bmlistpage;
 
-import fi.vtt.lemon.server.shared.datamodel.BMDescription;
-import fi.vtt.lemon.server.shared.datamodel.TargetDescription;
-
 /**
  * @author Teemu Kanstren
  */
 public class BMListItem {
-  private final BMDescription bm;
+  private final String measureURI;
   private final String value;
 
-  public BMListItem(BMDescription bm, String value) {
-    this.bm = bm;
+  public BMListItem(String measureURI, String value) {
+    this.measureURI = measureURI;
     if (value != null && value.length() > 102) {
       value = value.substring(0, 100);
     }
     this.value = value;
   }
 
-  public long getBmId() {
-    return bm.getBmId();
-  }
-
-  public TargetDescription getTarget() {
-    return bm.getTarget();
-  }
-
-  public String getBmClass() {
-    return bm.getBmClass();
-  }
-
-  public String getBmName() {
-    return bm.getBmName();
-  }
-
-  public String getBmDescription() {
-    return bm.getBmDescription();
-  }
-
   public String getMeasureURI() {
-    return bm.getMeasureURI();
+    return measureURI;
   }
 
   public String getValue() {

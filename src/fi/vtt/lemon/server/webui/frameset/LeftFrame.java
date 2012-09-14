@@ -22,7 +22,6 @@ import osmo.common.log.Logger;
 import fi.vtt.lemon.server.webui.bmlistpage.BMListPage;
 import fi.vtt.lemon.server.webui.eventlistpage.EventListPage;
 import fi.vtt.lemon.server.webui.historypage.HistoryPage;
-import fi.vtt.lemon.server.webui.probelistpage.ProbeListPage;
 import org.apache.wicket.Page;
 import org.apache.wicket.markup.html.WebPage;
 import org.apache.wicket.markup.html.link.Link;
@@ -89,7 +88,6 @@ public class LeftFrame extends WebPage {
    */
   public LeftFrame(BodyFrame index) {
     add(new ChangeFramePageLink("linkToHistoryPage", index, HistoryPage.class));
-    add(new ChangeFramePageLink("linkToProbesPage", index, ProbeListPage.class));
     add(new ChangeFramePageLink("linkToBMPage", index, BMListPage.class));
     add(new ChangeFramePageLink("linkToEventsPage", index, EventListPage.class));
 //    add(new ChangeFramePageLink("linkToDMPage", index, DerivedMeasuresPage.class));

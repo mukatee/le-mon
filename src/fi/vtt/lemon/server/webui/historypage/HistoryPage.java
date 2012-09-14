@@ -20,7 +20,7 @@ package fi.vtt.lemon.server.webui.historypage;
 
 import osmo.common.log.Logger;
 import fi.vtt.lemon.server.PersistencePlugin;
-import fi.vtt.lemon.server.shared.datamodel.Value;
+import fi.vtt.lemon.server.Value;
 import org.apache.wicket.extensions.markup.html.repeater.data.table.DefaultDataTable;
 import org.apache.wicket.extensions.markup.html.repeater.data.table.IColumn;
 import org.apache.wicket.extensions.markup.html.repeater.data.table.PropertyColumn;

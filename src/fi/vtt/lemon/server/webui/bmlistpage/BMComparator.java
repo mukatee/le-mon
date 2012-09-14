@@ -34,14 +34,8 @@ public class BMComparator implements Comparator<BMListItem> {
 
   public int compare(BMListItem a1, BMListItem a2) {
     int result = 0;
-    if (sortKey.equals("bmId")) {
-      result = (int)(a1.getBmId() - a2.getBmId());
-    }
     if (sortKey.equals("measureURI")) {
       result = a1.getMeasureURI().compareTo(a2.getMeasureURI());
-    }
-    if (sortKey.equals("bmDescription")) {
-      result = a1.getBmDescription().compareTo(a2.getBmDescription());
     }
     if (sortKey.equals("value")) {
       result = a1.getValue().compareTo(a2.getValue());

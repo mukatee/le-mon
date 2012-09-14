@@ -20,7 +20,6 @@ package fi.vtt.lemon.server.webui.bmlistpage;
 
 import osmo.common.log.Logger;
 import fi.vtt.lemon.server.registry.RegistryPlugin;
-import fi.vtt.lemon.server.shared.datamodel.BMDescription;
 import org.apache.wicket.extensions.markup.html.repeater.util.SortParam;
 import org.apache.wicket.extensions.markup.html.repeater.util.SortableDataProvider;
 import org.apache.wicket.model.IModel;
@@ -46,11 +45,11 @@ public class BMListDataProvider extends SortableDataProvider<BMListItem> {
   }
 
   public Iterator<BMListItem> iterator(int i, int i1) {
-    List<BMDescription> bms = registry.getAvailableBM();
+    List<String> bms = registry.getAvailableBM();
     bms = bms.subList(i, i + i1);
     List<BMListItem> list = new ArrayList<BMListItem>();
-    for (BMDescription bm : bms) {
-      String value = latestValues.get(bm.getMeasureURI());
+    for (String bm : bms) {
+      String value = latestValues.get(bm);
       BMListItem listItem = new BMListItem(bm, value);
       list.add(listItem);
     }

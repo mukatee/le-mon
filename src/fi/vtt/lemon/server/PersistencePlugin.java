@@ -18,17 +18,11 @@
 
 package fi.vtt.lemon.server;
 
-import fi.vtt.lemon.RabbitConst;
 import osmo.common.log.Logger;
-import fi.vtt.lemon.server.shared.datamodel.BMDescription;
-import fi.vtt.lemon.server.shared.datamodel.ProbeDescription;
-import fi.vtt.lemon.server.shared.datamodel.TargetDescription;
-import fi.vtt.lemon.server.shared.datamodel.Value;
 
 import java.sql.Date;
 import java.text.SimpleDateFormat;
 import java.util.List;
-import java.util.Map;
 
 /**
  * Persists measurement data, events, derivedmeasure, etc.
@@ -181,103 +175,5 @@ public class PersistencePlugin {
    */
   public int getValueCount() {
     return 0;
-  }
-
-  /**
-   * Creates a ProbeDescription for the given information. Checks the DB for an existing suitable description.
-   * If none is found, a new one is created and stored into the database. Whichever succeeds, the result is returned.
-   *
-   * @param properties The information describing the probe.
-   * @return The ProbeDescription object matching the given information.
-   */
-  public ProbeDescription createProbeDescription(Map<String, String> properties) {
-    ProbeDescription probe;
-      String query = "select distinct pd from ProbeDescription pd where pd.probeName = :pname and pd.target.targetName = :tname " +
-              "and pd.target.targetType = :ttype and pd.bm.bmClass = :bmClass and pd.bm.bmName = :bmName";
-      String probeName = properties.get(RabbitConst.PROBE_NAME);
-      String targetName = properties.get(RabbitConst.PROBE_TARGET_NAME);
-      String targetType = properties.get(RabbitConst.PROBE_TARGET_TYPE);
-      String bmClass = properties.get(RabbitConst.PROBE_BM_CLASS);
-      String bmName = properties.get(RabbitConst.PROBE_BM_NAME);
-
-      List<ProbeDescription> resultList = null;
-      assert resultList.size() <= 1 : "There should be maximum of one probe description in the database with unique probe name, target type, target name, bm class and bm name." +
-              " had " + resultList.size() + " for {" + probeName + "," + targetType + "," + targetName + "," + bmClass + "," + bmName + "}";
-      if (resultList.size() == 1) {
-        probe = resultList.get(0);
-        return probe;
-      }
-      //get the target object for the probedescription
-      TargetDescription target = createTargetDescription(properties);
-      //get the bm description for the probedescription
-      BMDescription bm = createBMDescription(properties);
-
-      probe = new ProbeDescription(properties, target, bm);
-    return probe;
-  }
-
-  /**
-   * Retrieves a BMDescription for the given properties. If one is found in the database, it is
-   * returned. If not, a new one is created, stored into the database, and returned. The relevant values are
-   * target name, target type, bm class, and bm name.
-   *
-   * @param properties Information for the BMDescription to be created.
-   * @return The BMDescription matching the given arguments.
-   */
-  public BMDescription createBMDescription(Map<String, String> properties) {
-    BMDescription bm;
-    try {
-      String targetType = properties.get(RabbitConst.PROBE_TARGET_TYPE);
-      String targetName = properties.get(RabbitConst.PROBE_TARGET_NAME);
-      String bmClass = properties.get(RabbitConst.PROBE_BM_CLASS);
-      String bmName = properties.get(RabbitConst.PROBE_BM_NAME);
-      String bmDescription = properties.get(RabbitConst.PROBE_BM_DESCRIPTION);
-      if (targetType == null || targetName == null || bmClass == null || bmName == null) {
-        throw new IllegalArgumentException("BM cannot be created with null values for any of TargetType, TargetName, BMClass, BMName. " +
-                "Got "+targetType+", "+targetName+", "+bmClass+", "+bmName+".");
-      }
-
-      List<BMDescription> resultList = null;
-      assert resultList.size() <= 1 : "There should be maximum of one BM description in the database with unique target type, target name, bm class and bm name." +
-              " had " + resultList.size() + " for {" + targetType + "," + targetName + "," + bmClass + "," + bmName + "}";
-      if (resultList.size() == 1) {
-        return resultList.get(0);
-      }
-      //get the target object for the probedescription
-      TargetDescription target = createTargetDescription(properties);
-      bm = new BMDescription(target, bmClass, bmName, bmDescription);
-    } finally {
-    }
-    return bm;
-  }
-
-  /**
-   * Retrieves a TargetDescription for the given properties. If one is found in the database, it is
-   * returned. If not, a new one is created, stored into the database, and returned. The relevant values are
-   * target name and target type.
-   *
-   * @param properties Information for the TargetDescription to be created.
-   * @return The TargetDescription matching the given arguments.
-   */
-  public TargetDescription createTargetDescription(Map<String, String> properties) {
-    TargetDescription target;
-    try {
-      String targetType = properties.get(RabbitConst.PROBE_TARGET_TYPE);
-      String targetName = properties.get(RabbitConst.PROBE_TARGET_NAME);
-      if (targetType == null || targetName == null) {
-        throw new IllegalArgumentException("Target cannot be created with null values for any of TargetType, TargetName. " +
-                "Got "+targetType+", "+targetName+".");
-      }
-
-      List<TargetDescription> resultList = null;
-      assert resultList.size() <= 1 : "There should be maximum of one target description in the database with unique target name,and target type." +
-              " had " + resultList.size() + " for {" + targetType + "," + targetName + "}";
-      if (resultList.size() == 1) {
-        return resultList.get(0);
-      }
-      target = new TargetDescription(targetType, targetName);
-    } finally {
-    }
-    return target;
   }
 }

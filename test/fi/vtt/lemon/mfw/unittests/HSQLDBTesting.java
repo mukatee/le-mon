@@ -19,9 +19,6 @@
 package fi.vtt.lemon.mfw.unittests;
 
 import fi.vtt.lemon.RabbitConst;
-import fi.vtt.lemon.server.shared.datamodel.BMDescription;
-import fi.vtt.lemon.server.shared.datamodel.ProbeDescription;
-import fi.vtt.lemon.server.shared.datamodel.TargetDescription;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -64,37 +61,6 @@ public class HSQLDBTesting {
     props.put(RabbitConst.PROBE_TARGET_NAME, "target name");
     props.put(RabbitConst.PROBE_BM_DESCRIPTION, "bm description");
     props.put(RabbitConst.PROBE_PRECISION, "1");
-    ProbeDescription pd = testing.createProbeDescription(props);
-//    BMDescription bm = testing.createBMDescription(props);
-//    ProbeDescription pd = testing.createProbeDescription(props);
-    System.out.println("bmid:"+pd.getBm().getBmId()+" bm:"+pd.getBm());
 
-  }
-
-  /**
-   * Creates a ProbeDescription for the given information. Checks the DB for an existing suitable description.
-   * If none is found, a new one is created and stored into the database. Whichever succeeds, the result is returned.
-   *
-   * @param properties  The information describing the probe.
-   * @return The ProbeDescription object matching the given information.
-   */
-  public ProbeDescription createProbeDescription(Map<String, String> properties) {
-    return null;
-  }
-
-  /**
-   * Retrieves a BMDescription for the given properties. If one is found in the database, it is
-   * returned. If not, a new one is created, stored into the database, and returned. The relevant values are
-   * target name, target type, bm class, and bm name.
-   *
-   * @param properties Information for the BMDescription to be created.
-   * @return The BMDescription matching the given arguments.
-   */
-  public BMDescription createBMDescription(Map<String, String> properties) {
-    return null;
-  }
-
-  public TargetDescription createTargetDescription(Map<String, String> properties) {
-    return null;
   }
 }

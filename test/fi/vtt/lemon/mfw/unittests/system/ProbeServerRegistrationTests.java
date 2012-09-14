@@ -18,7 +18,6 @@
 
 package fi.vtt.lemon.mfw.unittests.system;
 
-import fi.vtt.lemon.server.shared.datamodel.BMDescription;
 import org.junit.Test;
 
 import java.util.Collection;

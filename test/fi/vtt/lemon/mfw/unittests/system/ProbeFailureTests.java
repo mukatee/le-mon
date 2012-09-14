@@ -18,9 +18,6 @@
 
 package fi.vtt.lemon.mfw.unittests.system;
 
-import fi.vtt.lemon.probe.shared.BaseMeasure;
-import fi.vtt.lemon.server.shared.datamodel.BMDescription;
-import fi.vtt.lemon.probes.tester.TestProbe;
 import org.junit.Test;
 
 import java.util.List;

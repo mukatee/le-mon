@@ -16,22 +16,30 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
-package fi.vtt.lemon.mfw.unittests.agent.server;
+package fi.vtt.lemon.server.external.resources;
 
-import fi.vtt.lemon.server.registry.RegistryPlugin;
-import org.junit.Test;
+import java.util.UUID;
 
-import static org.junit.Assert.assertEquals;
+public class Session {
+  private UUID id;
+  private String name;
+  private String endpoint;
 
-/**
- * @author Teemu Kanstren
- */
-public class RegistryTests {
-  @Test
-  public void testTargetParsingFromMeasureURI() {
-    String measureURI = "MFW://target_type/target_name/bm_class/bm_name";
-    RegistryPlugin registry = new RegistryPlugin();
-    assertEquals("target_type", registry.parseTargetType(measureURI));
-    assertEquals("target_name", registry.parseTargetName(measureURI));
+  public Session(UUID id, String name, String endpoint) {
+    this.id = id;
+    this.name = name;
+    this.endpoint = endpoint;
+  }
+
+  public UUID getId() {
+    return id;
+  }
+
+  public String getName() {
+    return name;
+  }
+
+  public String getEndpoint() {
+    return endpoint;
   }
 }

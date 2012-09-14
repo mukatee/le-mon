@@ -27,7 +27,7 @@ import java.util.concurrent.TimeUnit;
 
 /**
  * Creates threads for the thread pool. Delegates to Executors.detaultThreadFactory with the difference that
- * all threads created as defined as daemon threads.
+ * all threads created are defined as daemon threads.
  *
  * @author Teemu Kanstren
  */

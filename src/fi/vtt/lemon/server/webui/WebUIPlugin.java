@@ -27,14 +27,11 @@ import fi.vtt.lemon.server.webui.mfwclient.MFWClient;
 import fi.vtt.lemon.server.webui.mfwclient.ProbeParameter;
 import fi.vtt.lemon.server.webui.mfwclient.ProbeParameters;
 
-import fi.vtt.lemon.server.shared.datamodel.Value;
-
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 /**
  * Provides a browser-based UI to see and manage information about the MFW operation. Uses the OSGI HTTP service

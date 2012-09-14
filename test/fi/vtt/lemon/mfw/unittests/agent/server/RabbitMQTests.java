@@ -3,6 +3,8 @@ package fi.vtt.lemon.mfw.unittests.agent.server;
 import com.rabbitmq.client.Channel;
 import com.rabbitmq.client.Connection;
 import com.rabbitmq.client.ConnectionFactory;
+import fi.vtt.lemon.probe.plugins.xmlrpc.ServerClient;
+import fi.vtt.lemon.server.internal.InternalServer;
 import org.junit.Test;
 
 /** @author Teemu Kanstren */
@@ -30,5 +32,20 @@ public class RabbitMQTests {
     Channel channel = connection.createChannel();
 
     channel.queueDeclare("QUEUE_NAME", false, false, false, null);
-    System.out.println(" [*] Waiting for messages. To exit press CTRL+C");  }
+    System.out.println(" [*] Waiting for messages. To exit press CTRL+C");
+  }
+
+  @Test
+  public void endToEnd() throws Exception {
+    System.out.println("starting");
+    InternalServer server = new InternalServer();
+    System.out.println("server created");
+    server.start();
+    System.out.println("server started");
+    ServerClient client = new ServerClient("localhost");
+    System.out.println("client created");
+    client.measurement("MURI", 1, "Hi");
+    System.out.println("msg delivered");
+    Thread.sleep(5000);
+  }
 }

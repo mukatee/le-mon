@@ -18,7 +18,7 @@
 
 package fi.vtt.lemon.server.webui.historypage;
 
-import fi.vtt.lemon.server.shared.datamodel.Value;
+import fi.vtt.lemon.server.Value;
 import org.apache.wicket.model.LoadableDetachableModel;
 
 /**
