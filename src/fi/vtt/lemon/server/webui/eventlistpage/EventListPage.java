@@ -19,13 +19,13 @@
 package fi.vtt.lemon.server.webui.eventlistpage;
 
 import fi.vtt.lemon.server.Persistence;
-import osmo.common.log.Logger;
 import org.apache.wicket.extensions.markup.html.repeater.data.table.DefaultDataTable;
 import org.apache.wicket.extensions.markup.html.repeater.data.table.IColumn;
 import org.apache.wicket.extensions.markup.html.repeater.data.table.PropertyColumn;
 import org.apache.wicket.markup.html.WebPage;
 import org.apache.wicket.markup.html.resources.StyleSheetReference;
 import org.apache.wicket.model.Model;
+import osmo.common.log.Logger;
 
 import java.util.ArrayList;
 import java.util.List;

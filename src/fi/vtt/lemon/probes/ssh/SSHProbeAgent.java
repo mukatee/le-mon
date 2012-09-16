@@ -23,16 +23,14 @@ import ch.ethz.ssh2.SCPClient;
 import ch.ethz.ssh2.Session;
 import ch.ethz.ssh2.StreamGobbler;
 import fi.vtt.lemon.RabbitConst;
-import osmo.common.log.Logger;
 import fi.vtt.lemon.probe.shared.BaseProbeAgent;
+import osmo.common.log.Logger;
 
 import java.io.BufferedReader;
-import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;

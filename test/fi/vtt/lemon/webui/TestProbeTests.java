@@ -30,7 +30,7 @@ import org.junit.Test;
 import java.util.ArrayList;
 
 import static fi.vtt.lemon.webui.WebTestUtils.*;
-import static junit.framework.Assert.assertTrue;
+import static junit.framework.Assert.*;
 
 /**
  * @author Teemu Kanstren

@@ -1,5 +1,7 @@
 package fi.vtt.lemon.server.external.resources;
 
+import fi.vtt.lemon.server.LemonServer;
+import fi.vtt.lemon.server.Persistence;
 import fi.vtt.lemon.server.Registry;
 import fi.vtt.lemon.server.Value;
 import org.codehaus.jettison.json.JSONArray;
@@ -29,7 +31,7 @@ public class HistoryJSON {
   @Consumes(MediaType.APPLICATION_JSON)
   @Produces(MediaType.APPLICATION_JSON)
   public Response requestHistory(@HeaderParam("authorization") String authHeader, JSONObject req) {
-    Registry registry = Registry.getRegistry();
+    Registry registry = LemonServer.getRegistry();
     log.debug("History request");
     JSONArray root = new JSONArray();
 
@@ -41,7 +43,7 @@ public class HistoryJSON {
         long end = req.getLong(END_TIME);
         Collection<Long> bmIds = new ArrayList<>();
         JSONArray array = req.getJSONArray(BM_LIST);
-        List<Value> measurements = registry.getHistory(start, end, bmIds);
+        List<Value> measurements = LemonServer.getHistory(start, end, bmIds);
         // conversion to json
         for (Value value : measurements) {
           JSONObject obj = new JSONObject();
@@ -49,6 +51,7 @@ public class HistoryJSON {
           obj.put(MEASURE_URI, value.getMeasureURI());
           obj.put(TIME, value.getTime().getTime());
           obj.put(VALUE, value.valueString());
+          array.put(obj);
         }
       } catch (JSONException e) {
         log.error("Error while creating JSON for measurement history", e);

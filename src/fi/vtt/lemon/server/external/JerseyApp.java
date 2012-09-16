@@ -11,7 +11,7 @@ import org.eclipse.jetty.servlet.ServletContextHandler;
 import org.eclipse.jetty.servlet.ServletHolder;
 
 import javax.ws.rs.core.Application;
-import java.net.InetSocketAddress;
+import java.nio.channels.Selector;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -29,8 +29,11 @@ public class JerseyApp extends Application {
   }
 
   public void start() throws Exception {
-    InetSocketAddress addr = new InetSocketAddress("0:0:0:0", 54640);
-    Server server = new Server(addr);
+//    ServerSocketChannel serverSocketChannel = ServerSocketChannel.open();
+
+//    serverSocketChannel.socket().bind(new InetSocketAddress(9999));
+//    serverSocketChannel.accept();
+    Server server = new Server(11111);
     //define what should be the HTTP root of our application
     ServletContextHandler handler = new ServletContextHandler();
     handler.setContextPath("/");

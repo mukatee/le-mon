@@ -7,8 +7,6 @@ import fi.vtt.lemon.probe.ServerClient;
 import fi.vtt.lemon.server.internal.InternalServer;
 import org.junit.Test;
 
-import java.net.ServerSocket;
-
 /** @author Teemu Kanstren */
 public class RabbitMQTests {
   @Test

@@ -24,14 +24,14 @@ public class InternalServer implements Runnable {
   @Override
   public void run() {
     while (true) {
-      JSONObject json = null;
       String msg = null;
+      JSONObject json = null;
       try {
         QueueingConsumer.Delivery delivery = consumer.nextDelivery();
         String body = new String(delivery.getBody());
-        log.debug(" [x] Received '" + body + "'");
         json = new JSONObject(body);
-        msg = json.getString(MSGTYPE);
+        log.debug(" [x] Received '" + body + "'");
+        msg = (String) json.get(MSGTYPE);
       } catch (Exception e) {
         log.error("Error while getting message from RabbitMQ. Sleeping 5s.", e);
         try {
@@ -72,12 +72,5 @@ public class InternalServer implements Runnable {
     channel.basicConsume(SERVER_QUEUE, true, consumer);
     Thread thread = new Thread(this);
     thread.start();
-  }
-
-  public boolean measurement(long time, String measureURI, int precision, String value, long subscriptionId) {
-    return false;
-  }
-
-  public void event(long time, String type, String source, String message, long subscriptionId) {
   }
 }

@@ -18,8 +18,6 @@
 
 package fi.vtt.lemon.probe.shared;
 
-import java.util.Collection;
-import java.util.Map;
 import java.util.Properties;
 
 /**

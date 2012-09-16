@@ -1,10 +1,7 @@
 package fi.vtt.lemon.rest;
 
 import com.sun.jersey.api.client.Client;
-import com.sun.jersey.api.client.ClientResponse;
-import com.sun.jersey.api.client.UniformInterfaceException;
 import com.sun.jersey.api.client.WebResource;
-import com.sun.jersey.api.client.filter.HTTPBasicAuthFilter;
 import fi.vtt.lemon.server.external.JerseyApp;
 import fi.vtt.lemon.server.external.RESTConst;
 

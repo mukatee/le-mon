@@ -34,18 +34,16 @@ public class Value {
   private String value;
   //time of measurement
   private Date time;
-  private boolean error;
 
   public enum SortKey {
     PRECISION, MEASUREURI, VALUE, TIME
   }
 
-  public Value(String measureURI, int precision, String value, long time, boolean error) {
+  public Value(String measureURI, int precision, String value, long time) {
     this.measureURI = measureURI;
     this.precision = precision;
     this.value = value;
     this.time = new Date(time);
-    this.error = error;
   }
   
   public String getMeasureURI() {

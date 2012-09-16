@@ -1,5 +1,6 @@
 package fi.vtt.lemon.server.external.resources;
 
+import fi.vtt.lemon.server.LemonServer;
 import fi.vtt.lemon.server.Registry;
 import org.codehaus.jettison.json.JSONException;
 import org.codehaus.jettison.json.JSONObject;
@@ -10,7 +11,6 @@ import javax.ws.rs.DELETE;
 import javax.ws.rs.HeaderParam;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
-import javax.ws.rs.PathParam;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
@@ -25,7 +25,7 @@ public class SubscriptionJSON {
   @Consumes(MediaType.APPLICATION_JSON)
   public Response subscribeToBM(@HeaderParam("authorization") String authHeader, JSONObject req) {
     log.debug("SubcribeToBM request received, " + req);
-    Registry registry = Registry.getRegistry();
+    Registry registry = LemonServer.getRegistry();
 
     if (registry.check(authHeader)) {
       try {
@@ -44,7 +44,7 @@ public class SubscriptionJSON {
   @Consumes(MediaType.APPLICATION_JSON)
   public Response unsubscribeToBM(@HeaderParam("authorization") String authHeader, JSONObject req) {
     log.debug("UnsubcribeToBM request received, " + req);
-    Registry registry = Registry.getRegistry();
+    Registry registry = LemonServer.getRegistry();
     if (registry.check(authHeader)) {
       try {
         registry.removeSubscription(req.getString(MEASURE_URI));

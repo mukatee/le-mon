@@ -18,7 +18,6 @@
 
 package fi.vtt.lemon.server.webui.bmresultspage;
 
-import osmo.common.log.Logger;
 import fi.vtt.lemon.server.webui.WebUIPlugin;
 import org.apache.wicket.extensions.markup.html.repeater.data.table.DefaultDataTable;
 import org.apache.wicket.extensions.markup.html.repeater.data.table.IColumn;
@@ -26,6 +25,7 @@ import org.apache.wicket.extensions.markup.html.repeater.data.table.PropertyColu
 import org.apache.wicket.markup.html.WebPage;
 import org.apache.wicket.markup.html.resources.StyleSheetReference;
 import org.apache.wicket.model.Model;
+import osmo.common.log.Logger;
 
 import java.util.ArrayList;
 import java.util.List;

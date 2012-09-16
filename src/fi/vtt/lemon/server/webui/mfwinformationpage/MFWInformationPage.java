@@ -18,12 +18,12 @@
 
 package fi.vtt.lemon.server.webui.mfwinformationpage;
 
-import osmo.common.log.Logger;
 import fi.vtt.lemon.server.webui.WebUIPlugin;
 import fi.vtt.lemon.server.webui.mfwclient.MFW;
 import org.apache.wicket.markup.html.WebPage;
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.resources.StyleSheetReference;
+import osmo.common.log.Logger;
 
 
 public class MFWInformationPage extends WebPage {
