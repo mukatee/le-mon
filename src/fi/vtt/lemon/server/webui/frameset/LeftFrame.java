@@ -18,13 +18,13 @@
 
 package fi.vtt.lemon.server.webui.frameset;
 
-import osmo.common.log.Logger;
 import fi.vtt.lemon.server.webui.bmlistpage.BMListPage;
 import fi.vtt.lemon.server.webui.eventlistpage.EventListPage;
 import fi.vtt.lemon.server.webui.historypage.HistoryPage;
 import org.apache.wicket.Page;
 import org.apache.wicket.markup.html.WebPage;
 import org.apache.wicket.markup.html.link.Link;
+import osmo.common.log.Logger;
 
 /**
  * @author Teemu Kanstren

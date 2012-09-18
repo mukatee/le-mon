@@ -20,8 +20,6 @@ package fi.vtt.lemon.probe.shared;
 
 import fi.vtt.lemon.RabbitConst;
 
-import java.util.Collection;
-import java.util.HashSet;
 import java.util.Map;
 import java.util.Properties;
 

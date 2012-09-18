@@ -18,12 +18,12 @@
 
 package fi.vtt.lemon.server.webui.subscribetobmpage;
 
-import osmo.common.log.Logger;
 import fi.vtt.lemon.server.webui.WebUIPlugin;
 import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.form.TextArea;
 import org.apache.wicket.model.PropertyModel;
 import org.apache.wicket.util.value.ValueMap;
+import osmo.common.log.Logger;
 
 
 public class UnsubscribeToBMForm extends Form<ValueMap> {

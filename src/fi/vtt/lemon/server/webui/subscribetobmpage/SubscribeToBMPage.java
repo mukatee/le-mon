@@ -18,7 +18,6 @@
 
 package fi.vtt.lemon.server.webui.subscribetobmpage;
 
-import osmo.common.log.Logger;
 import fi.vtt.lemon.server.webui.WebUIPlugin;
 import fi.vtt.lemon.server.webui.availabilitypage.BMDesc;
 import fi.vtt.lemon.server.webui.availabilitypage.BMListDataProvider;
@@ -30,6 +29,7 @@ import org.apache.wicket.extensions.markup.html.repeater.data.table.PropertyColu
 import org.apache.wicket.markup.html.WebPage;
 import org.apache.wicket.markup.html.resources.StyleSheetReference;
 import org.apache.wicket.model.Model;
+import osmo.common.log.Logger;
 
 import java.util.ArrayList;
 import java.util.List;

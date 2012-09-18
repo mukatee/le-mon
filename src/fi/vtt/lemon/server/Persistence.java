@@ -22,18 +22,20 @@ import osmo.common.log.Logger;
 
 import java.sql.Date;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
- * Persists measurement data, events, derivedmeasure, etc.
+ * Persists measurement data, events, ...
  *
  * @author Teemu Kanstren
  */
 public class Persistence {
   private final static Logger log = new Logger(Persistence.class);
-
-  public Persistence() {
-  }
+  private Map<String, Collection<Value>> histories = new HashMap<>();
 
   /**
    * Reads a set of events from the database according to the given criteria.
@@ -175,5 +177,15 @@ public class Persistence {
    */
   public int getValueCount() {
     return 0;
+  }
+
+  public synchronized void store(Value value) {
+    String measureURI = value.getMeasureURI();
+    Collection<Value> history = histories.get(measureURI);
+    if (history == null) {
+      history = new ArrayList<>();
+      histories.put(measureURI, history);
+    }
+    history.add(value);
   }
 }

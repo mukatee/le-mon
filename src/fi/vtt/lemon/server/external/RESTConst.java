@@ -11,15 +11,12 @@ public class RESTConst {
   public static final String START_TIME = "start_time";
   public static final String END_TIME = "end_time";
   public static final String BM_LIST = "bm_list";
-  public static final String NAME = "name";
-  public static final String ENDPOINT = "endpoint";
   public static final String INFO = "info";
 
   public static final String PATH_AVAILABILITY = "/availability";
   public static final String PATH_HISTORY = "/history";
-  public static final String PATH_REGISTER = "/register";
-  public static final String PATH_BASE_MEASURE = "/bm/";
   public static final String PATH_FRAMEWORK_INFO = "/info";
-  public static final String PATH_SUBSCRIPTION = "/subscription/";
+  public static final String PATH_SUBSCRIBE = "/subscribe/";
+  public static final String PATH_UNSUBSCRIBE = "/unsubscribe/";
   public static final String PATH_SHUTDOWN = "/shutdown";
 }

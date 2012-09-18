@@ -21,8 +21,6 @@ package fi.vtt.lemon.probes.tester;
 
 import java.util.Random;
 
-import fi.vtt.lemon.probe.shared.BaseMeasure;
-
 
 /**
  * Test probe to provide test data to the server-agent.

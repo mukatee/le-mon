@@ -19,7 +19,6 @@
 package fi.vtt.lemon.server.webui.bmlistpage;
 
 import fi.vtt.lemon.server.Registry;
-import osmo.common.log.Logger;
 import fi.vtt.lemon.server.webui.WebUIPlugin;
 import org.apache.wicket.ajax.AbstractAjaxTimerBehavior;
 import org.apache.wicket.ajax.AjaxRequestTarget;
@@ -30,6 +29,7 @@ import org.apache.wicket.markup.html.WebPage;
 import org.apache.wicket.markup.html.resources.StyleSheetReference;
 import org.apache.wicket.model.Model;
 import org.apache.wicket.util.time.Duration;
+import osmo.common.log.Logger;
 
 import java.util.ArrayList;
 import java.util.List;

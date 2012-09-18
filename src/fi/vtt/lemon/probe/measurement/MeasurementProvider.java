@@ -30,6 +30,7 @@ import java.util.Properties;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.Future;
 import java.util.concurrent.ScheduledThreadPoolExecutor;
+import java.util.concurrent.TimeUnit;
 
 /**
  * A thread for providing measurements as requested by the server.
@@ -51,6 +52,7 @@ public class MeasurementProvider {
   private int taskTimeOut = 5;
   private WatchDog watchDog = null;
   private final ServerClient server;
+  private int interval = 0;
 
   public MeasurementProvider(ServerClient server, int threadPoolSize, int taskTimeOut) throws Exception {
     this.server = server;
@@ -60,6 +62,10 @@ public class MeasurementProvider {
       this.threadPoolSize = threadPoolSize;
       this.taskTimeOut = taskTimeOut;
     }
+  }
+
+  public void setInterval(int interval) {
+    this.interval = interval;
   }
 
   private void initFromFile() throws IOException {
@@ -80,11 +86,6 @@ public class MeasurementProvider {
     }
   }
 
-  public void start() {
-    executor = new ScheduledThreadPoolExecutor(threadPoolSize, new MeasurementThreadFactory());
-    watchDog = new WatchDog(server, subscriptions, taskTimeOut);
-  }
-
   /**
    * stops the sampling thread.
    */
@@ -96,9 +97,14 @@ public class MeasurementProvider {
   /**
    * Add a new measurement request to be sampled at a given interval.
    */
-  public void startMeasuring(Probe probe) {
+  public synchronized void startMeasuring(Probe probe) {
+    if (executor == null) {
+      executor = new ScheduledThreadPoolExecutor(threadPoolSize, new MeasurementThreadFactory());
+      watchDog = new WatchDog(server, subscriptions, taskTimeOut);
+    }
     MeasurementTask task = new MeasurementTask(server, probe);
     Future future = null;
+    executor.scheduleAtFixedRate(task, 0, interval, TimeUnit.SECONDS);
     WatchedTask watchMe = new WatchedTask(future, task, subscriptions);
     subscriptions.put(probe, watchMe);
     log.debug("measuring probe:" + probe);
