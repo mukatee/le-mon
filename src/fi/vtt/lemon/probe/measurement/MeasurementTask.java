@@ -51,13 +51,13 @@ public class MeasurementTask implements Runnable {
       log.error("Error while performing measurement for " + measureURI, e);
     }
     running = false;
-    log.debug("Received measure:" + measure + " from:" + probe);
+    log.debug("Received measure:" + measure + " from:" + measureURI);
     int precision = probe.getInformation().getPrecision();
 
     if (measure == null) {
       server.event(EVENT_NO_VALUE_FOR_BM, measureURI, "No valid measure available.");
       return;
-    }
+    }    
     server.measurement(measureURI, precision, measure);
   }
 

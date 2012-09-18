@@ -21,8 +21,6 @@ package fi.vtt.lemon.unittests.system;
 import org.junit.After;
 import org.junit.Test;
 
-import static org.junit.Assert.assertEquals;
-
 /**
  * @author Teemu Kanstren
  */

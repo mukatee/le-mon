@@ -1,5 +1,6 @@
 package fi.vtt.lemon.server.external.resources;
 
+import fi.vtt.lemon.server.LemonServer;
 import fi.vtt.lemon.server.Registry;
 import org.codehaus.jettison.json.JSONArray;
 import org.codehaus.jettison.json.JSONException;
@@ -21,8 +22,9 @@ public class AvailabilityJSON {
 
   @GET
   public Response getBMAvailability() {
-    List<String> bms = Registry.getRegistry().getAvailableBM();
-    JSONArray root = new JSONArray();
+    List<String> bms = LemonServer.getRegistry().getAvailableBM();
+    JSONObject root = new JSONObject();
+    JSONArray array = new JSONArray();
     if (!bms.isEmpty()) {
       for (String measureURI : bms) {
         JSONObject bm = new JSONObject();
@@ -32,7 +34,13 @@ public class AvailabilityJSON {
           log.error("Failed to create list of available BM", e);
           return Response.serverError().build();
         }
-        root.put(bm);
+        array.put(bm);
+      }
+      try {
+        root.put("availability", array);
+      } catch (JSONException e) {
+        log.error("Failed to build JSON", e);
+        return Response.serverError().build();
       }
     }
 

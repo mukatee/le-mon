@@ -23,8 +23,7 @@ public class EventProcessor implements Runnable {
       String source = json.getString(PARAM_EVENT_SOURCE);
       String msg = json.getString(PARAM_EVENT_MSG);
     } catch (JSONException e) {
-      log.error("Failed to parse event data from:"+json, e);
-      return;
+      log.error("Failed to parse event data from JSON", e);
     }
   }
 }

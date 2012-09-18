@@ -32,23 +32,12 @@ public class Registry {
   private final static Logger log = new Logger(Registry.class);
   //key = measureURI
   private final Collection<String> availableBM = new HashSet<>();
-  //access to the persistent state
-  private Persistence persistence = null;
   private Collection<String> subscriptionRegistry = new HashSet<>();
-  private static Registry registry;
 
-  public Registry() {
-    registry = this;
+  public void addBM(String measureURI) {
+    availableBM.add(measureURI);
   }
-
-  public static Registry getRegistry() {
-    return registry;
-  }
-
-  public void setPersistence(Persistence persistence) {
-    this.persistence = persistence;
-  }
-
+  
   //get current list of registered probes
   public synchronized List<String> getAvailableBM() {
     List<String> result = new ArrayList<>();
@@ -103,9 +92,5 @@ public class Registry {
 
   public boolean check(String authHeader) {
     return true;
-  }
-
-  public List<Value> getHistory(long start, long end, Collection<Long> bmIds) {
-    return new ArrayList<>();
   }
 }

@@ -21,8 +21,6 @@ package fi.vtt.lemon.unittests.system.testprobes;
 import fi.vtt.lemon.probe.shared.Probe;
 import fi.vtt.lemon.probe.shared.ProbeInformation;
 
-import java.util.Collection;
-import java.util.Map;
 import java.util.Properties;
 
 /**

@@ -20,14 +20,10 @@ package fi.vtt.lemon.probes.tester;
 
 import fi.vtt.lemon.probe.ServerClient;
 import fi.vtt.lemon.probe.measurement.MeasurementProvider;
-import osmo.common.log.Logger;
 import fi.vtt.lemon.probe.shared.Probe;
 import fi.vtt.lemon.probe.shared.ProbeInformation;
+import osmo.common.log.Logger;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.Map;
 import java.util.Properties;
 
 /**
@@ -64,6 +60,7 @@ public class TestProbe implements Probe {
 
   public void start() throws Exception {
     MeasurementProvider mp = new MeasurementProvider(new ServerClient("::1"), 5, 10);
+    mp.setInterval(1);
     mp.startMeasuring(this);
   }
 

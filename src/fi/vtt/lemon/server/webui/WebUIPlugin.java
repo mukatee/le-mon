@@ -18,7 +18,6 @@
 
 package fi.vtt.lemon.server.webui;
 
-import osmo.common.log.Logger;
 import fi.vtt.lemon.server.webui.bmresultspage.BMResult;
 import fi.vtt.lemon.server.webui.bmresultspage.BMResultsStorage;
 import fi.vtt.lemon.server.webui.mfwclient.Availability;
@@ -26,6 +25,7 @@ import fi.vtt.lemon.server.webui.mfwclient.MFW;
 import fi.vtt.lemon.server.webui.mfwclient.MFWClient;
 import fi.vtt.lemon.server.webui.mfwclient.ProbeParameter;
 import fi.vtt.lemon.server.webui.mfwclient.ProbeParameters;
+import osmo.common.log.Logger;
 
 import java.util.ArrayList;
 import java.util.HashMap;

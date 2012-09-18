@@ -5,13 +5,13 @@ import fi.vtt.lemon.server.external.resources.AvailabilityJSON;
 import fi.vtt.lemon.server.external.resources.FrameworkInfoJSON;
 import fi.vtt.lemon.server.external.resources.HistoryJSON;
 import fi.vtt.lemon.server.external.resources.ShutdownJSON;
-import fi.vtt.lemon.server.external.resources.SubscriptionJSON;
+import fi.vtt.lemon.server.external.resources.SubscribeJSON;
+import fi.vtt.lemon.server.external.resources.UnsubscribeJSON;
 import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.servlet.ServletContextHandler;
 import org.eclipse.jetty.servlet.ServletHolder;
 
 import javax.ws.rs.core.Application;
-import java.net.InetSocketAddress;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -22,15 +22,19 @@ public class JerseyApp extends Application {
     Set<Class<?>> resources = new HashSet<>();
     resources.add(ShutdownJSON.class);
     resources.add(HistoryJSON.class);
-    resources.add(SubscriptionJSON.class);
+    resources.add(SubscribeJSON.class);
+    resources.add(UnsubscribeJSON.class);
     resources.add(FrameworkInfoJSON.class);
     resources.add(AvailabilityJSON.class);
     return resources;
   }
 
   public void start() throws Exception {
-    InetSocketAddress addr = new InetSocketAddress("0:0:0:0", 54640);
-    Server server = new Server(addr);
+//    ServerSocketChannel serverSocketChannel = ServerSocketChannel.open();
+
+//    serverSocketChannel.socket().bind(new InetSocketAddress(9999));
+//    serverSocketChannel.accept();
+    Server server = new Server(11111);
     //define what should be the HTTP root of our application
     ServletContextHandler handler = new ServletContextHandler();
     handler.setContextPath("/");
