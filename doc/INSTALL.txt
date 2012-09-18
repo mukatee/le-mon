@@ -1,0 +1,22 @@
+This document describes how to install le-mon.
+You can find the le-mon source code, components and documentation at http://code.google.com/p/le-mon/.
+
+Dependencies
+
+The following elements are required to run le-mon
+-The le-mon server (http://code.google.com/p/le-mon/)
+-One or more le-mon probe-agents (http://code.google.com/p/le-mon/)
+-One of more probes attached to said probe-agents (Your stuff)
+-RabbitMQ middleware (http://www.rabbitmq.com/)
+
+Installation
+
+To install le-mon, you need to configure the different elements.
+The configuration for the le-mon core components is done with the le-mon.properties files for each component.
+This configuration file should be placed in the working directory from which the component in question is started.
+The file should be rather self-explanatory with all the comments included.
+
+To install RabbitMQ, just download it for your platform and run the installer.
+Afterwards, you need to start the RabbitMQ broker every time you run le-mon (or have it running).
+That’s all that is needed for RabbitMQ.
+

@@ -1,0 +1,1 @@
+%JAVA6_HOME%\bin\java -Dfelix.config.properties=file:felix-config.properties -jar bin\felix.jar -b bundles felix-cache
