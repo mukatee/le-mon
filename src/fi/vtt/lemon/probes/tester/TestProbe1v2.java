@@ -30,15 +30,8 @@ public class TestProbe1v2 extends TestProbe {
   private final static Logger log = new Logger(TestProbe1v2.class);
   private int counter = 0;
 
-  public static final String PROBE_DESCRIPTION = "Test Probe 1v2";
-  public static final String TARGET_NAME = "Bob1";
-  public static final String TARGET_TYPE = "Firewall";
-  public static final String BM_CLASS = "Configuration file";
-  public static final String BM_NAME = "Bobby1";
-  public static final String BM_DESCRIPTION = "Reads the configuration, but only better";
-
   public TestProbe1v2() {
-    super(TARGET_NAME, TARGET_TYPE, BM_CLASS, BM_NAME, BM_DESCRIPTION, PROBE_DESCRIPTION, 2);
+    super("Test Probe 1", 2);
   }
 
   public String measure() {

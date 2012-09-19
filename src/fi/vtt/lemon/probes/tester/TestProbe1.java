@@ -29,15 +29,8 @@ public class TestProbe1 extends TestProbe {
   private final static Logger log = new Logger(TestProbe1.class);
   private int counter = 0;
 
-  public static final String PROBE_DESCRIPTION = "Test Probe 1";
-  public static final String TARGET_NAME = "Bob1";
-  public static final String TARGET_TYPE = "Firewall";
-  public static final String BM_CLASS = "Configuration file";
-  public static final String BM_NAME = "Bobby1";
-  public static final String BM_DESCRIPTION = "Reads the configuration, but only better";
-
   public TestProbe1() {
-    super(TARGET_NAME, TARGET_TYPE, BM_CLASS, BM_NAME, BM_DESCRIPTION, PROBE_DESCRIPTION, 1);
+    super("MFW://Firewall/Bob1/Configuration file/Bobby1", 1);
   }
 
   public String measure() {

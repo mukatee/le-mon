@@ -22,18 +22,15 @@ import ch.ethz.ssh2.Connection;
 import ch.ethz.ssh2.SCPClient;
 import ch.ethz.ssh2.Session;
 import ch.ethz.ssh2.StreamGobbler;
-import fi.vtt.lemon.RabbitConst;
-import fi.vtt.lemon.probe.shared.BaseProbeAgent;
+import fi.vtt.lemon.probe.Probe;
 import osmo.common.log.Logger;
 
 import java.io.BufferedReader;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Properties;
 
 /**
  * A probe-agent for performing measurements over the SSH protocol. Connects to the configured IP address,
@@ -43,9 +40,12 @@ import java.util.Properties;
  *
  * @author Teemu Kanstren
  */
-public class SSHProbeAgent extends BaseProbeAgent {
+public class SSHProbeAgent implements Probe {
   private final static Logger log = new Logger(SSHProbeAgent.class);
-  private final static Map<String, Connection> connections = new HashMap<String, Connection>();
+  private final static Map<String, Connection> connections = new HashMap<>();
+  private final String measureURI;
+  private final int precision;
+  private final String target;
   //filename of the script. should be relative to the "working directory"
   private String filename = null;
   private String username = null;
@@ -54,12 +54,22 @@ public class SSHProbeAgent extends BaseProbeAgent {
   private String command = null;
   private String errors = null;
 
-  public void init(Properties properties) {
-    super.init(properties);
-    filename = properties.getProperty((RabbitConst.SSH_SCRIPT_FILENAME));
-    username = properties.getProperty((RabbitConst.SSH_USERNAME));
-    password = properties.getProperty((RabbitConst.SSH_PASSWORD));
-    command = properties.getProperty((RabbitConst.SSH_SCRIPT_COMMAND));
+  public SSHProbeAgent(String measureURI, int precision, String target, String filename, String username, String password, String command) {
+    this.measureURI = measureURI;
+    this.precision = precision;
+    this.target = target;
+    this.filename = filename;
+    this.username = username;
+    this.password = password;
+    this.command = command;
+  }
+
+  public String getMeasureURI() {
+    return measureURI;
+  }
+
+  public int getPrecision() {
+    return precision;
   }
 
   public String measure() {
@@ -68,39 +78,16 @@ public class SSHProbeAgent extends BaseProbeAgent {
       log.debug("measurement result:" + result);
       return result;
     } catch (Exception e) {
-      throw new RuntimeException("Failed to perform measure for " + pi.getTargetName()+ ", " + pi.getBmClass() + ", ", e);
-    }
-  }
-
-  public void startProbe() {
-
-  }
-
-  public void stopProbe() {
-    for (Connection connection : connections.values()) {
-      connection.close();
-    }
-  }
-
-  public void setConfiguration(Map<String, String> config) {
-    setBaseConfigurationParameters(config);
-    try {
-      String commands = config.get(RabbitConst.SSH_SCRIPT_FILE_CONTENTS);
-      FileOutputStream file = new FileOutputStream(filename);
-      file.write(commands.getBytes());
-      file.close();
-    } catch (IOException e) {
-      throw new RuntimeException("Failed to write to file:" + filename, e);
+      throw new RuntimeException("Failed to perform measure for " + measureURI + ", ", e);
     }
   }
 
   //executes the configured shell script on the configured target
   private String executeScript() throws Exception {
-    String targetName = pi.getTargetName();
-    Connection conn = connections.get(targetName);
+    Connection conn = connections.get(target);
     if (conn == null) {
-      conn = new Connection(targetName);
-      log.debug("connecting now to:"+targetName);
+      conn = new Connection(target);
+      log.debug("connecting now to:"+target);
       /* Now connect */
       conn.connect();
       log.debug("connected ok");
@@ -110,10 +97,9 @@ public class SSHProbeAgent extends BaseProbeAgent {
         throw new IOException("Authentication failed.");
 
       log.debug("authenticated ok");
-      connections.put(targetName, conn);
+      connections.put(target, conn);
     }
-    log.debug("executing script on target:"+targetName);
-
+    log.debug("executing script on target:"+target);
 
     SCPClient client = conn.createSCPClient();
     client.put(filename, ".");
@@ -137,15 +123,6 @@ public class SSHProbeAgent extends BaseProbeAgent {
     /* Close the connection */
     //conn.close();
     return output;
-  }
-
-  /**
-   * This is just for testing.
-   *
-   * @return Error messages from remote host.
-   */
-  public String getErrors() {
-    return errors;
   }
 
   private String readOutput(InputStream in) throws IOException {

@@ -1,0 +1,77 @@
+The REST interface is based on HTTP requests and JSON data.
+
+In the following "localhost" is used to describe the host address and "8080" the port number.
+Replace with your host address and port number.
+
+Notice that in the following the data is shown as serialized on JSON encodings. 
+Thus "/" is shown as "\/", which is just because of the escape character, which will be removed in decoding the JSON..
+
+You may invoke the following resources:
+
+RESOURCE: http://localhost:8080/rest/shutdown
+HTTP METHOD: GET
+DESCRIPTION: System.exit() on the server-agent (nice feature!)
+PARAMETERS: none
+RETURN VALUES: nothing
+
+
+RESOURCE: http://localhost:8080/rest/availability
+HTTP METHOD: GET
+DESCRIPTION: Gives a list of available base measures.
+PARAMETERS: none
+RETURNS:
+{"availability":
+ [{"measure_uri":"MFW:\/\/Communication protocol\/Bob3\/Encryption key length\/Bobby3"},
+  {"measure_uri":"MFW:\/\/Firewall\/Bob1\/Configuration file\/Bobby1"},
+  {"measure_uri":"MFW:\/\/Spam Filter\/Bob2\/configuration file\/Bobby"}]
+}
+
+
+RESOURCE: http://localhost:8080/rest/info
+HTTP METHOD: GET
+DESCRIPTION: Request information about the deployed le-mon version.
+RETURNS:
+{"info":"LE-MON v0.1"}
+
+ 
+RESOURCE: http://localhost:8080/rest/history
+HTTP METHOD: POST
+DESCRIPTION: Requests measurement history for given BMs
+BODY PARAMETERS:
+ start_time: long value for Java date time.
+ end_time: long value for Java date time.
+ bm_list: list of base measure for which history is required..
+EXAMPLE:
+{
+ {"start_time":34235324}
+ {"end_time":34235666}
+ {"bm_list":
+ ["MFW:\/\/Communication protocol\/Bob3\/Encryption key length\/Bobby3",
+  "MFW:\/\/Firewall\/Bob1\/Configuration file\/Bobby1",
+  "MFW:\/\/Spam Filter\/Bob2\/configuration file\/Bobby"]
+ }
+}
+RETURNS:
+{
+ [{"measure_uri":"MFW:\/\/Communication protocol\/Bob3\/Encryption key length\/Bobby3", "time":2432423, "value":"joo"},
+  {"measure_uri":"MFW:\/\/Firewall\/Bob1\/Configuration file\/Bobby1", "time":545334, "value":"jooo"},
+  {"measure_uri":"MFW:\/\/Spam Filter\/Bob2\/configuration file\/Bobby", "time":454354, "value":"joooo"}]
+}
+
+
+RESOURCE: http://localhost:8080/rest/bmsubscribe
+HTTP METHOD: POST
+DESCRIPTION: Subscribes for a base measure
+RETURNS: nothing
+BODY PARAMETERS:
+  {"measure_uri":"MFW:\/\/Firewall\/Bob1\/Configuration file\/Bobby1"}
+RETURNS:
+  The server should make callbacks to a separate API function provided by the client.
+
+RESOURCE: Your endpoint: http://localhost:8080/rest/unsubscribe
+HTTP METHOD: POST
+DESCRIPTION: Removes subscription for a base measure
+RETURNS: nothing
+BODY PARAMETERS:
+  {"measure_uri":"MFW:\/\/Firewall\/Bob1\/Configuration file\/Bobby1"}
+

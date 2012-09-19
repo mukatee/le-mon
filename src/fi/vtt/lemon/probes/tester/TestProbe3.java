@@ -18,9 +18,7 @@
 
 package fi.vtt.lemon.probes.tester;
 
-
 import java.util.Random;
-
 
 /**
  * Test probe to provide test data to the server-agent.
@@ -28,27 +26,14 @@ import java.util.Random;
  * @author Teemu Kanstren
  */
 public class TestProbe3 extends TestProbe {
-  private int counter = 0;
-
   private Random random;
 
-  public static final String PROBE_DESCRIPTION = "Test Probe 3";
-  public static final String TARGET_NAME = "Bob3";
-  public static final String TARGET_TYPE = "Communication protocol";
-  public static final String BM_CLASS = "Encryption key length";
-  public static final String BM_NAME = "Bobby3";
-  public static final String BM_DESCRIPTION = "Provides the key length for encryption";
-
   public TestProbe3() {
-    super(TARGET_NAME, TARGET_TYPE, BM_CLASS, BM_NAME, BM_DESCRIPTION, PROBE_DESCRIPTION, 1);
+    super("MFW://Communication protocol/Bob3/Encryption key length/Bobby3", 1);
     random = new Random();
   }
 
   public String measure() {
-    //String result = "test probe3 measure " + counter;
-    String result = Integer.toString( random.nextInt( 100 ) + 1 );
-    counter++;
-    return result;
+    return Integer.toString( random.nextInt( 100 ) + 1 );
   }
-
 }

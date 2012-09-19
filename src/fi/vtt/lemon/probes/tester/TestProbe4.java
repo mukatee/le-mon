@@ -26,15 +26,8 @@ package fi.vtt.lemon.probes.tester;
 public class TestProbe4 extends TestProbe {
   private int counter = 0;
 
-  public static final String PROBE_DESCRIPTION = "Test Probe 4";
-  public static final String TARGET_NAME = "Bob4";
-  public static final String TARGET_TYPE = "Mail server";
-  public static final String BM_CLASS = "Authentication enabled";
-  public static final String BM_NAME = "Bobby4";
-  public static final String BM_DESCRIPTION = "Checks that authentication is present";
-
   public TestProbe4() {
-    super(TARGET_NAME, TARGET_TYPE, BM_CLASS, BM_NAME, BM_DESCRIPTION, PROBE_DESCRIPTION, 1);
+    super(null, "Test Probe 4", 1);
   }
 
   public String measure() {

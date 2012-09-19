@@ -64,6 +64,7 @@ public class Availability {
     JSONObject item1 = array.getJSONObject(0);
     JSONObject item2 = array.getJSONObject(1);
     JSONObject item3 = array.getJSONObject(2);
+    System.out.println("data:\n"+json.toString());
     assertEquals("Registered probe 1", "MFW://Communication protocol/Bob3/Encryption key length/Bobby3", item1.getString(RabbitConst.PARAM_MEASURE_URI));
     assertEquals("Registered probe 2", "MFW://Firewall/Bob1/Configuration file/Bobby1", item2.getString(RabbitConst.PARAM_MEASURE_URI));
     assertEquals("Registered probe 3", "MFW://Spam Filter/Bob2/configuration file/Bobby", item3.getString(RabbitConst.PARAM_MEASURE_URI));
