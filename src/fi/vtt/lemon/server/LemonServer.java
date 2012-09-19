@@ -5,6 +5,7 @@
 package fi.vtt.lemon.server;
 
 import fi.vtt.lemon.server.external.JerseyApp;
+import fi.vtt.lemon.server.external.RestClient;
 import fi.vtt.lemon.server.internal.InternalServer;
 
 import java.util.Collection;
@@ -14,6 +15,7 @@ import java.util.List;
 public class LemonServer {
   private static Registry registry;
   private static Persistence persistence;
+  private static RestClient client;
 
   public synchronized static Registry getRegistry() {
     if (registry == null) {
@@ -25,6 +27,7 @@ public class LemonServer {
   public static void main(String[] args) throws Exception {
     registry = new Registry();
     persistence = new Persistence();
+    client = new RestClient();
     JerseyApp jersey = new JerseyApp();
     jersey.start();
     InternalServer internal = new InternalServer();
@@ -34,6 +37,7 @@ public class LemonServer {
   public static void measurement(String measureURI, long time, int precision, String value) {
     registry.addBM(measureURI);
     Value v = new Value(measureURI, precision, value, time);
+    client.measurement(v);
     persistence.store(v);
   }
 
