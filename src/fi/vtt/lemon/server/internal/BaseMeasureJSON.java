@@ -1,3 +1,7 @@
+/*
+ * Copyright (c) 2012 VTT
+ */
+
 package fi.vtt.lemon.server.internal;
 
 import org.codehaus.jettison.json.JSONException;

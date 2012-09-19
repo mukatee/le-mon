@@ -1,3 +1,7 @@
+/*
+ * Copyright (c) 2012 VTT
+ */
+
 package fi.vtt.lemon.rest;
 
 import com.sun.jersey.api.client.Client;

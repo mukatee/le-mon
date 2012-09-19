@@ -1,3 +1,7 @@
+/*
+ * Copyright (c) 2012 VTT
+ */
+
 package fi.vtt.lemon.server.internal;
 
 import fi.vtt.lemon.server.LemonServer;
