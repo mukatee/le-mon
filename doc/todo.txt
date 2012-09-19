@@ -1,0 +1,5 @@
+add HSQLD support
+implement registry functionality
+implement persistence functionality (with bare JDBC)
+implement subscription callbacks to client
+
