@@ -1,3 +1,7 @@
+/*
+ * Copyright (c) 2012 VTT
+ */
+
 package fi.vtt.lemon.unittests.agent.server;
 
 import org.eclipse.jetty.server.Server;
