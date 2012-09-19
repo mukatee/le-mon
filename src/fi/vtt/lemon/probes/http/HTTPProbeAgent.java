@@ -19,7 +19,6 @@
 package fi.vtt.lemon.probes.http;
 
 import fi.vtt.lemon.probe.ServerClient;
-import fi.vtt.lemon.probe.shared.BaseProbeAgent;
 import osmo.common.log.Logger;
 
 import javax.servlet.Filter;
@@ -43,16 +42,16 @@ import java.net.URL;
  *
  * @author Teemu Kanstren
  */
-public class HTTPProbeAgent extends BaseProbeAgent implements Filter {
-  private final ServerClient server;
+public class HTTPProbeAgent implements Filter {
   private final static Logger log = new Logger(HTTPProbeAgent.class);
+  private final ServerClient server;
+  private final String measureURI;
+  private final int precision;
 
-  public HTTPProbeAgent(ServerClient server) {
+  public HTTPProbeAgent(ServerClient server, String measureURI, int precision) {
     this.server = server;
-  }
-
-  public String measure() {
-    throw new UnsupportedOperationException("HTTP Probe does not support pull measurements.");
+    this.measureURI = measureURI;
+    this.precision = precision;
   }
 
   public void doFilter(ServletRequest servletRequest, ServletResponse resp, FilterChain chain) throws IOException, ServletException {
@@ -74,7 +73,7 @@ public class HTTPProbeAgent extends BaseProbeAgent implements Filter {
     }
     br.close();
 
-    server.measurement(pi.getMeasureURI(), pi.getPrecision(), content);
+    server.measurement(measureURI, precision, content);
     log.debug("Received BM '"+name+"' from '"+req.getRemoteAddr()+" with value:"+content);
 
     PrintWriter out = resp.getWriter();

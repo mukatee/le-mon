@@ -25,15 +25,9 @@ package fi.vtt.lemon.probes.tester;
  */
 public class TestProbe2 extends TestProbe {
   private int counter = 0;
-  public static final String PROBE_DESCRIPTION = "Test Probe 2";
-  public static final String TARGET_NAME = "Bob2";
-  public static final String TARGET_TYPE = "Spam Filter";
-  public static final String BM_CLASS = "configuration file";
-  public static final String BM_NAME = "Bobby";
-  public static final String BM_DESCRIPTION = "Provides the configuration file";
 
   public TestProbe2() {
-    super(TARGET_NAME, TARGET_TYPE, BM_CLASS, BM_NAME, BM_DESCRIPTION, PROBE_DESCRIPTION, 1);
+    super("MFW://Spam Filter/Bob2/configuration file/Bobby", 1);
   }
 
   public String measure() {

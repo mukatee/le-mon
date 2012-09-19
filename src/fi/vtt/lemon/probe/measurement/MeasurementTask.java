@@ -19,8 +19,7 @@
 package fi.vtt.lemon.probe.measurement;
 
 import fi.vtt.lemon.probe.ServerClient;
-import fi.vtt.lemon.probe.shared.Probe;
-import fi.vtt.lemon.probe.shared.ProbeInformation;
+import fi.vtt.lemon.probe.Probe;
 import osmo.common.log.Logger;
 
 import static fi.vtt.lemon.RabbitConst.*;
@@ -36,8 +35,12 @@ public class MeasurementTask implements Runnable {
 
   public MeasurementTask(ServerClient server, Probe probe) {
     this.probe = probe;
-    this.measureURI = probe.getInformation().getMeasureURI();
+    this.measureURI = probe.getMeasureURI();
     this.server = server;
+  }
+
+  public String getMeasureURI() {
+    return measureURI;
   }
 
   public void run() {
@@ -52,17 +55,13 @@ public class MeasurementTask implements Runnable {
     }
     running = false;
     log.debug("Received measure:" + measure + " from:" + measureURI);
-    int precision = probe.getInformation().getPrecision();
+    int precision = probe.getPrecision();
 
     if (measure == null) {
       server.event(EVENT_NO_VALUE_FOR_BM, measureURI, "No valid measure available.");
       return;
     }    
     server.measurement(measureURI, precision, measure);
-  }
-
-  public ProbeInformation getProbeInfo() {
-    return probe.getInformation();
   }
 
   public long getRunningTime() {

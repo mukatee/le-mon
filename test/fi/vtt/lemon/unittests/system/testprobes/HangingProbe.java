@@ -18,17 +18,20 @@
 
 package fi.vtt.lemon.unittests.system.testprobes;
 
-import fi.vtt.lemon.probe.shared.Probe;
-import fi.vtt.lemon.probe.shared.ProbeInformation;
-
-import java.util.Properties;
+import fi.vtt.lemon.probe.Probe;
 
 /**
  * @author Teemu Kanstren
  */
 public class HangingProbe implements Probe {
-  public ProbeInformation getInformation() {
-    return new ProbeInformation("target1", "type1", "hanging bm", "bmname1", "bmdescription1", "probedescription1", 1, null);
+  @Override
+  public int getPrecision() {
+    return 0;
+  }
+
+  @Override
+  public String getMeasureURI() {
+    return "This-one-hangs";
   }
 
   public String measure() {
@@ -37,8 +40,5 @@ public class HangingProbe implements Probe {
     } catch (InterruptedException e) {
     }
     return null;
-  }
-
-  public void init(Properties properties) {
   }
 }

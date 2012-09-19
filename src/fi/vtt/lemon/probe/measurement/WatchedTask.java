@@ -18,8 +18,7 @@
 
 package fi.vtt.lemon.probe.measurement;
 
-import fi.vtt.lemon.probe.shared.Probe;
-import fi.vtt.lemon.probe.shared.ProbeInformation;
+import fi.vtt.lemon.probe.Probe;
 import osmo.common.log.Logger;
 
 import java.util.Map;
@@ -49,11 +48,7 @@ public class WatchedTask {
     subscriptions.remove(task.getProbe());
   }
 
-  public ProbeInformation getProbeInfo() {
-    return task.getProbeInfo();
-  }
-
-  public MeasurementTask getMeasurementTask() {
-    return task;
+  public String getMeasureURI() {
+    return task.getMeasureURI();
   }
 }

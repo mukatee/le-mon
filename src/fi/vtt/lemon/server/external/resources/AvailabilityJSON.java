@@ -9,6 +9,7 @@ import osmo.common.log.Logger;
 
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
+import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import java.util.List;
@@ -21,6 +22,7 @@ public class AvailabilityJSON {
   private static Logger log = new Logger(AvailabilityJSON.class);
 
   @GET
+  @Produces(MediaType.APPLICATION_JSON)
   public Response getBMAvailability() {
     List<String> bms = LemonServer.getRegistry().getAvailableBM();
     JSONObject root = new JSONObject();

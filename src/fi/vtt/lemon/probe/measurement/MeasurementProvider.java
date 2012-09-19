@@ -21,7 +21,7 @@ package fi.vtt.lemon.probe.measurement;
 import fi.vtt.lemon.Config;
 import fi.vtt.lemon.RabbitConst;
 import fi.vtt.lemon.probe.ServerClient;
-import fi.vtt.lemon.probe.shared.Probe;
+import fi.vtt.lemon.probe.Probe;
 import osmo.common.log.Logger;
 
 import java.io.IOException;

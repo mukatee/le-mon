@@ -19,7 +19,7 @@
 package fi.vtt.lemon.probe.measurement;
 
 import fi.vtt.lemon.probe.ServerClient;
-import fi.vtt.lemon.probe.shared.Probe;
+import fi.vtt.lemon.probe.Probe;
 import osmo.common.log.Logger;
 
 import java.util.Map;
@@ -70,7 +70,7 @@ public class WatchDog implements Runnable {
         task.cancel();
         Probe probe = entry.getKey();
         subscriptions.remove(probe);
-        server.event(EVENT_PROBE_HANGS, task.getProbeInfo().getMeasureURI(), "Probe has become non-responsive:"+probe);
+        server.event(EVENT_PROBE_HANGS, task.getMeasureURI(), "Probe has become non-responsive:"+probe);
       }
     }
   }

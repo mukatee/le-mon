@@ -20,11 +20,8 @@ package fi.vtt.lemon.probes.tester;
 
 import fi.vtt.lemon.probe.ServerClient;
 import fi.vtt.lemon.probe.measurement.MeasurementProvider;
-import fi.vtt.lemon.probe.shared.Probe;
-import fi.vtt.lemon.probe.shared.ProbeInformation;
+import fi.vtt.lemon.probe.Probe;
 import osmo.common.log.Logger;
-
-import java.util.Properties;
 
 /**
  * Base class to create test probes that provide test-data to the server-agent.
@@ -33,28 +30,19 @@ import java.util.Properties;
  */
 public class TestProbe implements Probe {
   private final static Logger log = new Logger(TestProbe.class);
-  private final String targetName;
-  private final String targetType;
-  private final String bmClass;
-  private final String bmName;
-  private final String bmDescription;
-  private final String probeDescription;
   private final String result;
+  private final String measureURI;
   private final int precision;
-  private Properties properties;
 
-  public TestProbe(String targetName, String targetType, String bmClass, String bmName, String bmDescription, String probeDescription, int precision) {
-    this(targetName, targetType, bmClass, bmName, bmDescription, probeDescription, null, precision);
+  public TestProbe(String result, String measureURI, int precision) {
+    this.result = result;
+    this.measureURI = measureURI;
+    this.precision = precision;
   }
 
-  public TestProbe(String targetName, String targetType, String bmClass, String bmName, String bmDescription, String probeDescription, String result, int precision) {
-    this.targetName = targetName;
-    this.targetType = targetType;
-    this.bmClass = bmClass;
-    this.bmName = bmName;
-    this.bmDescription = bmDescription;
-    this.probeDescription = probeDescription;
-    this.result = result;
+  public TestProbe(String measureURI, int precision) {
+    this.result = null;
+    this.measureURI = measureURI;
     this.precision = precision;
   }
 
@@ -64,22 +52,17 @@ public class TestProbe implements Probe {
     mp.startMeasuring(this);
   }
 
-  public ProbeInformation getInformation() {
-    return new ProbeInformation(targetName, targetType, bmClass, bmName, bmDescription, probeDescription, precision, null);
+  public String getMeasureURI() {
+    return measureURI;
+  }
+
+  public int getPrecision() {
+    return precision;
   }
 
   public String measure() {
     log.debug("Testprobe provides measure:" + result);
     return result;
-  }
-
-  public void init(Properties properties) {
-    log.debug("initializing with:" + properties);
-    this.properties = properties;
-  }
-
-  public Properties getProperties() {
-    return properties;
   }
 
 }

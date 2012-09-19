@@ -16,7 +16,7 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
-package fi.vtt.lemon.probe.shared;
+package fi.vtt.lemon.probe;
 
 import java.util.Properties;
 
@@ -31,9 +31,8 @@ import java.util.Properties;
  * @author Teemu Kanstren
  */
 public interface Probe {
-  /** Return the descriptions for the probe. */
-  public ProbeInformation getInformation();
+  public int getPrecision();
+  public String getMeasureURI();
   /** Called by the MFW components when a measurement is needed. */
   public String measure();
-  public void init(Properties properties);
 }
