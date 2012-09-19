@@ -4,12 +4,15 @@
 
 package fi.vtt.lemon.server;
 
+import fi.vtt.lemon.probe.measurement.MeasurementThreadFactory;
+import fi.vtt.lemon.probe.measurement.WatchDog;
 import osmo.common.log.Logger;
 
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
+import java.util.concurrent.ScheduledThreadPoolExecutor;
 
 /**
  * @author Teemu Kanstren
@@ -20,10 +23,13 @@ public class Registry {
   private final Collection<String> availableBM = new HashSet<>();
   private Collection<String> subscriptionRegistry = new HashSet<>();
 
+  public Registry() {
+  }
+
   public void addBM(String measureURI) {
     availableBM.add(measureURI);
   }
-  
+
   //get current list of registered probes
   public synchronized List<String> getAvailableBM() {
     List<String> result = new ArrayList<>();
@@ -64,15 +70,12 @@ public class Registry {
   }
 
   public void addSubscription(String measureURI) {
-    String msg = "New measurement subscription URI:" + measureURI;
-    //TODO: Nämä uusix
-//    bb.process(new ServerEvent(System.currentTimeMillis(), EventType.NEW_SUBSCRIPTION, "SAC " + sacId, msg));
+    log.debug("New measurement subscription URI:" + measureURI);
     subscriptionRegistry.add(measureURI);
   }
 
   public void removeSubscription(String measureURI) {
-    String msg = "Removed measurement subscription id:" + measureURI;
-//    bb.process(new ServerEvent(System.currentTimeMillis(), EventType.DELETE_SUBSCRIPTION, "SAC " + sacId, msg));
+    log.debug("Removed measurement subscription id:" + measureURI);
     subscriptionRegistry.remove(measureURI);
   }
 

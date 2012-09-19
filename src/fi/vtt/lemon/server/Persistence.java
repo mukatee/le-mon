@@ -131,28 +131,26 @@ public class Persistence {
     if (!ascending) {
       order = "desc";
     }
-    
+
     StringBuilder bms = new StringBuilder();
-    
-    for ( int i = 0; i < bmIds.length; i++ )
-    {
-        bms.append( "v.bm.bmId=" ).append( bmIds[ i ] );
-        if ( i < bmIds.length - 1 )
-        {
-            bms.append( " or " );
-        }
+
+    for (int i = 0; i < bmIds.length; i++) {
+      bms.append("v.bm.bmId=").append(bmIds[i]);
+      if (i < bmIds.length - 1) {
+        bms.append(" or ");
+      }
     }
-    
+
     sortBy += " " + order;
-    
-    Date sd = new Date( startTime );
-    Date se = new Date( endTime );
-    
-    SimpleDateFormat sdf = new SimpleDateFormat( "yyyy-MM-dd HH:mm:ss" );
-    
-    String where = "where v.time between '" + sdf.format( sd ) +"' and '" + sdf.format( se ) + "'";
+
+    Date sd = new Date(startTime);
+    Date se = new Date(endTime);
+
+    SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+
+    String where = "where v.time between '" + sdf.format(sd) + "' and '" + sdf.format(se) + "'";
     where += " and (" + bms.toString() + ")";
-    
+
     return null;
   }
 
