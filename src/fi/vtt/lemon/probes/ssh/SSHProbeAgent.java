@@ -8,7 +8,11 @@ import ch.ethz.ssh2.Connection;
 import ch.ethz.ssh2.SCPClient;
 import ch.ethz.ssh2.Session;
 import ch.ethz.ssh2.StreamGobbler;
+import fi.vtt.lemon.Config;
+import fi.vtt.lemon.RabbitConst;
 import fi.vtt.lemon.probe.Probe;
+import fi.vtt.lemon.probe.ServerClient;
+import fi.vtt.lemon.probe.measurement.MeasurementProvider;
 import osmo.common.log.Logger;
 
 import java.io.BufferedReader;
@@ -126,27 +130,15 @@ public class SSHProbeAgent implements Probe {
 
   //for testing
   public static void main(String[] args) throws Exception {
-    /* Create a connection instance */
-    Connection conn = new Connection("192.168.60.128");
-
-    /* Now connect */
-    conn.connect();
-
-    /* Authenticate.
-     * If you get an IOException saying something like
-     * "Authentication method password not supported by the server at this stage."
-     * then please check the FAQ.
-     */
-    String username = "hii";
-    String password = "haa";
-    String filename = "java\\distro\\distro.zip";
-    boolean authenticated = conn.authenticateWithPassword(username, password);
-
-    if (authenticated == false)
-      throw new IOException("Authentication failed.");
-
-    SCPClient client = conn.createSCPClient();
-    client.put(filename, ".");
-    conn.close();
+    MeasurementProvider mp = new MeasurementProvider(new ServerClient("::1"), 5, 10);
+    mp.setInterval(Config.getInt(RabbitConst.MEASURE_INTERVAL));
+    String measureURI = Config.getString(RabbitConst.PARAM_MEASURE_URI);
+    int precision = Config.getInt(RabbitConst.PROBE_PRECISION);
+    String target = Config.getString(RabbitConst.MEASUREMENT_TARGET);
+    String filename = Config.getString(RabbitConst.FILENAME);
+    String username = Config.getString(RabbitConst.USERNAME);
+    String password = Config.getString(RabbitConst.PASSWORD);
+    String command = Config.getString(RabbitConst.COMMAND);
+    mp.startMeasuring(new SSHProbeAgent(measureURI, precision, target, filename, username, password, command));
   }
 }

@@ -7,6 +7,7 @@ package fi.vtt.lemon.server.external;
 
 import com.sun.jersey.api.client.Client;
 import com.sun.jersey.api.client.WebResource;
+import fi.vtt.lemon.Config;
 import fi.vtt.lemon.RabbitConst;
 import fi.vtt.lemon.probe.measurement.MeasurementThreadFactory;
 import fi.vtt.lemon.server.Value;
@@ -33,18 +34,7 @@ public class RestClient {
   private WebResource wr;
 
   public RestClient() {
-    String url = null;
-    try {
-      InputStream in = new FileInputStream(RabbitConst.CONFIGURATION_FILENAME);
-      Properties props = new Properties();
-      props.load(in);
-      url = props.getProperty(RabbitConst.REST_CLIENT_ENDPOINT_URL);
-      if (url == null) {
-        throw new IllegalArgumentException("No URL defined for REST client endpoint. Unable to start REST plugin.");
-      }
-    } catch (IOException e) {
-      throw new RuntimeException("Failed to read configuration file '" + RabbitConst.CONFIGURATION_FILENAME + "'", e);
-    }
+    String url = Config.getString(RabbitConst.CONFIGURATION_FILENAME, "http://localhost:11112/client");
     Client client = Client.create();
     wr = client.resource(url);
     log.debug("Initializing REST plugin with endpoint "+url);

@@ -55,21 +55,8 @@ public class MeasurementProvider {
   }
 
   private void initFromFile() throws IOException {
-    Properties properties = Config.get();
-    String threads = properties.getProperty(RabbitConst.THREAD_POOL_SIZE);
-    if (threads != null) {
-      threadPoolSize = Integer.parseInt(threads);
-      log.debug("Initialized thread pool size to "+threadPoolSize+" threads.");
-    } else {
-      log.debug("No thread pool size defined, using default of "+threadPoolSize+" threads.");
-    }
-    String time = properties.getProperty(RabbitConst.TASK_TIMEOUT);
-    if (time != null) {
-      taskTimeOut = Integer.parseInt(time);
-      log.debug("Initialized task timeout to "+taskTimeOut+ " seconds");
-    } else {
-      log.debug("No task timeout specified, using default of "+taskTimeOut+" seconds." );
-    }
+    threadPoolSize = Config.getInt(RabbitConst.THREAD_POOL_SIZE, threadPoolSize);
+    taskTimeOut = Config.getInt(RabbitConst.TASK_TIMEOUT, taskTimeOut);
   }
 
   /**

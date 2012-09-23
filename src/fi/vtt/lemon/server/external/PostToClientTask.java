@@ -33,7 +33,7 @@ public class PostToClientTask implements Runnable {
       json.put(PRECISION, value.getPrecision());
       json.put(VALUE, value.valueString());
       wr.path(PATH_BM_RESULT).type(MediaType.APPLICATION_JSON).post(json);
-    } catch (JSONException e) {
+    } catch (Exception e) {
       //TODO: self-retry might need to be considered in case of network failure etc..
       log.error("Failed to post value to client", e);
     }
