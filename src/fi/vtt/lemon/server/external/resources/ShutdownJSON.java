@@ -14,7 +14,9 @@ import javax.ws.rs.core.MediaType;
 import static fi.vtt.lemon.server.external.RESTConst.*;
 
 /**
- * @author Teemu Kanstren
+ * Provides a REST+JSON resource to shut down the server. (nice, eh?) 
+ *
+ * @author Teemu Kanstren 
  */
 @Path(PATH_SHUTDOWN)
 public class ShutdownJSON {

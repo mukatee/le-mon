@@ -26,7 +26,12 @@ import java.util.List;
 
 import static fi.vtt.lemon.server.external.RESTConst.*;
 
-/** @author Teemu Kanstren */
+/**
+ * Provides a REST+JSON resource to ask for given measurement history.
+ * Currently not properly implemented. TODO: implement it properly. 
+ *
+ * @author Teemu Kanstren 
+ */
 @Path(PATH_HISTORY)
 public class HistoryJSON {
   private static Logger log = new Logger(HistoryJSON.class);

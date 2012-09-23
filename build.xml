@@ -7,6 +7,7 @@
   <property name="prod-src" value="src"/>
   <property name="test-src" value="test"/>
   <property name="main-output" value="ant-out"/>
+  <property name="javadoc-dir" value="${main-output}/docs/api"/>
   <property name="prod-dest" value="${main-output}/production"/>
   <property name="test-dest" value="${main-output}/testing"/>
   <property name="test-report" value="junit-report"/>
@@ -17,7 +18,9 @@
   <property name="sshprobe-distro-dir" value="${main-distro-dir}/sshprobe"/>
   <property name="httpprobe-distro-dir" value="${main-distro-dir}/httpprobe"/>
 
-  <property name="jar-file" value="le-mon-v0.1.jar"/>
+  <property name="version" value="v0.1"/>
+  <property name="jar.file" value="le-mon-${version}.jar"/>
+  <property name="zip.file" value="le-mon-${version}.zip"/>
 
   <path id="class.path">
     <!--pathelement path="${currentenv.classpath}"/-->
@@ -51,7 +54,7 @@
 
   <!-- CLEANDIST-->
   <target name="cleandist"
-          depends="clean, init, compile, copyresources, build.jar, create.distro">
+          depends="clean, init, compile, copyresources, build.jar, javadocs, create.distro">
   </target>
 
   <target name="copyresources" depends="init,compile">
@@ -92,7 +95,7 @@
   </target>
 
   <target name="build.jar" depends="compile" description="creates the jar file with all the code">
-    <jar destfile="${jar-file}">
+    <jar destfile="${jar.file}">
       <fileset dir="${prod-dest}"/>
     </jar>
   </target>
@@ -105,15 +108,36 @@
 
     <copy file="${meta-dir}/sshprobe.properties" tofile="${sshprobe-distro-dir}/le-mon.properties"/>
     <copy file="${meta-dir}/start-sshprobe.bat" todir="${sshprobe-distro-dir}"/>
-    <copy file="${jar-file}" todir="${sshprobe-distro-dir}"/>
+    <copy file="${jar.file}" todir="${sshprobe-distro-dir}"/>
 
     <copy file="${meta-dir}/httpprobe.properties" tofile="${httpprobe-distro-dir}/le-mon.properties"/>
     <copy file="${meta-dir}/start-httpprobe.bat" todir="${httpprobe-distro-dir}"/>
-    <copy file="${jar-file}" todir="${httpprobe-distro-dir}"/>
+    <copy file="${jar.file}" todir="${httpprobe-distro-dir}"/>
 
     <copy file="${meta-dir}/server.properties" tofile="${server-distro-dir}/le-mon.properties"/>
     <copy file="${meta-dir}/start-server.bat" todir="${server-distro-dir}"/>
-    <copy file="${jar-file}" todir="${server-distro-dir}"/>
+    <copy file="${jar.file}" todir="${server-distro-dir}"/>
+  </target>
+
+  <target name="javadocs">
+    <javadoc destdir="${javadoc-dir}" author="true" version="true" use="true" windowtitle="le-mon API">
+      <packageset dir="${prod-src}" defaultexcludes="yes">
+        <include name="fi/vtt/lemon/**"/>
+        <exclude name="fi/vtt/lemon/server/webui/**"/>
+      </packageset>
+    </javadoc>
+  </target>
+
+  <target name="build.zip" depends="cleandist,javadocs" description="creates the zip file with source code, java docs, libs, jar, configurations">
+    <zip destfile="${zip.file}">
+      <zipfileset dir="doc" includes="*.pdf" prefix="docs"/>
+      <zipfileset dir="doc" includes="*.txt" prefix="docs"/>
+      <!--zipfileset dir="lib" prefix="lib"/-->
+      <zipfileset dir="${javadoc-dir}/" prefix="docs/api"/>
+      <zipfileset dir="${prod-src}/" prefix="src/prod"/>
+      <zipfileset dir="${test-src}/" prefix="src/test"/>
+      <zipfileset dir="." includes="${jar.file}"/>
+    </zip>
   </target>
 
 </project>

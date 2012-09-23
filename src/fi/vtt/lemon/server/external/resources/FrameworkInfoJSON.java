@@ -16,7 +16,11 @@ import javax.ws.rs.core.Response;
 
 import static fi.vtt.lemon.server.external.RESTConst.*;
 
-/** @author Teemu Kanstren */
+/**
+ * Provides a REST+JSON resource to get some basic information about the running le-mon system. 
+ *
+ * @author Teemu Kanstren 
+ */
 @Path(PATH_FRAMEWORK_INFO)
 public class FrameworkInfoJSON {
   private final static Logger log = new Logger(FrameworkInfoJSON.class);

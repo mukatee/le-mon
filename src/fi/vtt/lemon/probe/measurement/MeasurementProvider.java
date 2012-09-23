@@ -10,57 +10,35 @@ import fi.vtt.lemon.probe.ServerClient;
 import fi.vtt.lemon.probe.Probe;
 import osmo.common.log.Logger;
 
-import java.io.IOException;
 import java.util.Map;
-import java.util.Properties;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.Future;
 import java.util.concurrent.ScheduledThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 
 /**
- * A thread for providing measurements as requested by the server.
- * New requests are posted from the ProbeAgent implementation class(es).
- * Needs to be running as a separate thread to be able to provide sampling values as requested and
- * to provide measurements as asynchronous operations.
+ * Manages measurement provisioning for pull based probes, such as the SSH probe.
+ * Intended to be shared for several probes.
  *
  * @author Teemu Kanstren
  */
 public class MeasurementProvider {
   private final static Logger log = new Logger(MeasurementProvider.class);
-  //used for synchronization
-//  private final Object lock = new Object();
+  /** Executes measurement tasks using a thread pool. */
   private ScheduledThreadPoolExecutor executor = null;
-  private Map<Probe, WatchedTask> subscriptions = new ConcurrentHashMap<>();
-  //default size of the thread pool for performing measurements
-  private int threadPoolSize = 5;
-  //how long until a measurement task times out if becoming unresponsive
-  private int taskTimeOut = 5;
+  /** Currently running tasks for each probe. */
+  private Map<Probe, WatchedTask> tasks = new ConcurrentHashMap<>();
+  /** A separate task that checks running measurement tasks and cancels ones that are taking too long (assumes the task is hanging). */
   private WatchDog watchDog = null;
+  /** For communicating with the le-mon server. */
   private final ServerClient server;
-  private int interval = 0;
 
-  public MeasurementProvider(ServerClient server, int threadPoolSize, int taskTimeOut) throws Exception {
+  public MeasurementProvider(ServerClient server) throws Exception {
     this.server = server;
-    if (threadPoolSize <= 0) {
-      initFromFile();
-    } else {
-      this.threadPoolSize = threadPoolSize;
-      this.taskTimeOut = taskTimeOut;
-    }
-  }
-
-  public void setInterval(int interval) {
-    this.interval = interval;
-  }
-
-  private void initFromFile() throws IOException {
-    threadPoolSize = Config.getInt(RabbitConst.THREAD_POOL_SIZE, threadPoolSize);
-    taskTimeOut = Config.getInt(RabbitConst.TASK_TIMEOUT, taskTimeOut);
   }
 
   /**
-   * stops the sampling thread.
+   * Stops the measurement process (thread pool executor, watchdog).
    */
   public void stop() {
     executor.shutdown();
@@ -68,18 +46,25 @@ public class MeasurementProvider {
   }
 
   /**
-   * Add a new measurement request to be sampled at a given interval.
+   * Start measuring the given probe with given configuration (from file).
+   * 
+   * @param probe The probe to start measuring.
    */
   public synchronized void startMeasuring(Probe probe) {
+    int threadPoolSize = Config.getInt(RabbitConst.THREAD_POOL_SIZE, 5);
+    int taskTimeOut = Config.getInt(RabbitConst.TASK_TIMEOUT, 5);
     if (executor == null) {
       executor = new ScheduledThreadPoolExecutor(threadPoolSize, new MeasurementThreadFactory());
-      watchDog = new WatchDog(server, subscriptions, taskTimeOut);
+      watchDog = new WatchDog(server, tasks, taskTimeOut);
     }
     MeasurementTask task = new MeasurementTask(server, probe);
     Future future = null;
+    int interval = Config.getInt(RabbitConst.MEASURE_INTERVAL, 10);
     executor.scheduleAtFixedRate(task, 0, interval, TimeUnit.SECONDS);
-    WatchedTask watchMe = new WatchedTask(future, task, subscriptions);
-    subscriptions.put(probe, watchMe);
+    WatchedTask watchMe = new WatchedTask(future, task, tasks);
+    //TODO: the set of tasks for a probe should be a collection, otherwise we will overwrite old ones if several 
+    //measurements are started for a probe in a short time..
+    tasks.put(probe, watchMe);
     log.debug("measuring probe:" + probe);
   }
 }

@@ -13,14 +13,18 @@ import java.util.Date;
  * @author Teemu Kanstren
  */
 public class Value {
+  /** The ID for the measurenet. */
   private String measureURI;
-  //we have a separate precision here to tell the exact precision of this value when it was measured..
+  /** Precision of the probe that performed the measure. */
   private int precision;
-  //the actual value, only strings are supported now
+  /** The value of the measurement. */
   private String value;
-  //time of measurement
+  /** The time of the measurement. */
   private Date time;
 
+  /**
+   * Once upon time, this was used by Persistence engine to sort the results in various ways.. 
+   */
   public enum SortKey {
     PRECISION, MEASUREURI, VALUE, TIME
   }

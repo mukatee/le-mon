@@ -21,8 +21,17 @@ import javax.ws.rs.core.Application;
 import java.util.HashSet;
 import java.util.Set;
 
-/** @author Teemu Kanstren */
+/** 
+ * Main starting point for a Jersey REST application.
+ * 
+ * @author Teemu Kanstren 
+ */
 public class JerseyApp extends Application {
+  /**
+   * Defines the resources that are accessible through the REST interface.
+   * 
+   * @return The set of resource for Jersey.
+   */
   @Override
   public Set<Class<?>> getClasses() {
     Set<Class<?>> resources = new HashSet<>();
@@ -35,6 +44,12 @@ public class JerseyApp extends Application {
     return resources;
   }
 
+  /**
+   * Starts up Jersey and makes the web-services (REST) available.
+   * Starts Jetty internally and binds Jersey as a servlet to provide the interface.
+   * 
+   * @throws Exception
+   */
   public void start() throws Exception {
     int port = Config.getInt(RESTConst.REST_SERVER_PORT, 11111);
     Server server = new Server(port);

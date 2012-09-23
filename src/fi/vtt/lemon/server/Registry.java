@@ -15,35 +15,60 @@ import java.util.List;
 import java.util.concurrent.ScheduledThreadPoolExecutor;
 
 /**
+ * Maintains the runtime state of the server. This includes list of available measures, client subscriptions, etc.
+ * 
  * @author Teemu Kanstren
  */
 public class Registry {
   private final static Logger log = new Logger(Registry.class);
-  //key = measureURI
+  /** List of available measurement types as identified by their MeasureURI. */
   private final Collection<String> availableBM = new HashSet<>();
+  /** The list of measurements the client is subscribing to (id = MeasureURI). */
   private Collection<String> subscriptionRegistry = new HashSet<>();
 
   public Registry() {
   }
 
+  /**
+   * Adds a measurement type as available.
+   * 
+   * @param measureURI
+   */
   public void addBM(String measureURI) {
     availableBM.add(measureURI);
   }
 
-  //get current list of registered probes
+  /**
+   * Get current list of availabe measurement types.
+   * 
+   * @return The list of MeasureURI's...
+   */
   public synchronized List<String> getAvailableBM() {
     List<String> result = new ArrayList<>();
     result.addAll(availableBM);
     return result;
   }
 
-  //parse target type from a measureURI
+  /**
+   * Parse target type from a measureURI. Once upon a time the measureURI was assumed to be formed as
+   * MFW://target-type/target-name/bm-type/bm/name. This function would parse the target name from it.
+   * Nowadays this is not used as the URI is freeform text due to no real advantage observed to parse it 
+   * in any specific way in the measurement infrastructure. The client can do what they wish with it instead.
+   * 
+   * @param measureURI To parse.
+   * @return The target type as parsed from the given data.
+   */
   public String parseTargetType(String measureURI) {
     int[] bounds = getTargetTypeBounds(measureURI);
     return measureURI.substring(bounds[0], bounds[1]);
   }
 
-  //get start and end index of target type inside given measureURI
+  /**
+   * Get the string bounds for the target type when parsing the target type from MeasureURI.
+   * 
+   * @param measureURI To parse.
+   * @return The start and end indices.
+   */
   private int[] getTargetTypeBounds(String measureURI) {
     int si = measureURI.indexOf("//");
     if (si <= 0) {
@@ -57,7 +82,12 @@ public class Registry {
     return new int[]{si, ei};
   }
 
-  //parse target name from given measureURI
+  /**
+   * Same as parseTargetType method but for target name.
+   * 
+   * @param measureURI To parse.
+   * @return The target name as parsed.
+   */
   public String parseTargetName(String measureURI) {
     int[] bounds = getTargetTypeBounds(measureURI);
     //end of type + "/"
@@ -69,20 +99,42 @@ public class Registry {
     return measureURI.substring(si, ei);
   }
 
+  /**
+   * Client has provided a new subscription.
+   * @param measureURI
+   */
   public void addSubscription(String measureURI) {
     log.debug("New measurement subscription URI:" + measureURI);
     subscriptionRegistry.add(measureURI);
   }
 
+  /**
+   * Removes a subscription for the client.
+   * 
+   * @param measureURI The measure to remove the subscription for.
+   */
   public void removeSubscription(String measureURI) {
     log.debug("Removed measurement subscription id:" + measureURI);
     subscriptionRegistry.remove(measureURI);
   }
-  
+
+  /**
+   * Checks if there is a subscription for the given measure.
+   * 
+   * @param measureURI The measure ID.
+   * @return True if there is.
+   */
   public boolean isSubscribed(String measureURI) {
     return subscriptionRegistry.contains(measureURI);
   }
 
+  /**
+   * Should check the authentication scheme of the communications.
+   * Currently not implemented.
+   * 
+   * @param authHeader The token.
+   * @return True if OK.
+   */
   public boolean check(String authHeader) {
     return true;
   }

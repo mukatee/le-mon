@@ -9,9 +9,20 @@ import ch.ethz.ssh2.SCPClient;
 
 import java.io.IOException;
 
-/** @author Teemu Kanstren */
+/** 
+ * Simple class for uploading something over SSH (SCP).
+ * Mainly useful if you have a server where you want to drop something without installing bunch of stuff but have
+ * an SSH server running already.. Not to mention testing your SSH configuration and code works.
+ * 
+ * @author Teemu Kanstren 
+ */
 public class SSHUploader {
-  //for testing
+  /**
+   * This is where the magic happens.
+   * 
+   * @param args
+   * @throws Exception
+   */
   public static void main(String[] args) throws Exception {
     /* Create a connection instance */
     Connection conn = new Connection("192.168.60.128");

@@ -19,14 +19,22 @@ import static fi.vtt.lemon.RabbitConst.*;
 
 /**
  * Acts as a server for probe-agents to communicate with.
+ * Internal refers to communication within the le-mon measurement infrastructure.
+ * External would be reference to communication with external elements such as the client.
  *
  * @author Teemu Kanstren
  */
 public class InternalServer implements Runnable {
   private final static Logger log = new Logger(InternalServer.class);
+  /** Allows receiving messages from RabbitMQ. */
   private QueueingConsumer consumer;
+  /** The thread pool for processing received messages. */
   private ScheduledThreadPoolExecutor executor;
 
+  /**
+   * The main method for the thread that reads RabbitMQ queue and creates processors for received messages using
+   * the thread pool.
+   */
   @Override
   public void run() {
     while (true) {
@@ -63,9 +71,17 @@ public class InternalServer implements Runnable {
     }
   }
 
+  /**
+   * Binds to the associated RabbitMQ message queue, initiates a thread pool for processing received messages,
+   * and starts the queue listener as a thread itself.
+   * 
+   * @throws Exception
+   */
   public void start() throws Exception {
+    //setup the thread pool
     executor = new ScheduledThreadPoolExecutor(Config.getInt(RabbitConst.THREAD_POOL_SIZE, 5));
 
+    //start up RabbitMQ connection
     ConnectionFactory factory = new ConnectionFactory();
     factory.setHost(Config.getString(RabbitConst.BROKER_ADDRESS, "::1"));
     Connection connection = factory.newConnection();
@@ -75,6 +91,7 @@ public class InternalServer implements Runnable {
 
     consumer = new QueueingConsumer(channel);
     channel.basicConsume(SERVER_QUEUE, true, consumer);
+    //start the thread that receives messages (this class)
     Thread thread = new Thread(this);
     thread.start();
   }

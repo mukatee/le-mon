@@ -10,7 +10,11 @@ import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
 
-/** @author Teemu Kanstren */
+/** 
+ * A test class for the HTTPProbeAgent. Uploads some data to the given URL to simulate a measurement.
+ * 
+ * @author Teemu Kanstren 
+ */
 public class HTTPAgentTestUpload {
   //for self-testing
   public static void main(String[] args) throws Exception {

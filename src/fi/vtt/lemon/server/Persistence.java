@@ -15,12 +15,18 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * Persists measurement data, events, ...
+ * Persists measurement data, events, ... If someone implements this that is.
+ * Currently it stores history in memory but that is not a very scalable solution.
+ * Also queries are not implemented or linked to any operations..
+ * This used to use MySQL with Hibernate/JPA that is where the current leftovers are from.
+ * Next version should be created with JDBC/HSDBA just to avoid excess abstraction, external component
+ * dependencies and loads of other bloatware and overengineering properties.
  *
  * @author Teemu Kanstren
  */
 public class Persistence {
   private final static Logger log = new Logger(Persistence.class);
+  /** Key=measureURI, Value=list of measurement values for the measureURI. */
   private Map<String, Collection<Value>> histories = new HashMap<>();
 
   /**

@@ -12,10 +12,17 @@ import java.util.concurrent.ScheduledThreadPoolExecutor;
 
 import static fi.vtt.lemon.server.external.RESTConst.*;
 
-/** @author Teemu Kanstren */
+/** 
+ * Defines a task for sending a measurement result to the client.
+ * Executed by the thread pool executor.
+ * 
+ * @author Teemu Kanstren 
+ */
 public class PostToClientTask implements Runnable {
   private final static Logger log = new Logger(PostToClientTask.class);
+  /** Access to post data over REST+JSON to the client. */
   private final WebResource wr;
+  /** The measurement result to post. */
   private final Value value;
 
   public PostToClientTask(WebResource wr, Value value) {
@@ -23,6 +30,9 @@ public class PostToClientTask implements Runnable {
     this.value = value;
   }
 
+  /**
+   * This where the task does the magic, invoked by the thread pool executor.
+   */
   @Override
   public void run() {
     log.debug("Sending BM results via REST interface");

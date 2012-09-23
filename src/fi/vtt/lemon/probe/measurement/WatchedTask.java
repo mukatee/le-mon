@@ -11,27 +11,36 @@ import java.util.Map;
 import java.util.concurrent.Future;
 
 /**
+ * Represents a task that is being monitored by the WatchDog.
+ * 
  * @author Teemu Kanstren
  */
 public class WatchedTask {
   private final static Logger log = new Logger(WatchedTask.class);
+  /** An interface to the executing task in the Java concurrency framework, allowing its cancellation. */
   private final Future future;
+  /** The actual measurement task being executed. */
   private final MeasurementTask task;
-  private final Map<Probe, WatchedTask> subscriptions;
+  /** The set of watched tasks. */
+  private final Map<Probe, WatchedTask> tasks;
 
-  public WatchedTask(Future future, MeasurementTask task, Map<Probe, WatchedTask> subscriptions) {
+  public WatchedTask(Future future, MeasurementTask task, Map<Probe, WatchedTask> tasks) {
     this.future = future;
     this.task = task;
-    this.subscriptions = subscriptions;
+    this.tasks = tasks;
   }
 
   public long getRunningTime() {
     return task.getRunningTime();
   }
 
+  /**
+   * Cancels this task..
+   * TODO: multiple tasks can exist for probe.. Should be a collection.
+   */
   public void cancel() {
     future.cancel(true);
-    subscriptions.remove(task.getProbe());
+    tasks.remove(task.getProbe());
   }
 
   public String getMeasureURI() {

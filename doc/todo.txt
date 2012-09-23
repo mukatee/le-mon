@@ -1,5 +1,7 @@
-add HSQLD support
-implement registry functionality
-implement persistence functionality (with bare JDBC)
-implement subscription callbacks to client
+HSQLD support
+registry functionality
+persistence functionality (with bare JDBC)
+timeouts for probe-agents that do not report in specific interval (remove from list, notify client)
+reset tasks when client reboots the connection 
+implement communication security.
 
