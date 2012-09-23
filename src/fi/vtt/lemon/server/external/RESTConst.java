@@ -23,4 +23,6 @@ public class RESTConst {
   public static final String PATH_SHUTDOWN = "/shutdown";
 
   public static final String PATH_BM_RESULT = "/value";
+  public static final String CLIENT_URL = "client_url";
+  public static final String REST_SERVER_PORT = "rest_server_port";
 }

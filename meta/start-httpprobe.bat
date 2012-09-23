@@ -1,1 +1,1 @@
-%JAVA_HOME%\bin\java fi.vtt.lemon.probes.ssh.HTTPProbeAgent
+%JAVA_HOME%\bin\java -cp le-mon-v0.1.jar;../../lib/*;../../lib/jetty/*;../../lib/jersey/*;../../lib/rabbitmq/* fi.vtt.lemon.probes.ssh.HTTPProbeAgent

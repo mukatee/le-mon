@@ -130,7 +130,7 @@ public class SSHProbeAgent implements Probe {
 
   //for testing
   public static void main(String[] args) throws Exception {
-    MeasurementProvider mp = new MeasurementProvider(new ServerClient("::1"), 5, 10);
+    MeasurementProvider mp = new MeasurementProvider(new ServerClient(Config.getString(RabbitConst.BROKER_ADDRESS, "::1")), 5, 10);
     mp.setInterval(Config.getInt(RabbitConst.MEASURE_INTERVAL));
     String measureURI = Config.getString(RabbitConst.PARAM_MEASURE_URI);
     int precision = Config.getInt(RabbitConst.PROBE_PRECISION);

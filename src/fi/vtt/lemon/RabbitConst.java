@@ -29,7 +29,6 @@ public class RabbitConst {
   public static final String REST_CLIENT_ENDPOINT_URL = "rest_client_endpoint";
   public static final String THREAD_POOL_SIZE = "thread_pool_size";
   public static final String TASK_TIMEOUT = "task_timeout";
-  public static final String REST_SERVER_PORT = "rest_server_port";
 
   public static final String PARAM_TIME = "time";
   public static final String PARAM_MEASURE_URI = "measure_uri";
@@ -55,6 +54,9 @@ public class RabbitConst {
   public static final String PASSWORD = "password";
   public static final String COMMAND = "command";
   public static final String MEASURE_INTERVAL = "measure_interval";
+  public static final String BROKER_ADDRESS = "broker_address";
+  public static final String HTTP_URI = "http_uri";
+  public static final String HTTP_PORT = "http_port";
 
   public static String createMeasureURI(String targetType, String targetName, String bmClass, String bmName) {
     return "MFW://"+targetType+"/"+targetName+"/"+bmClass+"/"+bmName;

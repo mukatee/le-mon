@@ -17,7 +17,7 @@
   <property name="sshprobe-distro-dir" value="${main-distro-dir}/sshprobe"/>
   <property name="httpprobe-distro-dir" value="${main-distro-dir}/httpprobe"/>
 
-  <property name="jar-file" value="le-mon-0.1.jar"/>
+  <property name="jar-file" value="le-mon-v0.1.jar"/>
 
   <path id="class.path">
     <!--pathelement path="${currentenv.classpath}"/-->
@@ -51,7 +51,7 @@
 
   <!-- CLEANDIST-->
   <target name="cleandist"
-          depends="clean, init, compile, copyresources, build.jar">
+          depends="clean, init, compile, copyresources, build.jar, create.distro">
   </target>
 
   <target name="copyresources" depends="init,compile">
@@ -111,7 +111,7 @@
     <copy file="${meta-dir}/start-httpprobe.bat" todir="${httpprobe-distro-dir}"/>
     <copy file="${jar-file}" todir="${httpprobe-distro-dir}"/>
 
-    <copy file="${meta-dir}/server.properties" todir="${server-distro-dir}/le-mon.properties"/>
+    <copy file="${meta-dir}/server.properties" tofile="${server-distro-dir}/le-mon.properties"/>
     <copy file="${meta-dir}/start-server.bat" todir="${server-distro-dir}"/>
     <copy file="${jar-file}" todir="${server-distro-dir}"/>
   </target>
