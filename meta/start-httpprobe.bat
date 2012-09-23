@@ -1,0 +1,1 @@
+%JAVA_HOME%\bin\java fi.vtt.lemon.probes.ssh.HTTPProbeAgent

@@ -10,15 +10,14 @@
   <property name="prod-dest" value="${main-output}/production"/>
   <property name="test-dest" value="${main-output}/testing"/>
   <property name="test-report" value="junit-report"/>
+  <property name="meta-dir" value="meta"/>
 
   <property name="main-distro-dir" value="distro"/>
   <property name="server-distro-dir" value="${main-distro-dir}/server"/>
-  <property name="probe-distro-dir" value="${main-distro-dir}/probe"/>
   <property name="sshprobe-distro-dir" value="${main-distro-dir}/sshprobe"/>
   <property name="httpprobe-distro-dir" value="${main-distro-dir}/httpprobe"/>
 
   <property name="jar-file" value="le-mon-0.1.jar"/>
-
 
   <path id="class.path">
     <!--pathelement path="${currentenv.classpath}"/-->
@@ -44,10 +43,10 @@
 
   <target name="compile" depends="init">
     <echo message="Compiling prod..."/>
-    <javac source="1.5" target="1.5" debug="true" classpathref="class.path" srcdir="${prod-src}"
+    <javac source="7" target="7" debug="true" classpathref="class.path" srcdir="${prod-src}"
            destdir="${prod-dest}"/>
     <echo message="Compiling tests..."/>
-    <javac source="1.5" target="1.5" classpathref="class.path" srcdir="${test-src}" destdir="${test-dest}"/>
+    <javac source="7" target="7" classpathref="class.path" srcdir="${test-src}" destdir="${test-dest}"/>
   </target>
 
   <!-- CLEANDIST-->
@@ -96,6 +95,25 @@
     <jar destfile="${jar-file}">
       <fileset dir="${prod-dest}"/>
     </jar>
+  </target>
+
+  <target name="create.distro" depends="compile" description="creates the jar file with all the code">
+    <mkdir dir="${main-distro-dir}"/>
+    <mkdir dir="${server-distro-dir}"/>
+    <mkdir dir="${sshprobe-distro-dir}"/>
+    <mkdir dir="${httpprobe-distro-dir}"/>
+
+    <copy file="${meta-dir}/sshprobe.properties" tofile="${sshprobe-distro-dir}/le-mon.properties"/>
+    <copy file="${meta-dir}/start-sshprobe.bat" todir="${sshprobe-distro-dir}"/>
+    <copy file="${jar-file}" todir="${sshprobe-distro-dir}"/>
+
+    <copy file="${meta-dir}/httpprobe.properties" tofile="${httpprobe-distro-dir}/le-mon.properties"/>
+    <copy file="${meta-dir}/start-httpprobe.bat" todir="${httpprobe-distro-dir}"/>
+    <copy file="${jar-file}" todir="${httpprobe-distro-dir}"/>
+
+    <copy file="${meta-dir}/server.properties" todir="${server-distro-dir}/le-mon.properties"/>
+    <copy file="${meta-dir}/start-server.bat" todir="${server-distro-dir}"/>
+    <copy file="${jar-file}" todir="${server-distro-dir}"/>
   </target>
 
 </project>

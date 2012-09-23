@@ -37,7 +37,9 @@ public class LemonServer {
   public static void measurement(String measureURI, long time, int precision, String value) {
     registry.addBM(measureURI);
     Value v = new Value(measureURI, precision, value, time);
-    client.measurement(v);
+    if (registry.isSubscribed(measureURI)) {
+      client.measurement(v);
+    }
     persistence.store(v);
   }
 

@@ -78,6 +78,10 @@ public class Registry {
     log.debug("Removed measurement subscription id:" + measureURI);
     subscriptionRegistry.remove(measureURI);
   }
+  
+  public boolean isSubscribed(String measureURI) {
+    return subscriptionRegistry.contains(measureURI);
+  }
 
   public boolean check(String authHeader) {
     return true;
