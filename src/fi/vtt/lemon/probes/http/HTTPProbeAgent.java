@@ -4,7 +4,13 @@
 
 package fi.vtt.lemon.probes.http;
 
+import com.sun.jersey.spi.container.servlet.ServletContainer;
+import fi.vtt.lemon.Config;
+import fi.vtt.lemon.RabbitConst;
 import fi.vtt.lemon.probe.ServerClient;
+import org.eclipse.jetty.server.Server;
+import org.eclipse.jetty.servlet.ServletContextHandler;
+import org.eclipse.jetty.servlet.ServletHolder;
 import osmo.common.log.Logger;
 
 import javax.servlet.Filter;
@@ -23,8 +29,9 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 
 /**
- * Grabs a base measure from a HTTP request posted at the address http://<address>/{bm-name}.
- * The base measure name is the part in the url and the content is the body of the http request.
+ * Grabs a base measure from a HTTP request posted at the address http://host/port/uri.
+ * The base measure information is given as configuration for this class, and the content is the body of the http request.
+ * Done properly, this should read a list of such elements from a configuration file.
  *
  * @author Teemu Kanstren
  */
@@ -34,8 +41,8 @@ public class HTTPProbeAgent implements Filter {
   private final String measureURI;
   private final int precision;
 
-  public HTTPProbeAgent(ServerClient server, String measureURI, int precision) {
-    this.server = server;
+  public HTTPProbeAgent(String measureURI, int precision) {
+    this.server = new ServerClient(Config.getString(RabbitConst.BROKER_ADDRESS, "::1"));
     this.measureURI = measureURI;
     this.precision = precision;
   }
@@ -75,32 +82,17 @@ public class HTTPProbeAgent implements Filter {
   public void destroy() {
   }
 
-  //for self-testing
   public static void main(String[] args) throws Exception {
-    // URL of CGI-Bin script.
-    URL target = new URL("http://localhost:8081/mfw/bm/os_version");
-    HttpURLConnection url = (HttpURLConnection) target.openConnection();
-    // Let the run-time system (RTS) know that we want input.
-    url.setDoInput(true);
-    // Let the RTS know that we want to do output.
-    url.setDoOutput(true);
-    // No caching, we want the real thing.
-    url.setUseCaches(false);
-    // Specify the content type.
-    url.setRequestProperty("Content-Type", "text/plain");
-    // Send POST output.
-    url.setRequestMethod("POST");
-    DataOutputStream printout = new DataOutputStream(url.getOutputStream());
-    String content = "A value has been observed.";
-    printout.writeBytes(content);
-    printout.flush();
-    printout.close();
-    // Get response data.
-    BufferedReader br = new BufferedReader(new InputStreamReader(url.getInputStream()));
-    String str;
-    while (null != ((str = br.readLine()))) {
-      System.out.println(str);
-    }
-    br.close();
+    int port = Config.getInt(RabbitConst.HTTP_PORT, 11111);
+    Server server = new Server(port);
+    //define what should be the HTTP root of our application
+    ServletContextHandler handler = new ServletContextHandler();
+    handler.setContextPath("/");
+    //Wrap the servlet so we can deploy in programmatically with Jetty
+    ServletHolder holder = new ServletHolder(new ServletContainer());
+    //and install the servlet on the HTTP root under this path
+    handler.addServlet(holder, Config.getString(RabbitConst.HTTP_URI, "/http-probe/"));
+    server.setHandler(handler);
+    server.start();
   }
 }

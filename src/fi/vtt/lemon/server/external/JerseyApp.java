@@ -36,7 +36,7 @@ public class JerseyApp extends Application {
   }
 
   public void start() throws Exception {
-    int port = Config.getInt(RabbitConst.REST_SERVER_PORT, 11111);
+    int port = Config.getInt(RESTConst.REST_SERVER_PORT, 11111);
     Server server = new Server(port);
     //define what should be the HTTP root of our application
     ServletContextHandler handler = new ServletContextHandler();

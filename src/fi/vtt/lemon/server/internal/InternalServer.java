@@ -8,6 +8,8 @@ import com.rabbitmq.client.Channel;
 import com.rabbitmq.client.Connection;
 import com.rabbitmq.client.ConnectionFactory;
 import com.rabbitmq.client.QueueingConsumer;
+import fi.vtt.lemon.Config;
+import fi.vtt.lemon.RabbitConst;
 import org.codehaus.jettison.json.JSONObject;
 import osmo.common.log.Logger;
 
@@ -62,11 +64,10 @@ public class InternalServer implements Runnable {
   }
 
   public void start() throws Exception {
-    int THREAD_POOL_SIZE = 5;
-    executor = new ScheduledThreadPoolExecutor(THREAD_POOL_SIZE);
+    executor = new ScheduledThreadPoolExecutor(Config.getInt(RabbitConst.THREAD_POOL_SIZE, 5));
 
     ConnectionFactory factory = new ConnectionFactory();
-    factory.setHost("::1");
+    factory.setHost(Config.getString(RabbitConst.BROKER_ADDRESS, "::1"));
     Connection connection = factory.newConnection();
     Channel channel = connection.createChannel();
 
