@@ -27,21 +27,34 @@ import java.util.Map;
  * sends a (configured) script file over with SCP to the host, does a login over SSH using the given credentials,
  * and uses the configured shell command to execute the script in question. Provides the system.out output of the
  * script as a base measure.
- *
+ * 
+ * For example, script = "measure.sh", command = "bash" the following is the process.
+ * Login using username and password.
+ * Upload the script file using SCP (from local working directory to remote working directory).
+ * Execute the script by making an SSH terminal connection and sending "bash measure.sh" command.
+ * Capture the system.out print.
+ * Return the captured data as base measure.
+ * 
  * @author Teemu Kanstren
  */
 public class SSHProbeAgent implements Probe {
   private final static Logger log = new Logger(SSHProbeAgent.class);
   private final static Map<String, Connection> connections = new HashMap<>();
+  /** Identifier for measurement. */
   private final String measureURI;
+  /** Precision of the probe providing the measure. */
   private final int precision;
+  /** Address for the target where the SSH connection is made. */
   private final String target;
-  //filename of the script. should be relative to the "working directory"
+  /** Filename of the measurement script. Should be relative to the working directory. */
   private String filename = null;
+  /** Username to login to the SSH server. */
   private String username = null;
+  /** Password to login to the SSH server. */
   private String password = null;
-  //shell command to execute the script
+  /** Shell command to execute the script. */
   private String command = null;
+  /** Possible errors from the script (system.err). */
   private String errors = null;
 
   public SSHProbeAgent(String measureURI, int precision, String target, String filename, String username, String password, String command) {
@@ -62,6 +75,11 @@ public class SSHProbeAgent implements Probe {
     return precision;
   }
 
+  /**
+   * Performs the measurement, invoked by MeasurementProcessor created task.
+   * 
+   * @return The measurement result.
+   */
   public String measure() {
     try {
       String result = executeScript();
@@ -72,7 +90,12 @@ public class SSHProbeAgent implements Probe {
     }
   }
 
-  //executes the configured shell script on the configured target
+  /**
+   * Uploads the file, executes the command, captures the output as a result.
+   * 
+   * @return The remote system system.out as provided by SSH.
+   * @throws Exception If there is an error..
+   */
   private String executeScript() throws Exception {
     Connection conn = connections.get(target);
     if (conn == null) {
@@ -115,6 +138,14 @@ public class SSHProbeAgent implements Probe {
     return output;
   }
 
+  /**
+   * Reads output from given input stream as much as is given.
+   * TODO: Check for some buffer size limit and stop if it goes over.
+   * 
+   * @param in The inputstream to read.
+   * @return The output as read from the inputstream.
+   * @throws IOException If there is an error.
+   */
   private String readOutput(InputStream in) throws IOException {
     BufferedReader br = new BufferedReader(new InputStreamReader(in));
     StringBuffer result = new StringBuffer();
@@ -128,10 +159,16 @@ public class SSHProbeAgent implements Probe {
     return result.toString();
   }
 
-  //for testing
+  /**
+   * Starts up the SSH Probe agent, reads configuration from file, connects to server, starts measuring.
+   * If anything goes wrong, fails.
+   * TODO: add some resilience.
+   * 
+   * @param args Command line parameters. Unused.
+   * @throws Exception If there is an error.
+   */
   public static void main(String[] args) throws Exception {
-    MeasurementProvider mp = new MeasurementProvider(new ServerClient(Config.getString(RabbitConst.BROKER_ADDRESS, "::1")), 5, 10);
-    mp.setInterval(Config.getInt(RabbitConst.MEASURE_INTERVAL));
+    MeasurementProvider mp = new MeasurementProvider(new ServerClient(Config.getString(RabbitConst.BROKER_ADDRESS, "::1")));
     String measureURI = Config.getString(RabbitConst.PARAM_MEASURE_URI);
     int precision = Config.getInt(RabbitConst.PROBE_PRECISION);
     String target = Config.getString(RabbitConst.MEASUREMENT_TARGET);

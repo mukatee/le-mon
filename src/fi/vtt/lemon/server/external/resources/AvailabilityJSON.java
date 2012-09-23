@@ -20,7 +20,11 @@ import java.util.List;
 
 import static fi.vtt.lemon.server.external.RESTConst.*;
 
-/** @author Teemu Kanstren */
+/**
+ * Provides a REST+JSON resource to list the set of available measurements. 
+ * 
+ * @author Teemu Kanstren 
+ */
 @Path(PATH_AVAILABILITY)
 public class AvailabilityJSON {
   private static Logger log = new Logger(AvailabilityJSON.class);
@@ -43,7 +47,7 @@ public class AvailabilityJSON {
         array.put(bm);
       }
       try {
-        root.put("availability", array);
+        root.put(AVAILABILITY_ARRAY, array);
       } catch (JSONException e) {
         log.error("Failed to build JSON", e);
         return Response.serverError().build();

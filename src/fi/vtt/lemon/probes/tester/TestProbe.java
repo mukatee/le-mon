@@ -33,8 +33,7 @@ public class TestProbe implements Probe {
   }
 
   public void start() throws Exception {
-    MeasurementProvider mp = new MeasurementProvider(new ServerClient("::1"), 5, 10);
-    mp.setInterval(1);
+    MeasurementProvider mp = new MeasurementProvider(new ServerClient("::1"));
     mp.startMeasuring(this);
   }
 

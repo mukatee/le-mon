@@ -31,30 +31,44 @@ import java.net.URL;
 /**
  * Grabs a base measure from a HTTP request posted at the address http://host/port/uri.
  * The base measure information is given as configuration for this class, and the content is the body of the http request.
- * Done properly, this should read a list of such elements from a configuration file.
+ * A new class is to be instantiated for different probes.
+ * The address is the hostname+post+"http-probe". For example, http://localhost:11111/http-probe
  *
  * @author Teemu Kanstren
  */
 public class HTTPProbeAgent implements Filter {
   private final static Logger log = new Logger(HTTPProbeAgent.class);
+  /** Connection to the le-mon server-agent. */
   private final ServerClient server;
+  /** The ID for the measure provided. */
   private final String measureURI;
+  /** Precision of the probe providing the measure. */
   private final int precision;
 
+  /**
+   * Constructor.
+   * 
+   * @param measureURI The measure ID for the probe posting the data.
+   * @param precision The precision of the probe providing the measures.
+   */
   public HTTPProbeAgent(String measureURI, int precision) {
     this.server = new ServerClient(Config.getString(RabbitConst.BROKER_ADDRESS, "::1"));
     this.measureURI = measureURI;
     this.precision = precision;
   }
 
+  /**
+   * The servlet filter method for capturing the posted data.
+   * 
+   * @param servletRequest The HTTP request.
+   * @param resp Provides access to the HTTP response.
+   * @param chain Chain of filters from the Servlet framework.
+   * @throws IOException Sure.
+   * @throws ServletException If there is a problem.
+   */
   public void doFilter(ServletRequest servletRequest, ServletResponse resp, FilterChain chain) throws IOException, ServletException {
     HttpServletRequest req = (HttpServletRequest) servletRequest;
     resp.setContentType("text/plain");
-    String name = req.getRequestURL().toString();
-    int index = name.lastIndexOf('/');
-    //todo: error handling if < 0 index is received
-    //we take the name of the base measure, that which is after the last "/" character
-    name = name.substring(index+1);
 
     // Get response data.
     BufferedReader br = new BufferedReader(new InputStreamReader(req.getInputStream()));
@@ -67,10 +81,11 @@ public class HTTPProbeAgent implements Filter {
     br.close();
 
     server.measurement(measureURI, precision, content);
-    log.debug("Received BM '"+name+"' from '"+req.getRemoteAddr()+" with value:"+content);
+    log.debug("Received BM '"+measureURI+"' from '"+req.getRemoteAddr()+" with value:"+content);
 
     PrintWriter out = resp.getWriter();
-    out.println("hello:"+name+" -- "+content);
+    //write back some silly response to allow testing this agent through the browser or other tools
+    out.println("hello:"+measureURI+" -- "+content);
     out.close();
   }
 
@@ -82,6 +97,12 @@ public class HTTPProbeAgent implements Filter {
   public void destroy() {
   }
 
+  /**
+   * Start it up here, sets up the filters etc.
+   * 
+   * @param args The command line parameters.
+   * @throws Exception IF there is an error.
+   */
   public static void main(String[] args) throws Exception {
     int port = Config.getInt(RabbitConst.HTTP_PORT, 11111);
     Server server = new Server(port);

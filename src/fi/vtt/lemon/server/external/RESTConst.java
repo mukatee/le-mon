@@ -4,8 +4,13 @@
 
 package fi.vtt.lemon.server.external;
 
-/** @author Teemu Kanstren */
+/** 
+ * Defines a set of constants for the system.
+ * 
+ * @author Teemu Kanstren 
+ */
 public class RESTConst {
+  public static final String AVAILABILITY_ARRAY = "availability";
   public static final String MEASURE_URI = "measure_uri";
   public static final String TIME = "time";
   public static final String VALUE = "value";

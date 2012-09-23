@@ -7,18 +7,15 @@ package fi.vtt.lemon.probe;
 import java.util.Properties;
 
 /**
- * The interface for requesting the actual measurements from actual probes.
- * Called by the probe-agent to satisfy the measurement requests.
- * Sampling is expected to be done by the probe-agent through this interface.
- * The implementation of this interface itself can and needs to implement any functionality
- * to address specific needs set by a probe, such as handling any sampling done by the probe
- * itself, or custom protocols for the probe control.
+ * Interface for requesting measurements from actual probes.
  *
  * @author Teemu Kanstren
  */
 public interface Probe {
+  /** Should give the probe precision. */
   public int getPrecision();
+  /** What measure does it give? */
   public String getMeasureURI();
-  /** Called by the MFW components when a measurement is needed. */
+  /** Called by the le-mon probe-agent when a measurement is needed. */
   public String measure();
 }

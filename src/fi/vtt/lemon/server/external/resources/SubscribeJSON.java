@@ -20,7 +20,11 @@ import javax.ws.rs.core.Response;
 
 import static fi.vtt.lemon.server.external.RESTConst.*;
 
-/** @author Teemu Kanstren */
+/**
+ * Provides a REST+JSON resource for the client to subscribe to a measurement. 
+ *
+ * @author Teemu Kanstren 
+ */
 @Path(PATH_SUBSCRIBE)
 public class SubscribeJSON {
   private final static Logger log = new Logger(SubscribeJSON.class);

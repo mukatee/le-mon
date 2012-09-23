@@ -8,6 +8,7 @@ package fi.vtt.lemon.server.external;
 import com.sun.jersey.api.client.Client;
 import com.sun.jersey.api.client.WebResource;
 import fi.vtt.lemon.Config;
+import fi.vtt.lemon.RabbitConst;
 import fi.vtt.lemon.probe.measurement.MeasurementThreadFactory;
 import fi.vtt.lemon.server.Value;
 import osmo.common.log.Logger;
@@ -15,15 +16,18 @@ import osmo.common.log.Logger;
 import java.util.concurrent.ScheduledThreadPoolExecutor;
 
 /**
+ * Provides an interface to post data to the client.
+ * 
  * @author Teemu Kanstren
  */
 public class RestClient {
   private final static Logger log = new Logger(RestClient.class);
-  private int threadPoolSize = 5;
-  private ScheduledThreadPoolExecutor executor = new ScheduledThreadPoolExecutor(threadPoolSize, new MeasurementThreadFactory());
-  private WebResource wr;
+  private final ScheduledThreadPoolExecutor executor;
+  private final WebResource wr;
 
   public RestClient() {
+    int threadPoolSize = Config.getInt(RabbitConst.THREAD_POOL_SIZE);
+    executor = new ScheduledThreadPoolExecutor(threadPoolSize, new MeasurementThreadFactory());
     String url = Config.getString(RESTConst.CLIENT_URL, "http://localhost:11112/client");
     Client client = Client.create();
     wr = client.resource(url);
@@ -31,6 +35,12 @@ public class RestClient {
     log.debug("REST plugin initialized");
   }
 
+  /**
+   * Creates a task to send measurement data to the client.
+   * Creates a task object and adds that to the task pool for the thread pool executor to execute.
+   * 
+   * @param value The measurement value to provide.
+   */
   public void measurement(Value value) {
     log.debug("Scheduling measurement post task..");
     PostToClientTask task = new PostToClientTask(wr, value);
