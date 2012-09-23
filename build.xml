@@ -130,12 +130,14 @@
 
   <target name="build.zip" depends="cleandist,javadocs" description="creates the zip file with source code, java docs, libs, jar, configurations">
     <zip destfile="${zip.file}">
+      <zipfileset file="le-mon-license.txt"/>
       <zipfileset dir="doc" includes="*.pdf" prefix="docs"/>
       <zipfileset dir="doc" includes="*.txt" prefix="docs"/>
       <!--zipfileset dir="lib" prefix="lib"/-->
       <zipfileset dir="${javadoc-dir}/" prefix="docs/api"/>
       <zipfileset dir="${prod-src}/" prefix="src/prod"/>
       <zipfileset dir="${test-src}/" prefix="src/test"/>
+      <zipfileset dir="${main-distro-dir}/" prefix="bin"/>
       <zipfileset dir="." includes="${jar.file}"/>
     </zip>
   </target>

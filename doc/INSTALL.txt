@@ -1,4 +1,4 @@
-This document describes how to install le-mon.
+﻿This document describes how to install le-mon.
 You can find the le-mon source code, components and documentation at http://code.google.com/p/le-mon/.
 
 Dependencies
@@ -20,3 +20,4 @@ To install RabbitMQ, just download it for your platform and run the installer.
 Afterwards, you need to start the RabbitMQ broker every time you run le-mon (or have it running).
 That’s all that is needed for RabbitMQ.
 
+you also need the jar files which the system depends on. you can download these from the hg repository or from their own websites. they are not included in the distribution zip file as it would become rather huge.
