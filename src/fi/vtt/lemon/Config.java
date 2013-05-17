@@ -6,6 +6,8 @@ package fi.vtt.lemon;
 
 import osmo.common.log.Logger;
 
+import java.io.FileInputStream;
+import java.io.IOException;
 import java.util.Properties;
 
 /**
@@ -17,6 +19,16 @@ public class Config {
   private final static Logger log = new Logger(Config.class);
   /** Represents the underlying le-mon properties file. (named le-mon.properties) */
   private static Properties props = new Properties();
+  
+  static {
+    try {
+      props.load(new FileInputStream("le-mon.properties"));
+    } catch (IOException e) {
+      System.out.println("Unable to load configuration (le-mon.properties)");
+      e.printStackTrace();
+      System.exit(1);
+    }
+  }
 
   /**
    * Get a configuration property parsed as an integer number.
