@@ -59,7 +59,7 @@ public class MeasurementProvider {
     }
     MeasurementTask task = new MeasurementTask(server, probe);
     Future future = null;
-    int interval = Config.getInt(RabbitConst.MEASURE_INTERVAL, 10);
+    int interval = Config.getInt(RabbitConst.MEASURE_INTERVAL, 1);
     executor.scheduleAtFixedRate(task, 0, interval, TimeUnit.SECONDS);
     WatchedTask watchMe = new WatchedTask(future, task, tasks);
     //TODO: the set of tasks for a probe should be a collection, otherwise we will overwrite old ones if several 

@@ -7,9 +7,11 @@ package fi.vtt.lemon.server.external;
 import com.sun.jersey.spi.container.servlet.ServletContainer;
 import fi.vtt.lemon.Config;
 import fi.vtt.lemon.RabbitConst;
+import fi.vtt.lemon.server.external.resources.AddMeasureJSON;
 import fi.vtt.lemon.server.external.resources.AvailabilityJSON;
 import fi.vtt.lemon.server.external.resources.FrameworkInfoJSON;
 import fi.vtt.lemon.server.external.resources.HistoryJSON;
+import fi.vtt.lemon.server.external.resources.RemoveMeasureJSON;
 import fi.vtt.lemon.server.external.resources.ShutdownJSON;
 import fi.vtt.lemon.server.external.resources.SubscribeJSON;
 import fi.vtt.lemon.server.external.resources.UnsubscribeJSON;
@@ -41,6 +43,8 @@ public class JerseyApp extends Application {
     resources.add(UnsubscribeJSON.class);
     resources.add(FrameworkInfoJSON.class);
     resources.add(AvailabilityJSON.class);
+    resources.add(AddMeasureJSON.class);
+    resources.add(RemoveMeasureJSON.class);
     return resources;
   }
 

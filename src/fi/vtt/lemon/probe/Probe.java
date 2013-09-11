@@ -18,4 +18,6 @@ public interface Probe {
   public String getMeasureURI();
   /** Called by the le-mon probe-agent when a measurement is needed. */
   public String measure();
+  public void addMeasure(String config);
+  public void removeMeasure(String config);
 }

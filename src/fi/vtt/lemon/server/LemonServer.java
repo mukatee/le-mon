@@ -4,9 +4,12 @@
 
 package fi.vtt.lemon.server;
 
+import fi.vtt.lemon.Config;
+import fi.vtt.lemon.RabbitConst;
 import fi.vtt.lemon.server.external.JerseyApp;
 import fi.vtt.lemon.server.external.RestClient;
 import fi.vtt.lemon.server.internal.InternalServer;
+import fi.vtt.lemon.server.internal.ServerToProbe;
 
 import java.util.Collection;
 import java.util.List;
@@ -25,6 +28,7 @@ public class LemonServer {
   private static Persistence persistence;
   /** For making callbacks to the client, that is to provide the measurement results that are subscribed to, when available. */
   private static RestClient client;
+  private static ServerToProbe probeClient;
 
   /**
    * Global access to the registry for different server elements. 
@@ -51,6 +55,7 @@ public class LemonServer {
     registry = new Registry();
     persistence = new Persistence();
     client = new RestClient();
+    probeClient = new ServerToProbe(Config.getString(RabbitConst.BROKER_ADDRESS, "::1"));
     JerseyApp jersey = new JerseyApp();
     jersey.start();
     InternalServer internal = new InternalServer();
@@ -84,5 +89,9 @@ public class LemonServer {
    */
   public static List<Value> getHistory(long start, long end, Collection<Long> bmIds) {
     return null;
+  }
+
+  public static ServerToProbe getProbeClient() {
+    return probeClient;
   }
 }

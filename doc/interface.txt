@@ -59,7 +59,7 @@ RETURNS:
 }
 
 
-RESOURCE: http://localhost:8080/rest/bmsubscribe
+RESOURCE: http://localhost:8080/rest/subscribe
 HTTP METHOD: POST
 DESCRIPTION: Subscribes for a base measure
 RETURNS: nothing
