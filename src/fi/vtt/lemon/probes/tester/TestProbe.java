@@ -7,6 +7,7 @@ package fi.vtt.lemon.probes.tester;
 import fi.vtt.lemon.probe.ServerClient;
 import fi.vtt.lemon.probe.measurement.MeasurementProvider;
 import fi.vtt.lemon.probe.Probe;
+import fi.vtt.lemon.probe.server.ClientRabbitServer;
 import osmo.common.log.Logger;
 
 /**
@@ -35,6 +36,8 @@ public class TestProbe implements Probe {
   public void start() throws Exception {
     MeasurementProvider mp = new MeasurementProvider(new ServerClient("::1"));
     mp.startMeasuring(this);
+    ClientRabbitServer server = new ClientRabbitServer(this);
+    server.start();
   }
 
   public String getMeasureURI() {
@@ -50,4 +53,13 @@ public class TestProbe implements Probe {
     return result;
   }
 
+  @Override
+  public void addMeasure(String config) {
+    log.debug("Testprobe received request to add measure:" + config);
+  }
+
+  @Override
+  public void removeMeasure(String config) {
+    log.debug("Testprobe received request to remove measure:" + config);
+  }
 }

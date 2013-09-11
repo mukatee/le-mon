@@ -3,5 +3,5 @@ registry functionality
 persistence functionality (with bare JDBC)
 timeouts for probe-agents that do not report in specific interval (remove from list, notify client)
 reset tasks when client reboots the connection 
-implement communication security.
+implement communication security, PKI to authenticate nodes, signatures to ensure integrity.
 

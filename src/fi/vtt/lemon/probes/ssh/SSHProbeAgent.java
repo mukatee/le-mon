@@ -159,6 +159,16 @@ public class SSHProbeAgent implements Probe {
     return result.toString();
   }
 
+  @Override
+  public void addMeasure(String config) {
+    log.debug("should add measurement but NOT IMPLEMENTED:"+config);
+  }
+
+  @Override
+  public void removeMeasure(String config) {
+    log.debug("should remove measurement but NOT IMPLEMENTED:"+config);
+  }
+
   /**
    * Starts up the SSH Probe agent, reads configuration from file, connects to server, starts measuring.
    * If anything goes wrong, fails.

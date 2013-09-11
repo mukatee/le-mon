@@ -26,6 +26,8 @@ public class RESTConst {
   public static final String PATH_SUBSCRIBE = "/subscribe/";
   public static final String PATH_UNSUBSCRIBE = "/unsubscribe/";
   public static final String PATH_SHUTDOWN = "/shutdown";
+  public static final String PATH_ADD_MEASURE = "/add_measure";
+  public static final String PATH_REMOVE_MEASURE = "/remove_measure";
 
   public static final String PATH_BM_RESULT = "/value";
   public static final String CLIENT_URL = "client_url";

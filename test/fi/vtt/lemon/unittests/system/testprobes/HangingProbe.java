@@ -27,4 +27,12 @@ public class HangingProbe implements Probe {
     }
     return null;
   }
+
+  @Override
+  public void addMeasure(String config) {
+  }
+
+  @Override
+  public void removeMeasure(String config) {
+  }
 }

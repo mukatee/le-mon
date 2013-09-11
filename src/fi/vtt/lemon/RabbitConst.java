@@ -37,14 +37,18 @@ public class RabbitConst {
   public static final String PARAM_EVENT_TYPE = "event_type";
   public static final String PARAM_EVENT_SOURCE = "event_source";
   public static final String PARAM_EVENT_MSG = "event_msg";
+  public static final String PARAM_CONFIG = "config";
   public static final String PARAM_PUBLIC_KEY = "public_key";
 
+  public static final String ALL_PROBES_QUEUE = "le-mon_all_probes_queue";
   public static final String SERVER_QUEUE = "le-mon_server_queue";
 
   //property that defines the type of message being sent
   public static final String MSGTYPE = "msg_name";
   public static final String MSG_MEASUREMENT = "msg_measurement";
   public static final String MSG_EVENT = "msg_event";
+  public static final String MSG_ADD_MEASURE = "msg_add_measure";
+  public static final String MSG_REMOVE_MEASURE = "msg_remove_measure";
 
   public static final String EVENT_NO_VALUE_FOR_BM = "event_no_valid_value";
   public static final String EVENT_PROBE_HANGS = "event_probe_hangs";
