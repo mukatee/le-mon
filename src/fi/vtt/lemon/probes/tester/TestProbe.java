@@ -20,6 +20,8 @@ public class TestProbe implements Probe {
   private final String result;
   private final String measureURI;
   private final int precision;
+  private MeasurementProvider mp;
+  private ClientRabbitServer server;
 
   public TestProbe(String result, String measureURI, int precision) {
     this.result = result;
@@ -34,10 +36,15 @@ public class TestProbe implements Probe {
   }
 
   public void start() throws Exception {
-    MeasurementProvider mp = new MeasurementProvider(new ServerClient("::1"));
+    mp = new MeasurementProvider(new ServerClient("::1"));
     mp.startMeasuring(this);
-    ClientRabbitServer server = new ClientRabbitServer(this);
+    server = new ClientRabbitServer(this);
     server.start();
+  }
+  
+  public void stop() throws Exception {
+    mp.stop();
+    server.stop();
   }
 
   public String getMeasureURI() {

@@ -11,6 +11,7 @@ import fi.vtt.lemon.server.external.RestClient;
 import fi.vtt.lemon.server.internal.InternalServer;
 import fi.vtt.lemon.server.internal.ServerToProbe;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
@@ -87,8 +88,8 @@ public class LemonServer {
    * @param bmIds The list of measurements that are requested (history).
    * @return The list of measurements matching the given criteria.
    */
-  public static List<Value> getHistory(long start, long end, Collection<Long> bmIds) {
-    return null;
+  public static List<Value> getHistory(long start, long end, Collection<String> bmIds) {
+    return persistence.getValues(0, Long.MAX_VALUE, bmIds, null, false);
   }
 
   public static ServerToProbe getProbeClient() {

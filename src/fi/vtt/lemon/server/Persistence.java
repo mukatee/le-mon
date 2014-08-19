@@ -114,7 +114,22 @@ public class Persistence {
    * @param ascending Whether the results should be sorted in ascending or descending order.
    * @return The set of Value objects matching the given criteria.
    */
-  public List<Value> getValues(long startTime, long endTime, Long[] bmIds, Value.SortKey sortKey, boolean ascending) {
+  public List<Value> getValues(long startTime, long endTime, Collection<String> bmIds, Value.SortKey sortKey, boolean ascending) {
+    
+    if (true) {
+      //this is temporary hack to get some results..
+      List<Value> results = new ArrayList<>();
+      for (String id : bmIds) {
+        Collection<Value> values = histories.get(id);
+        if (values == null) {
+          log.warn("No measures for:"+id);
+          continue;
+        }
+        results.addAll(values);
+      }
+      return results;
+    }
+    
     String sortBy = null;
     if (sortKey == Value.SortKey.PRECISION) {
       //sort the results by the precision of the stored value
@@ -140,12 +155,12 @@ public class Persistence {
 
     StringBuilder bms = new StringBuilder();
 
-    for (int i = 0; i < bmIds.length; i++) {
-      bms.append("v.bm.bmId=").append(bmIds[i]);
-      if (i < bmIds.length - 1) {
-        bms.append(" or ");
-      }
-    }
+//    for (int i = 0; i < bmIds.length; i++) {
+//      bms.append("v.bm.bmId=").append(bmIds[i]);
+//      if (i < bmIds.length - 1) {
+//        bms.append(" or ");
+//      }
+//    }
 
     sortBy += " " + order;
 

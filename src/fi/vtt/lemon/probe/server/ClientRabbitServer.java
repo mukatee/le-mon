@@ -34,6 +34,7 @@ public class ClientRabbitServer implements Runnable {
   /** The thread pool for processing received messages. */
   private ScheduledThreadPoolExecutor executor;
   private final Probe probe;
+  private boolean shouldRun = true;
 
   public ClientRabbitServer(Probe probe) {
     this.probe = probe;
@@ -45,7 +46,7 @@ public class ClientRabbitServer implements Runnable {
    */
   @Override
   public void run() {
-    while (true) {
+    while (shouldRun) {
       String msg = null;
       JSONObject json = null;
       try {
@@ -104,5 +105,9 @@ public class ClientRabbitServer implements Runnable {
     Thread thread = new Thread(this);
     thread.start();
     log.debug("Client rabbit started");
+  }
+  
+  public void stop() {
+    shouldRun = false;
   }
 }

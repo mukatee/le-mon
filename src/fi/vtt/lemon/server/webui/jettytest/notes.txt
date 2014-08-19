@@ -1,0 +1,10 @@
+pages:
+-availability
+-bmlist
+-bmresults
+-eventlist
+-frameset
+-history
+-mfwinfo
+-subscribetobm
+
