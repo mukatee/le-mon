@@ -16,7 +16,7 @@ import static fi.vtt.lemon.RabbitConst.*;
  * @author Teemu Kanstren 
  */
 public class MeasurementTask implements Runnable {
-  private final static Logger log = new Logger(MeasurementProvider.class);
+  private final static Logger log = new Logger(MeasurementTask.class);
   /** The probe that provides the measurement. */
   private final Probe probe;
   /** Identifies the measurement. */

@@ -38,7 +38,8 @@ public class UnsubscribeJSON {
     Registry registry = LemonServer.getRegistry();
     if (registry.check(authHeader)) {
       try {
-        registry.removeSubscription(req.getString(MEASURE_URI));
+        String measureURI = req.getString(MEASURE_URI);
+        registry.removeSubscription(measureURI);
       } catch (JSONException e) {
         log.error("Failed to parse unsubscribe JSON", e);
         return Response.serverError().build();

@@ -50,8 +50,14 @@ public class HistoryJSON {
       try {
         long start = req.getLong(START_TIME);
         long end = req.getLong(END_TIME);
-        Collection<Long> bmIds = new ArrayList<>();
+        Collection<String> bmIds = new ArrayList<>();
         JSONArray array = req.getJSONArray(BM_LIST);
+        int length = array.length();
+        for (int i = 0 ; i < length ; i++) {
+          JSONObject jom = array.getJSONObject(i);
+          String id = jom.getString(MEASURE_URI);
+          bmIds.add(id);
+        }
         List<Value> measurements = LemonServer.getHistory(start, end, bmIds);
         // conversion to json
         for (Value value : measurements) {
@@ -65,6 +71,8 @@ public class HistoryJSON {
       } catch (JSONException e) {
         log.error("Error while creating JSON for measurement history", e);
         return Response.serverError().build();
+        //TODO: better error messages
+//        return Response.status(Response.Status.BAD_REQUEST).build();
       }
     } else {
       log.debug("User does not have an authenticated session.");
