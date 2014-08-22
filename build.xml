@@ -53,8 +53,7 @@
   </target>
 
   <!-- CLEANDIST-->
-  <target name="cleandist"
-          depends="clean, init, compile, copyresources, build.jar, javadocs, create.distro">
+  <target name="cleandist" depends="clean, init, compile, copyresources, build.jar, javadocs, create.distro">
   </target>
 
   <target name="copyresources" depends="init,compile">

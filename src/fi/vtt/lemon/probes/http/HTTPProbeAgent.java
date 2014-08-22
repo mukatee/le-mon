@@ -4,7 +4,6 @@
 
 package fi.vtt.lemon.probes.http;
 
-import com.sun.jersey.spi.container.servlet.ServletContainer;
 import fi.vtt.lemon.Config;
 import fi.vtt.lemon.RabbitConst;
 import fi.vtt.lemon.probe.ServerClient;
@@ -110,9 +109,9 @@ public class HTTPProbeAgent implements Filter {
     ServletContextHandler handler = new ServletContextHandler();
     handler.setContextPath("/");
     //Wrap the servlet so we can deploy in programmatically with Jetty
-    ServletHolder holder = new ServletHolder(new ServletContainer());
+//    ServletHolder holder = new ServletHolder(new ServletContainer());
     //and install the servlet on the HTTP root under this path
-    handler.addServlet(holder, Config.getString(RabbitConst.HTTP_URI, "/http-probe/"));
+//    handler.addServlet(holder, Config.getString(RabbitConst.HTTP_URI, "/http-probe/"));
     server.setHandler(handler);
     server.start();
   }

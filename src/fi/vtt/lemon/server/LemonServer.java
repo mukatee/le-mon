@@ -6,12 +6,10 @@ package fi.vtt.lemon.server;
 
 import fi.vtt.lemon.Config;
 import fi.vtt.lemon.RabbitConst;
-import fi.vtt.lemon.server.external.JerseyApp;
 import fi.vtt.lemon.server.external.RestClient;
 import fi.vtt.lemon.server.internal.InternalServer;
 import fi.vtt.lemon.server.internal.ServerToProbe;
 
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
@@ -57,8 +55,8 @@ public class LemonServer {
     persistence = new Persistence();
     client = new RestClient();
     probeClient = new ServerToProbe(Config.getString(RabbitConst.BROKER_ADDRESS, "::1"));
-    JerseyApp jersey = new JerseyApp();
-    jersey.start();
+    JettyStarter start = new JettyStarter();
+    start.start();
     InternalServer internal = new InternalServer();
     internal.start();
   }
