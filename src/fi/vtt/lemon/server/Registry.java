@@ -35,6 +35,7 @@ public class Registry {
    * @param measureURI
    */
   public void addBM(String measureURI) {
+    //TODO: add some watchdog to drop available if nothing received in time interval, or do keep-alive messages
     availableBM.add(measureURI);
   }
 

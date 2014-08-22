@@ -44,7 +44,7 @@ public class SSHUploader {
       throw new IOException("Authentication failed.");
 
     SCPClient client = conn.createSCPClient();
-    client.put(filename, ".");
+//    client.put(filename, ".");
     conn.close();
   }
 }
