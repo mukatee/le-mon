@@ -4,6 +4,7 @@
 
 package fi.vtt.lemon.rest;
 
+import fi.vtt.lemon.Config;
 import fi.vtt.lemon.RabbitConst;
 import fi.vtt.lemon.probes.tester.ConfigurableTestProbe;
 import fi.vtt.lemon.probes.tester.TestProbe;
@@ -18,20 +19,21 @@ import fi.vtt.lemon.server.external.RestClient;
 import fi.vtt.lemon.server.external.RestClient2;
 import org.codehaus.jettison.json.JSONArray;
 import org.codehaus.jettison.json.JSONObject;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.BeforeClass;
-import org.junit.Test;
+import org.testng.annotations.AfterTest;
+import org.testng.annotations.BeforeClass;
+import org.testng.annotations.BeforeTest;
+import org.testng.annotations.Test;
 import osmo.common.log.Logger;
 
 import static fi.vtt.lemon.RabbitConst.PARAM_CONFIG;
 import static fi.vtt.lemon.server.external.RESTConst.*;
-import static org.junit.Assert.*;
+import static org.testng.Assert.*;
 
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
+import java.util.logging.Level;
 
 /** @author Teemu Kanstren */
 public class RESTCalls {
@@ -40,16 +42,20 @@ public class RESTCalls {
   
   @BeforeClass
   public static void startServer() throws Exception {
+    Logger.consoleLevel = Level.INFO;
+    Logger.packageName = "f.v.l";
     LemonServer.main(null);
   }
   
-  @Before
+  @BeforeTest
   public void reset() {
     probes.clear();
-    rs2 = new RestClient2("http://localhost:11111");
+    int port = Config.getInt(REST_SERVER_PORT, 11112);
+    String url = "http://localhost:"+port;
+    rs2 = new RestClient2(url);
   }
   
-  @After
+  @AfterTest
   public void stopProbes() throws Exception {
     for (TestProbe probe : probes) {
       probe.stop();
@@ -68,7 +74,7 @@ public class RESTCalls {
     String data = rs2.post(RESTConst.PATH_AVAILABILITY);
     JSONObject json = new JSONObject(data);
     JSONArray array = json.getJSONArray("availability");
-    assertEquals("Availability size:"+array.toString(), 1, array.length());
+    assertEquals(array.length(), 1, "Availability size:"+array.toString());
     JSONObject item = array.getJSONObject(0);
     assertEquals("Registered probe", "MFW://Firewall/Bob1/Configuration file/Bobby1", item.getString(RabbitConst.PARAM_MEASURE_URI));
   }
@@ -93,7 +99,7 @@ public class RESTCalls {
     String data = rs2.post(RESTConst.PATH_AVAILABILITY);
     JSONObject json = new JSONObject(data);
     JSONArray array = json.getJSONArray("availability");
-    assertEquals("Availability size:"+array.toString(), 3, array.length());
+    assertEquals(array.length(), 3, "Availability size:"+array.toString());
     JSONObject item1 = array.getJSONObject(0);
     JSONObject item2 = array.getJSONObject(1);
     JSONObject item3 = array.getJSONObject(2);
@@ -102,9 +108,9 @@ public class RESTCalls {
     probes.add(item1.getString(RabbitConst.PARAM_MEASURE_URI));
     probes.add(item2.getString(RabbitConst.PARAM_MEASURE_URI));
     probes.add(item3.getString(RabbitConst.PARAM_MEASURE_URI));
-    assertTrue("Probe " + probe1.getMeasureURI() + " should be present", probes.contains(probe1.getMeasureURI()));
-    assertTrue("Probe " + probe2.getMeasureURI() + " should be present", probes.contains(probe2.getMeasureURI()));
-    assertTrue("Probe " + probe3.getMeasureURI() + " should be present", probes.contains(probe3.getMeasureURI()));
+    assertTrue(probes.contains(probe1.getMeasureURI()), "Probe " + probe1.getMeasureURI() + " should be present");
+    assertTrue(probes.contains(probe2.getMeasureURI()), "Probe " + probe2.getMeasureURI() + " should be present");
+    assertTrue(probes.contains(probe3.getMeasureURI()), "Probe " + probe3.getMeasureURI() + " should be present");
   }
 
   @Test
@@ -217,6 +223,6 @@ public class RESTCalls {
 
     int count2 = values.size();
     
-    assertEquals("Number of values should not increase after unsubscribe", count, count2);
+    assertEquals(count, count2, "Number of values should not increase after unsubscribe");
   }
 }

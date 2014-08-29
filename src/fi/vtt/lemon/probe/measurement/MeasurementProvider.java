@@ -10,6 +10,9 @@ import fi.vtt.lemon.probe.ServerClient;
 import fi.vtt.lemon.probe.Probe;
 import osmo.common.log.Logger;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashSet;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.Future;
@@ -32,6 +35,7 @@ public class MeasurementProvider {
   private WatchDog watchDog = null;
   /** For communicating with the le-mon server. */
   private final ServerClient server;
+  private Collection<Probe> probes = new HashSet<>();
 
   public MeasurementProvider(ServerClient server) throws Exception {
     this.server = server;
@@ -41,6 +45,10 @@ public class MeasurementProvider {
    * Stops the measurement process (thread pool executor, watchdog).
    */
   public void stop() {
+    for (Probe probe : probes) {
+      server.unregister(probe.getMeasureURI());
+      log.info("Unregistering probe:"+probe.getMeasureURI());
+    }
     executor.shutdown();
     watchDog.shutdown();
   }
@@ -51,6 +59,8 @@ public class MeasurementProvider {
    * @param probe The probe to start measuring.
    */
   public synchronized void startMeasuring(Probe probe) {
+    probes.add(probe);
+    server.register(probe.getMeasureURI(), probe.getPrecision());
     int threadPoolSize = Config.getInt(RabbitConst.THREAD_POOL_SIZE, 5);
     int taskTimeOut = Config.getInt(RabbitConst.TASK_TIMEOUT, 5);
     if (executor == null) {
@@ -58,9 +68,8 @@ public class MeasurementProvider {
       watchDog = new WatchDog(server, tasks, taskTimeOut);
     }
     MeasurementTask task = new MeasurementTask(server, probe);
-    Future future = null;
     int interval = Config.getInt(RabbitConst.MEASURE_INTERVAL, 1);
-    executor.scheduleAtFixedRate(task, 0, interval, TimeUnit.SECONDS);
+    Future future = executor.scheduleAtFixedRate(task, 0, interval, TimeUnit.SECONDS);
     WatchedTask watchMe = new WatchedTask(future, task, tasks);
     //TODO: the set of tasks for a probe should be a collection, otherwise we will overwrite old ones if several 
     //measurements are started for a probe in a short time..

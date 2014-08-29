@@ -4,7 +4,8 @@
 
 package fi.vtt.lemon.unittests.system;
 
-import org.junit.Test;
+
+import org.testng.annotations.Test;
 
 /**
  * @author Teemu Kanstren

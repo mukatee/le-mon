@@ -30,6 +30,7 @@ public class ConfigurableTestProbe extends TestProbe {
 
   @Override
   public void addMeasure(String config) {
+    log.info("Adding measure:"+config);
     measure = config;
   }
 

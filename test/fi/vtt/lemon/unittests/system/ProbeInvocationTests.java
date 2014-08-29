@@ -4,15 +4,15 @@
 
 package fi.vtt.lemon.unittests.system;
 
-import org.junit.After;
-import org.junit.Test;
+import org.testng.annotations.AfterTest;
+import org.testng.annotations.Test;
 
 /**
  * @author Teemu Kanstren
  */
 public class ProbeInvocationTests {
 
-  @After
+  @AfterTest
   public void tearDown() throws Exception {
   }
 

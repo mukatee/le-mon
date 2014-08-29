@@ -5,7 +5,7 @@
 package fi.vtt.lemon.unittests.agent.server;
 
 import org.eclipse.jetty.server.Server;
-import org.junit.Test;
+import org.testng.annotations.Test;
 
 /** @author Teemu Kanstren */
 public class JettyTests {

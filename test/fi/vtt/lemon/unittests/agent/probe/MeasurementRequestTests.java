@@ -5,8 +5,8 @@
 package fi.vtt.lemon.unittests.agent.probe;
 
 import fi.vtt.lemon.RabbitConst;
-import org.junit.BeforeClass;
-import org.junit.Test;
+import org.testng.annotations.BeforeClass;
+import org.testng.annotations.Test;
 
 /**
  * @author Teemu Kanstren

@@ -15,6 +15,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import static fi.vtt.lemon.RabbitConst.PARAM_CONFIG;
@@ -50,7 +51,7 @@ public class FakeClient extends HttpServlet {
       long time = json.getLong(TIME);
       String data = json.getString(VALUE);
       int precision = json.getInt(PRECISION);
-      Value value = new Value(measureURI, precision, data, time);
+      Value value = new Value(measureURI, precision, data, new Date(time));
       values.add(value);
     } catch (JSONException e) {
       log.error("Failed to parse measure JSON", e);

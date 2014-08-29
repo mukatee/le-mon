@@ -24,7 +24,7 @@ public class FakeJettyStarter {
   }
     
   public void start() throws Exception {
-    int port = Config.getInt(RESTConst.REST_SERVER_PORT, 11112);
+    int port = Config.getInt(RESTConst.REST_CLIENT_PORT, 11113);
     Server server = new Server(port);
 
     ServletContextHandler context = new ServletContextHandler(ServletContextHandler.SESSIONS);
