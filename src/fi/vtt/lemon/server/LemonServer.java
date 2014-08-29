@@ -8,9 +8,12 @@ import fi.vtt.lemon.Config;
 import fi.vtt.lemon.RabbitConst;
 import fi.vtt.lemon.server.external.RestClient;
 import fi.vtt.lemon.server.internal.InternalServer;
+import fi.vtt.lemon.server.internal.MeasurementProcessor;
 import fi.vtt.lemon.server.internal.ServerToProbe;
+import osmo.common.log.Logger;
 
 import java.util.Collection;
+import java.util.Date;
 import java.util.List;
 
 /** 
@@ -21,6 +24,7 @@ import java.util.List;
  * @author Teemu Kanstren 
  */
 public class LemonServer {
+  private final static Logger log = new Logger(LemonServer.class);
   /** For maintaining list of connected probes, available measures, etc. */
   private static Registry registry;
   /** For persisting measurement results etc. Currently not implemented. */
@@ -61,6 +65,14 @@ public class LemonServer {
     internal.start();
   }
 
+  public static void register(String measureURI, int precision) {
+    registry.addBM(measureURI);
+  }
+
+  public static void unregister(String measureURI) {
+    registry.removeBM(measureURI);
+  }
+
   /**
    * When a measurement is received.
    * 
@@ -70,8 +82,11 @@ public class LemonServer {
    * @param value The measurement value.
    */
   public static void measurement(String measureURI, long time, int precision, String value) {
-    registry.addBM(measureURI);
-    Value v = new Value(measureURI, precision, value, time);
+    if (!registry.isRegistered(measureURI)) {
+      log.warn("Trying to provide measurement for unregistered probe:"+measureURI);
+      return;
+    }
+    Value v = new Value(measureURI, precision, value, new Date(time));
     if (registry.isSubscribed(measureURI)) {
       client.measurement(v);
     }

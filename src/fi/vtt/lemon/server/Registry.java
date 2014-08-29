@@ -35,8 +35,19 @@ public class Registry {
    * @param measureURI
    */
   public void addBM(String measureURI) {
+    log.info("Adding BM:"+measureURI);
     //TODO: add some watchdog to drop available if nothing received in time interval, or do keep-alive messages
     availableBM.add(measureURI);
+  }
+
+  /**
+   * Removes a measurement type as available.
+   *
+   * @param measureURI
+   */
+  public void removeBM(String measureURI) {
+    log.info("Removing BM:"+measureURI);
+    availableBM.remove(measureURI);
   }
 
   /**
@@ -138,5 +149,9 @@ public class Registry {
    */
   public boolean check(String authHeader) {
     return true;
+  }
+
+  public boolean isRegistered(String measureURI) {
+    return availableBM.contains(measureURI);
   }
 }

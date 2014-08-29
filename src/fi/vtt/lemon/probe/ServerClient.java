@@ -42,6 +42,35 @@ public class ServerClient {
     }
   }
 
+  public boolean register(String measureURI, int precision) {
+    JSONObject json = new JSONObject();
+    try {
+      json.put(MSGTYPE, MSG_REGISTER);
+      json.put(PARAM_TIME, System.currentTimeMillis());
+      json.put(PARAM_MEASURE_URI, measureURI);
+      json.put(PARAM_PRECISION, precision);
+      channel.basicPublish("", SERVER_QUEUE, null, json.toString().getBytes("UTF8"));
+      return true;
+    } catch (Exception e) {
+      log.error("Error while sending msg to server", e);
+      return false;
+    }
+  }
+
+  public boolean unregister(String measureURI) {
+    JSONObject json = new JSONObject();
+    try {
+      json.put(MSGTYPE, MSG_UNREGISTER);
+      json.put(PARAM_TIME, System.currentTimeMillis());
+      json.put(PARAM_MEASURE_URI, measureURI);
+      channel.basicPublish("", SERVER_QUEUE, null, json.toString().getBytes("UTF8"));
+      return true;
+    } catch (Exception e) {
+      log.error("Error while sending msg to server", e);
+      return false;
+    }
+  }
+
   /**
    * Provides a measurement to the lemon server-agent.
    * 

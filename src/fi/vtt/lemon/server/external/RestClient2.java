@@ -1,6 +1,7 @@
 package fi.vtt.lemon.server.external;
 
 import org.codehaus.jettison.json.JSONObject;
+import osmo.common.log.Logger;
 
 import javax.net.ssl.HttpsURLConnection;
 import java.io.BufferedReader;
@@ -17,6 +18,7 @@ import java.net.URL;
  * @author Teemu Kanstren
  */
 public class RestClient2 {
+  private final static Logger log = new Logger(RestClient2.class);
   private final String base;
 
   public RestClient2(String base) {
@@ -61,9 +63,9 @@ public class RestClient2 {
       wr.close();
 
       int responseCode = conn.getResponseCode();
-      System.out.println("\nSending 'POST' request to URL : " + to);
-      System.out.println("Post data : " + data.toString());
-      System.out.println("Response Code : " + responseCode);
+      log.debug("\nSending 'POST' request to URL : " + to);
+      log.debug("Post data : " + data.toString());
+      log.debug("Response Code : " + responseCode);
     } catch (IOException e) {
       e.printStackTrace();
       return null;

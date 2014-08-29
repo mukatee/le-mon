@@ -4,7 +4,7 @@
 
 package fi.vtt.lemon.unittests.system;
 
-import org.junit.Test;
+import org.testng.annotations.Test;
 
 public class SubscriptionCheckTests {
   @Test

@@ -55,6 +55,12 @@ public class InternalServer implements Runnable {
       }
       Runnable task = null;
       switch (msg) {
+        case MSG_REGISTER:
+          task = new RegisterProcessor(json);
+          break;
+        case MSG_UNREGISTER:
+          task = new UnRegisterProcessor(json);
+          break;
         case MSG_MEASUREMENT:
           System.out.println("Measurement received:"+json);
           task = new MeasurementProcessor(json);

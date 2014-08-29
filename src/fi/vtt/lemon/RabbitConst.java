@@ -45,6 +45,8 @@ public class RabbitConst {
 
   //property that defines the type of message being sent
   public static final String MSGTYPE = "msg_name";
+  public static final String MSG_REGISTER = "msg_register";
+  public static final String MSG_UNREGISTER = "msg_unregister";
   public static final String MSG_MEASUREMENT = "msg_measurement";
   public static final String MSG_EVENT = "msg_event";
   public static final String MSG_ADD_MEASURE = "msg_add_measure";

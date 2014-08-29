@@ -9,7 +9,7 @@ import com.rabbitmq.client.Connection;
 import com.rabbitmq.client.ConnectionFactory;
 import fi.vtt.lemon.probe.ServerClient;
 import fi.vtt.lemon.server.internal.InternalServer;
-import org.junit.Test;
+import org.testng.annotations.Test;
 
 /** @author Teemu Kanstren */
 public class RabbitMQTests {

@@ -26,7 +26,7 @@ public class RestClient {
   public RestClient() {
     int threadPoolSize = Config.getInt(RabbitConst.THREAD_POOL_SIZE);
     executor = new ScheduledThreadPoolExecutor(threadPoolSize, new MeasurementThreadFactory());
-    url = Config.getString(RESTConst.CLIENT_URL, "http://localhost:11112/client");
+    url = Config.getString(RESTConst.REST_CLIENT_URL, "http://localhost:11113/client");
     log.debug("Initializing REST plugin with endpoint "+url);
     log.debug("REST plugin initialized");
   }

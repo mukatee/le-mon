@@ -30,6 +30,7 @@ public class RESTConst {
   public static final String PATH_REMOVE_MEASURE = "/remove_measure";
 
   public static final String PATH_BM_RESULT = "/value";
-  public static final String CLIENT_URL = "client_url";
+  public static final String REST_CLIENT_URL = "rest_client_url";
   public static final String REST_SERVER_PORT = "rest_server_port";
+  public static final String REST_CLIENT_PORT = "rest_client_port";
 }

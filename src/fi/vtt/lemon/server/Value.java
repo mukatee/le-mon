@@ -29,11 +29,11 @@ public class Value {
     PRECISION, MEASUREURI, VALUE, TIME
   }
 
-  public Value(String measureURI, int precision, String value, long time) {
+  public Value(String measureURI, int precision, String value, Date time) {
     this.measureURI = measureURI;
     this.precision = precision;
     this.value = value;
-    this.time = new Date(time);
+    this.time = time;
   }
   
   public String getMeasureURI() {

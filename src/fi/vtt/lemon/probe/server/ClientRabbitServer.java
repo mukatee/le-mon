@@ -24,6 +24,8 @@ import static fi.vtt.lemon.RabbitConst.*;
  * Acts as a server for probe-agents to communicate with.
  * Internal refers to communication within the le-mon measurement infrastructure.
  * External would be reference to communication with external elements such as the client.
+ * TODO: this seems to manage only one probe, meaning all probes get the messages and generally there is no check
+ * TODO: if the message is intended to this probe?
  *
  * @author Teemu Kanstren
  */
@@ -35,6 +37,8 @@ public class ClientRabbitServer implements Runnable {
   private ScheduledThreadPoolExecutor executor;
   private final Probe probe;
   private boolean shouldRun = true;
+  private Channel channel;
+  private String tag;
 
   public ClientRabbitServer(Probe probe) {
     this.probe = probe;
@@ -65,15 +69,16 @@ public class ClientRabbitServer implements Runnable {
       Runnable task = null;
       switch (msg) {
         case MSG_ADD_MEASURE:
-          System.out.println("Measurement add received:"+json);
+          log.info("Measurement add received:" + json);
+          log.info("My probe:"+probe);
           task = new AddMeasureProcessor(probe, json);
           break;
         case MSG_REMOVE_MEASURE:
-          System.out.println("Measurement delete received:"+json);
+          log.info("Measurement delete received:" + json);
           task = new RemoveMeasureProcessor(probe, json);
           break;
         default:
-          log.debug("Invalid message received:"+json);
+          log.warn("Invalid message received:" + json);
           return;
       }
       executor.execute(task);
@@ -95,19 +100,20 @@ public class ClientRabbitServer implements Runnable {
     ConnectionFactory factory = new ConnectionFactory();
     factory.setHost(Config.getString(RabbitConst.BROKER_ADDRESS, "::1"));
     Connection connection = factory.newConnection();
-    Channel channel = connection.createChannel();
+    channel = connection.createChannel();
 
     channel.queueDeclare(ALL_PROBES_QUEUE, false, false, false, null);
 
     consumer = new QueueingConsumer(channel);
-    channel.basicConsume(ALL_PROBES_QUEUE, true, consumer);
+    tag = channel.basicConsume(ALL_PROBES_QUEUE, true, consumer);
     //start the thread that receives messages (this class)
     Thread thread = new Thread(this);
     thread.start();
     log.debug("Client rabbit started");
   }
   
-  public void stop() {
+  public void stop() throws Exception {
     shouldRun = false;
+    channel.basicCancel(tag);
   }
 }

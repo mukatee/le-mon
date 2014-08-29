@@ -37,7 +37,7 @@ public class AddMeasureProcessor implements Runnable {
       long time = json.getLong(PARAM_TIME);
       config = json.getString(PARAM_CONFIG);
       probe.addMeasure(config);
-      log.debug("Measurent removed from probe:"+config);
+      log.info("Measurent added to probe:"+config);
     } catch (Exception e) {
       log.error("Failed to add measure:"+config, e);
     }
