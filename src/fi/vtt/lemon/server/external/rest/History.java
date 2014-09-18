@@ -2,7 +2,7 @@ package fi.vtt.lemon.server.external.rest;
 
 import fi.vtt.lemon.server.LemonServer;
 import fi.vtt.lemon.server.Registry;
-import fi.vtt.lemon.server.Value;
+import fi.vtt.lemon.server.data.Value;
 import org.codehaus.jettison.json.JSONArray;
 import org.codehaus.jettison.json.JSONException;
 import org.codehaus.jettison.json.JSONObject;

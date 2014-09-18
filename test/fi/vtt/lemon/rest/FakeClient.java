@@ -1,9 +1,6 @@
 package fi.vtt.lemon.rest;
 
-import fi.vtt.lemon.server.LemonServer;
-import fi.vtt.lemon.server.Registry;
-import fi.vtt.lemon.server.Value;
-import fi.vtt.lemon.server.internal.ServerToProbe;
+import fi.vtt.lemon.server.data.Value;
 import org.codehaus.jettison.json.JSONException;
 import org.codehaus.jettison.json.JSONObject;
 import osmo.common.log.Logger;
@@ -18,7 +15,6 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-import static fi.vtt.lemon.RabbitConst.PARAM_CONFIG;
 import static fi.vtt.lemon.server.external.RESTConst.*;
 
 /** @author Teemu Kanstren */

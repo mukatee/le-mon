@@ -4,15 +4,13 @@
 
 package fi.vtt.lemon.server;
 
-import fi.vtt.lemon.probe.measurement.MeasurementThreadFactory;
-import fi.vtt.lemon.probe.measurement.WatchDog;
+import fi.vtt.lemon.server.persistence.Persistence;
 import osmo.common.log.Logger;
 
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
-import java.util.concurrent.ScheduledThreadPoolExecutor;
 
 /**
  * Maintains the runtime state of the server. This includes list of available measures, client subscriptions, etc.
@@ -25,8 +23,10 @@ public class Registry {
   private final Collection<String> availableBM = new HashSet<>();
   /** The list of measurements the client is subscribing to (id = MeasureURI). */
   private Collection<String> subscriptionRegistry = new HashSet<>();
+  private final Persistence persistence;
 
-  public Registry() {
+  public Registry(Persistence persistence) {
+    this.persistence = persistence;
   }
 
   /**
@@ -38,6 +38,7 @@ public class Registry {
     log.info("Adding BM:"+measureURI);
     //TODO: add some watchdog to drop available if nothing received in time interval, or do keep-alive messages
     availableBM.add(measureURI);
+    persistence.bmAdded(measureURI);
   }
 
   /**
@@ -48,10 +49,11 @@ public class Registry {
   public void removeBM(String measureURI) {
     log.info("Removing BM:"+measureURI);
     availableBM.remove(measureURI);
+    persistence.bmRemoved(measureURI);
   }
 
   /**
-   * Get current list of availabe measurement types.
+   * Get current list of available measurement types.
    * 
    * @return The list of MeasureURI's...
    */

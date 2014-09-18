@@ -2,7 +2,7 @@
  * Copyright (c) 2012 VTT
  */
 
-package fi.vtt.lemon.server;
+package fi.vtt.lemon.server.data;
 
 import java.text.DateFormat;
 import java.util.Date;
@@ -21,13 +21,6 @@ public class Value {
   private String value;
   /** The time of the measurement. */
   private Date time;
-
-  /**
-   * Once upon time, this was used by Persistence engine to sort the results in various ways.. 
-   */
-  public enum SortKey {
-    PRECISION, MEASUREURI, VALUE, TIME
-  }
 
   public Value(String measureURI, int precision, String value, Date time) {
     this.measureURI = measureURI;

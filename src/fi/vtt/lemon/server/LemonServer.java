@@ -6,10 +6,11 @@ package fi.vtt.lemon.server;
 
 import fi.vtt.lemon.Config;
 import fi.vtt.lemon.RabbitConst;
+import fi.vtt.lemon.server.data.Value;
 import fi.vtt.lemon.server.external.RestClient;
 import fi.vtt.lemon.server.internal.InternalServer;
-import fi.vtt.lemon.server.internal.MeasurementProcessor;
 import fi.vtt.lemon.server.internal.ServerToProbe;
+import fi.vtt.lemon.server.persistence.Persistence;
 import osmo.common.log.Logger;
 
 import java.util.Collection;
@@ -36,15 +37,12 @@ public class LemonServer {
   /**
    * Global access to the registry for different server elements. 
    * Global variables are great, just in case you disagree, the excuse is the following.
-   * Various objects are created externally such as Jersey request processing objects, which require this type of
+   * Various objects are created externally such as REST request processing objects, which require this type of
    * global access point to the server state.
    * 
    * @return The registry.
    */
   public synchronized static Registry getRegistry() {
-    if (registry == null) {
-      registry = new Registry();
-    }
     return registry;
   }
 
@@ -55,14 +53,19 @@ public class LemonServer {
    * @throws Exception If errors..
    */
   public static void main(String[] args) throws Exception {
-    registry = new Registry();
     persistence = new Persistence();
+    registry = new Registry(persistence);
     client = new RestClient();
     probeClient = new ServerToProbe(Config.getString(RabbitConst.BROKER_ADDRESS, "::1"));
     JettyStarter start = new JettyStarter();
     start.start();
     InternalServer internal = new InternalServer();
     internal.start();
+  }
+  
+  public static void reset() {
+    persistence = new Persistence();
+    registry = new Registry(persistence);
   }
 
   public static void register(String measureURI, int precision) {
@@ -102,7 +105,7 @@ public class LemonServer {
    * @return The list of measurements matching the given criteria.
    */
   public static List<Value> getHistory(long start, long end, Collection<String> bmIds) {
-    return persistence.getValues(0, Long.MAX_VALUE, bmIds, null, false);
+    return persistence.getValues(bmIds);
   }
 
   public static ServerToProbe getProbeClient() {

@@ -13,15 +13,14 @@ import fi.vtt.lemon.probes.tester.TestProbe2;
 import fi.vtt.lemon.probes.tester.TestProbe3;
 import fi.vtt.lemon.probes.tester.TimedTestProbe;
 import fi.vtt.lemon.server.LemonServer;
-import fi.vtt.lemon.server.Value;
+import fi.vtt.lemon.server.data.Value;
 import fi.vtt.lemon.server.external.RESTConst;
-import fi.vtt.lemon.server.external.RestClient;
 import fi.vtt.lemon.server.external.RestClient2;
 import org.codehaus.jettison.json.JSONArray;
 import org.codehaus.jettison.json.JSONObject;
 import org.testng.annotations.AfterTest;
 import org.testng.annotations.BeforeClass;
-import org.testng.annotations.BeforeTest;
+import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 import osmo.common.log.Logger;
 
@@ -42,13 +41,14 @@ public class RESTCalls {
   
   @BeforeClass
   public static void startServer() throws Exception {
-    Logger.consoleLevel = Level.INFO;
+    Logger.consoleLevel = Level.FINE;
     Logger.packageName = "f.v.l";
     LemonServer.main(null);
   }
   
-  @BeforeTest
+  @BeforeMethod
   public void reset() {
+    LemonServer.reset();
     probes.clear();
     int port = Config.getInt(REST_SERVER_PORT, 11112);
     String url = "http://localhost:"+port;
@@ -58,7 +58,7 @@ public class RESTCalls {
   @AfterTest
   public void stopProbes() throws Exception {
     for (TestProbe probe : probes) {
-      probe.stop();
+      if (!probe.isStopped()) probe.stop();
     }
   }
   
@@ -76,7 +76,7 @@ public class RESTCalls {
     JSONArray array = json.getJSONArray("availability");
     assertEquals(array.length(), 1, "Availability size:"+array.toString());
     JSONObject item = array.getJSONObject(0);
-    assertEquals("Registered probe", "MFW://Firewall/Bob1/Configuration file/Bobby1", item.getString(RabbitConst.PARAM_MEASURE_URI));
+    assertEquals(item.getString(RabbitConst.PARAM_MEASURE_URI), "MFW://Firewall/Bob1/Configuration file/Bobby1", "Registered probe");
   }
 
   @Test
@@ -103,7 +103,7 @@ public class RESTCalls {
     JSONObject item1 = array.getJSONObject(0);
     JSONObject item2 = array.getJSONObject(1);
     JSONObject item3 = array.getJSONObject(2);
-    System.out.println("data:\n"+json.toString());
+//    System.out.println("data:\n"+json.toString());
     Collection<String> probes = new HashSet<>();
     probes.add(item1.getString(RabbitConst.PARAM_MEASURE_URI));
     probes.add(item2.getString(RabbitConst.PARAM_MEASURE_URI));
@@ -117,7 +117,7 @@ public class RESTCalls {
   public void frameworkInfo() throws Exception {
     String data = rs2.post(RESTConst.PATH_FRAMEWORK_INFO);
     JSONObject json = new JSONObject(data);
-    assertEquals("Framework info", "LE-MON v0.1", json.getString("info"));
+    assertEquals(json.getString("info"), "LE-MON v0.1", "Framework info");
   }
   
   @Test
@@ -169,7 +169,7 @@ public class RESTCalls {
 
     List<Value> values = FakeClient.getValues();
     Value latest = values.get(values.size() - 1);
-    assertEquals("Latest measure collected", "unmodified", latest.valueString());
+    assertEquals(latest.valueString(), "unmodified", "Latest measure collected");
 
     JSONObject json = new JSONObject();
     json.put(MEASURE_URI, "le-mon://configurable/test-probe");
@@ -182,34 +182,33 @@ public class RESTCalls {
 
     values = FakeClient.getValues();
     latest = values.get(values.size() - 1);
-    assertEquals("Latest measure collected", "my little measure", latest.valueString());
+    assertEquals(latest.valueString(), "my little measure", "Latest measure collected");
 
     json = new JSONObject();
     json.put(MEASURE_URI, "le-mon://configurable/test-probe");
     json.put(PARAM_CONFIG, "hello world");
     rs2.post(PATH_REMOVE_MEASURE, json);
 
-    System.out.println("attempted to remove non-existent");
+//    System.out.println("attempted to remove non-existent");
 
     Thread.sleep(2222);
 
     values = FakeClient.getValues();
     latest = values.get(values.size() - 1);
-    assertEquals("Latest measure collected", "my little measure", latest.valueString());
-
-    
+    assertEquals(latest.valueString(), "my little measure", "Latest measure collected");
+  
     json = new JSONObject();
     json.put(MEASURE_URI, "le-mon://configurable/test-probe");
     json.put(PARAM_CONFIG, "my little measure");
     rs2.post(PATH_REMOVE_MEASURE, json);
 
-    System.out.println("attempted to remove existent");
+//    System.out.println("attempted to remove existent");
 
     Thread.sleep(2222);
 
     values = FakeClient.getValues();
     latest = values.get(values.size() - 1);
-    assertEquals("Latest measure collected", "removed", latest.valueString());
+    assertEquals(latest.valueString(), "removed", "Latest measure collected");
 
     JSONObject unsubReq = new JSONObject();
     unsubReq.put(MEASURE_URI, "le-mon://configurable/test-probe");

@@ -1,6 +1,7 @@
 package fi.vtt.lemon;
 
-import fi.vtt.lemon.server.Value;
+import fi.vtt.lemon.server.data.Value;
+import fi.vtt.lemon.server.persistence.ValueMapper;
 import org.apache.ibatis.io.Resources;
 import org.apache.ibatis.session.SqlSession;
 import org.apache.ibatis.session.SqlSessionFactory;
@@ -25,16 +26,13 @@ public class MyBatisTesting {
     props.load(new FileInputStream("le-mon.properties"));
     SqlSessionFactory factory = new SqlSessionFactoryBuilder().build(inputStream, props);
     factory.getConfiguration().addMapper(ValueMapper.class);
-    SqlSession session = factory.openSession();
-    try {
+    try (SqlSession session = factory.openSession()) {
       ValueMapper mapper = session.getMapper(ValueMapper.class);
-      Value value = mapper.selectValue(1);
+      Value value = mapper.selectValue(2);
       assertEquals(value.valueString(), "data1", "Value read from DB");
       assertEquals(value.getMeasureURI(), "le-mon://hello", "Measure URI read from DB");
       assertEquals(value.getPrecision(), 1, "Precision read from DB");
       assertEquals(value.getTimeFormatted(), "1.1.1970 3:14:04", "Time read from DB");
-    } finally {
-      session.close();
     }
   }
 }

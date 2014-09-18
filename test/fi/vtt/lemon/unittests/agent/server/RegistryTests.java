@@ -16,7 +16,7 @@ public class RegistryTests {
   @Test
   public void testTargetParsingFromMeasureURI() {
     String measureURI = "MFW://target_type/target_name/bm_class/bm_name";
-    Registry registry = new Registry();
+    Registry registry = new Registry(null);
     assertEquals("target_type", registry.parseTargetType(measureURI));
     assertEquals("target_name", registry.parseTargetName(measureURI));
   }

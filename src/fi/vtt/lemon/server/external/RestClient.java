@@ -8,7 +8,7 @@ package fi.vtt.lemon.server.external;
 import fi.vtt.lemon.Config;
 import fi.vtt.lemon.RabbitConst;
 import fi.vtt.lemon.probe.measurement.MeasurementThreadFactory;
-import fi.vtt.lemon.server.Value;
+import fi.vtt.lemon.server.data.Value;
 import osmo.common.log.Logger;
 
 import java.util.concurrent.ScheduledThreadPoolExecutor;
