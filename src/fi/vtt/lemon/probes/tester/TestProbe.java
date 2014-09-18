@@ -22,6 +22,7 @@ public class TestProbe implements Probe {
   private final int precision;
   private MeasurementProvider mp;
   private ClientRabbitServer server;
+  private boolean stopped = false;
 
   public TestProbe(String result, String measureURI, int precision) {
     this.result = result;
@@ -35,6 +36,10 @@ public class TestProbe implements Probe {
     this.precision = precision;
   }
 
+  public boolean isStopped() {
+    return stopped;
+  }
+
   public void start() throws Exception {
     mp = new MeasurementProvider(new ServerClient("::1"));
     mp.startMeasuring(this);
@@ -43,6 +48,7 @@ public class TestProbe implements Probe {
   }
   
   public void stop() throws Exception {
+    stopped = true;
     mp.stop();
     server.stop();
   }

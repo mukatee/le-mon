@@ -2,7 +2,6 @@ package fi.vtt.lemon.server.external.rest;
 
 import fi.vtt.lemon.server.LemonServer;
 import fi.vtt.lemon.server.Registry;
-import fi.vtt.lemon.server.Value;
 import org.codehaus.jettison.json.JSONArray;
 import org.codehaus.jettison.json.JSONException;
 import org.codehaus.jettison.json.JSONObject;
@@ -14,9 +13,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
 
 import static fi.vtt.lemon.server.external.RESTConst.*;
 

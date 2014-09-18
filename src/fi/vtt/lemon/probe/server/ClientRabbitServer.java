@@ -109,11 +109,12 @@ public class ClientRabbitServer implements Runnable {
     //start the thread that receives messages (this class)
     Thread thread = new Thread(this);
     thread.start();
-    log.debug("Client rabbit started");
+    log.debug("Client rabbit started with tag:"+tag);
   }
   
   public void stop() throws Exception {
+    log.debug("Stopping consumer with tag:"+tag);
     shouldRun = false;
-    channel.basicCancel(tag);
+//    channel.basicCancel(tag);
   }
 }

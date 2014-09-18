@@ -1,12 +1,10 @@
 package fi.vtt.lemon.server.external;
 
 
-import fi.vtt.lemon.server.Value;
+import fi.vtt.lemon.server.data.Value;
 
 import org.codehaus.jettison.json.JSONObject;
 import osmo.common.log.Logger;
-
-import java.util.concurrent.ScheduledThreadPoolExecutor;
 
 import static fi.vtt.lemon.server.external.RESTConst.*;
 
