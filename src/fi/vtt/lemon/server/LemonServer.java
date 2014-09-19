@@ -5,11 +5,10 @@
 package fi.vtt.lemon.server;
 
 import fi.vtt.lemon.Config;
-import fi.vtt.lemon.RabbitConst;
+import fi.vtt.lemon.server.data.ProbeDescription;
 import fi.vtt.lemon.server.data.Value;
-import fi.vtt.lemon.server.external.RestClient;
-import fi.vtt.lemon.server.internal.InternalServer;
-import fi.vtt.lemon.server.internal.ServerToProbe;
+import fi.vtt.lemon.server.rest.PostToClientTask;
+import fi.vtt.lemon.server.rest.RESTConst;
 import fi.vtt.lemon.server.persistence.Persistence;
 import osmo.common.log.Logger;
 
@@ -30,9 +29,8 @@ public class LemonServer {
   private static Registry registry;
   /** For persisting measurement results etc. Currently not implemented. */
   private static Persistence persistence;
-  /** For making callbacks to the client, that is to provide the measurement results that are subscribed to, when available. */
-  private static RestClient client;
-  private static ServerToProbe probeClient;
+  private static MessagePooler pooler;
+  private static String client;
 
   /**
    * Global access to the registry for different server elements. 
@@ -55,12 +53,10 @@ public class LemonServer {
   public static void main(String[] args) throws Exception {
     persistence = new Persistence();
     registry = new Registry(persistence);
-    client = new RestClient();
-    probeClient = new ServerToProbe(Config.getString(RabbitConst.BROKER_ADDRESS, "::1"));
+    client = Config.getString(RESTConst.REST_CLIENT_URL, "http://localhost:11114/client");
+    pooler = new MessagePooler();
     JettyStarter start = new JettyStarter();
     start.start();
-    InternalServer internal = new InternalServer();
-    internal.start();
   }
   
   public static void reset() {
@@ -68,12 +64,12 @@ public class LemonServer {
     registry = new Registry(persistence);
   }
 
-  public static void register(String measureURI, int precision) {
-    registry.addBM(measureURI);
+  public static void register(String url, String measureURI, int precision) {
+    registry.addProbe(new ProbeDescription(url, measureURI, precision));
   }
 
-  public static void unregister(String measureURI) {
-    registry.removeBM(measureURI);
+  public static void unregister(String url, String measureURI, int precision) {
+    registry.removeProbe(new ProbeDescription(url, measureURI, precision));
   }
 
   /**
@@ -91,9 +87,14 @@ public class LemonServer {
     }
     Value v = new Value(measureURI, precision, value, new Date(time));
     if (registry.isSubscribed(measureURI)) {
-      client.measurement(v);
+      PostToClientTask task = new PostToClientTask(client, v);
+      pooler.schedule(task);
     }
     persistence.store(v);
+  }
+
+  public static String getClient() {
+    return client;
   }
 
   /**
@@ -108,7 +109,11 @@ public class LemonServer {
     return persistence.getValues(bmIds);
   }
 
-  public static ServerToProbe getProbeClient() {
-    return probeClient;
+  public static MessagePooler getPooler() {
+    return pooler;
+  }
+
+  public static void setPooler(MessagePooler pooler) {
+    LemonServer.pooler = pooler;
   }
 }

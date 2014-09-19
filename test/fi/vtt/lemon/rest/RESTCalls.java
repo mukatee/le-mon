@@ -5,7 +5,8 @@
 package fi.vtt.lemon.rest;
 
 import fi.vtt.lemon.Config;
-import fi.vtt.lemon.RabbitConst;
+import fi.vtt.lemon.MsgConst;
+import fi.vtt.lemon.probe.ProbeServer;
 import fi.vtt.lemon.probes.tester.ConfigurableTestProbe;
 import fi.vtt.lemon.probes.tester.TestProbe;
 import fi.vtt.lemon.probes.tester.TestProbe1;
@@ -14,8 +15,8 @@ import fi.vtt.lemon.probes.tester.TestProbe3;
 import fi.vtt.lemon.probes.tester.TimedTestProbe;
 import fi.vtt.lemon.server.LemonServer;
 import fi.vtt.lemon.server.data.Value;
-import fi.vtt.lemon.server.external.RESTConst;
-import fi.vtt.lemon.server.external.RestClient2;
+import fi.vtt.lemon.server.rest.RESTConst;
+import fi.vtt.lemon.server.rest.RestClient2;
 import org.codehaus.jettison.json.JSONArray;
 import org.codehaus.jettison.json.JSONObject;
 import org.testng.annotations.AfterTest;
@@ -24,8 +25,8 @@ import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 import osmo.common.log.Logger;
 
-import static fi.vtt.lemon.RabbitConst.PARAM_CONFIG;
-import static fi.vtt.lemon.server.external.RESTConst.*;
+import static fi.vtt.lemon.MsgConst.PARAM_CONFIG;
+import static fi.vtt.lemon.server.rest.RESTConst.*;
 import static org.testng.Assert.*;
 
 import java.util.ArrayList;
@@ -44,13 +45,14 @@ public class RESTCalls {
     Logger.consoleLevel = Level.FINE;
     Logger.packageName = "f.v.l";
     LemonServer.main(null);
+    ProbeServer.start();
   }
   
   @BeforeMethod
   public void reset() {
     LemonServer.reset();
     probes.clear();
-    int port = Config.getInt(REST_SERVER_PORT, 11112);
+    int port = Config.getInt(REST_SERVER_SERVER_PORT, 11112);
     String url = "http://localhost:"+port;
     rs2 = new RestClient2(url);
   }
@@ -76,7 +78,7 @@ public class RESTCalls {
     JSONArray array = json.getJSONArray("availability");
     assertEquals(array.length(), 1, "Availability size:"+array.toString());
     JSONObject item = array.getJSONObject(0);
-    assertEquals(item.getString(RabbitConst.PARAM_MEASURE_URI), "MFW://Firewall/Bob1/Configuration file/Bobby1", "Registered probe");
+    assertEquals(item.getString(MsgConst.PARAM_MEASURE_URI), "MFW://Firewall/Bob1/Configuration file/Bobby1", "Registered probe");
   }
 
   @Test
@@ -105,9 +107,9 @@ public class RESTCalls {
     JSONObject item3 = array.getJSONObject(2);
 //    System.out.println("data:\n"+json.toString());
     Collection<String> probes = new HashSet<>();
-    probes.add(item1.getString(RabbitConst.PARAM_MEASURE_URI));
-    probes.add(item2.getString(RabbitConst.PARAM_MEASURE_URI));
-    probes.add(item3.getString(RabbitConst.PARAM_MEASURE_URI));
+    probes.add(item1.getString(MsgConst.PARAM_MEASURE_URI));
+    probes.add(item2.getString(MsgConst.PARAM_MEASURE_URI));
+    probes.add(item3.getString(MsgConst.PARAM_MEASURE_URI));
     assertTrue(probes.contains(probe1.getMeasureURI()), "Probe " + probe1.getMeasureURI() + " should be present");
     assertTrue(probes.contains(probe2.getMeasureURI()), "Probe " + probe2.getMeasureURI() + " should be present");
     assertTrue(probes.contains(probe3.getMeasureURI()), "Probe " + probe3.getMeasureURI() + " should be present");

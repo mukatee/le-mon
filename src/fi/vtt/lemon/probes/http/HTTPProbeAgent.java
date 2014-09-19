@@ -5,11 +5,12 @@
 package fi.vtt.lemon.probes.http;
 
 import fi.vtt.lemon.Config;
-import fi.vtt.lemon.RabbitConst;
-import fi.vtt.lemon.probe.ServerClient;
+import fi.vtt.lemon.MsgConst;
+import fi.vtt.lemon.probe.ProbeServer;
+import fi.vtt.lemon.probe.tasks.BMSender;
+import fi.vtt.lemon.server.MessagePooler;
 import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.servlet.ServletContextHandler;
-import org.eclipse.jetty.servlet.ServletHolder;
 import osmo.common.log.Logger;
 
 import javax.servlet.Filter;
@@ -20,12 +21,9 @@ import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
 import java.io.BufferedReader;
-import java.io.DataOutputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
-import java.net.HttpURLConnection;
-import java.net.URL;
 
 /**
  * Grabs a base measure from a HTTP request posted at the address http://host/port/uri.
@@ -37,8 +35,6 @@ import java.net.URL;
  */
 public class HTTPProbeAgent implements Filter {
   private final static Logger log = new Logger(HTTPProbeAgent.class);
-  /** Connection to the le-mon server-agent. */
-  private final ServerClient server;
   /** The ID for the measure provided. */
   private final String measureURI;
   /** Precision of the probe providing the measure. */
@@ -51,7 +47,6 @@ public class HTTPProbeAgent implements Filter {
    * @param precision The precision of the probe providing the measures.
    */
   public HTTPProbeAgent(String measureURI, int precision) {
-    this.server = new ServerClient(Config.getString(RabbitConst.BROKER_ADDRESS, "::1"));
     this.measureURI = measureURI;
     this.precision = precision;
   }
@@ -79,7 +74,8 @@ public class HTTPProbeAgent implements Filter {
     }
     br.close();
 
-    server.measurement(measureURI, precision, content);
+    MessagePooler pooler = ProbeServer.getPooler();
+    pooler.schedule(new BMSender(measureURI, precision, content));
     log.debug("Received BM '"+measureURI+"' from '"+req.getRemoteAddr()+" with value:"+content);
 
     PrintWriter out = resp.getWriter();
@@ -103,7 +99,7 @@ public class HTTPProbeAgent implements Filter {
    * @throws Exception IF there is an error.
    */
   public static void main(String[] args) throws Exception {
-    int port = Config.getInt(RabbitConst.HTTP_PORT, 11111);
+    int port = Config.getInt(MsgConst.HTTP_PORT, 11111);
     Server server = new Server(port);
     //define what should be the HTTP root of our application
     ServletContextHandler handler = new ServletContextHandler();

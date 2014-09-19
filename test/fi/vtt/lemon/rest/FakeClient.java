@@ -15,7 +15,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-import static fi.vtt.lemon.server.external.RESTConst.*;
+import static fi.vtt.lemon.server.rest.RESTConst.*;
 
 /** @author Teemu Kanstren */
 public class FakeClient extends HttpServlet {

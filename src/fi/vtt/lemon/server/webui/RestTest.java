@@ -1,7 +1,7 @@
 package fi.vtt.lemon.server.webui;
 
-import fi.vtt.lemon.server.external.RESTConst;
-import fi.vtt.lemon.server.external.RestClient2;
+import fi.vtt.lemon.server.rest.RESTConst;
+import fi.vtt.lemon.server.rest.RestClient2;
 import org.codehaus.jettison.json.JSONObject;
 
 /**

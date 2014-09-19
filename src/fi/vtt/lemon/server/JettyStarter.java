@@ -1,8 +1,12 @@
 package fi.vtt.lemon.server;
 
 import fi.vtt.lemon.Config;
-import fi.vtt.lemon.server.external.RESTConst;
-import fi.vtt.lemon.server.external.rest.*;
+import fi.vtt.lemon.server.rest.RESTConst;
+import fi.vtt.lemon.server.rest.client.*;
+import fi.vtt.lemon.server.rest.probe.BMValue;
+import fi.vtt.lemon.server.rest.probe.Event;
+import fi.vtt.lemon.server.rest.probe.Register;
+import fi.vtt.lemon.server.rest.probe.UnRegister;
 import fi.vtt.lemon.server.webui.pages.StaticPageServlet;
 import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.servlet.ServletContextHandler;
@@ -17,7 +21,7 @@ public class JettyStarter {
   }
     
   public void start() throws Exception {
-    int port = Config.getInt(RESTConst.REST_SERVER_PORT, 11111);
+    int port = Config.getInt(RESTConst.REST_SERVER_SERVER_PORT, 11111);
     Server server = new Server(port);
 
     ServletContextHandler context = new ServletContextHandler(ServletContextHandler.SESSIONS);
@@ -37,6 +41,11 @@ public class JettyStarter {
     context.addServlet(new ServletHolder(new Shutdown()), RESTConst.PATH_SHUTDOWN);
     context.addServlet(new ServletHolder(new Subscribe()), RESTConst.PATH_SUBSCRIBE);
     context.addServlet(new ServletHolder(new Unsubscribe()), RESTConst.PATH_UNSUBSCRIBE);
+
+    context.addServlet(new ServletHolder(new BMValue()), RESTConst.PATH_BM_RESULT);
+    context.addServlet(new ServletHolder(new Event()), RESTConst.PATH_EVENT);
+    context.addServlet(new ServletHolder(new Register()), RESTConst.PATH_REGISTER);
+    context.addServlet(new ServletHolder(new UnRegister()), RESTConst.PATH_UNREGISTER);
 
     server.start();
   }

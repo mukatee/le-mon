@@ -4,7 +4,7 @@
 
 package fi.vtt.lemon.unittests.agent.probe;
 
-import fi.vtt.lemon.RabbitConst;
+import fi.vtt.lemon.MsgConst;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
@@ -25,8 +25,8 @@ public class MeasurementRequestTests {
 
   @BeforeClass
   public static void setup() {
-    measureURI1 = RabbitConst.createMeasureURI(targetType1, targetName1, bmClass1, bmName1);
-    measureURI2 = RabbitConst.createMeasureURI(targetType2, targetName2, bmClass2, bmName2);
+    measureURI1 = MsgConst.createMeasureURI(targetType1, targetName1, bmClass1, bmName1);
+    measureURI2 = MsgConst.createMeasureURI(targetType2, targetName2, bmClass2, bmName2);
   }
 
   /**
