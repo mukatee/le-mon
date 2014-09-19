@@ -82,6 +82,15 @@ public class Persistence {
       histories.put(measureURI, history);
     }
     history.add(value);
+
+    log.debug("Persisting BM Value:"+value);
+    try (SqlSession session = sessionFactory.openSession()) {
+      ValueMapper mapper = session.getMapper(ValueMapper.class);
+      mapper.insert(value);
+      session.commit();
+    } catch (Exception e) {
+      log.error("Failed to persist value", e);
+    }
   }
   
   public void bmAdded(String uri) {
