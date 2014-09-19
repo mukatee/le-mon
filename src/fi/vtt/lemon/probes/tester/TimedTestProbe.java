@@ -5,7 +5,7 @@
 package fi.vtt.lemon.probes.tester;
 
 import fi.vtt.lemon.Config;
-import fi.vtt.lemon.RabbitConst;
+import fi.vtt.lemon.MsgConst;
 import fi.vtt.lemon.probe.ServerClient;
 import fi.vtt.lemon.probe.measurement.MeasurementProvider;
 import osmo.common.log.Logger;
@@ -39,7 +39,7 @@ public class TimedTestProbe extends TestProbe {
   }
 
   public static void main(String[] args) throws Exception {
-    MeasurementProvider mp = new MeasurementProvider(new ServerClient(Config.getString(RabbitConst.BROKER_ADDRESS, "::1")));
+    MeasurementProvider mp = new MeasurementProvider(new ServerClient(Config.getString(MsgConst.BROKER_ADDRESS, "::1")));
     mp.startMeasuring(new TimedTestProbe(3));
   }
 }

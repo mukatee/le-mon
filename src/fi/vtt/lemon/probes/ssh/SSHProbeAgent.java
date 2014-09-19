@@ -9,7 +9,7 @@ import ch.ethz.ssh2.SCPClient;
 import ch.ethz.ssh2.Session;
 import ch.ethz.ssh2.StreamGobbler;
 import fi.vtt.lemon.Config;
-import fi.vtt.lemon.RabbitConst;
+import fi.vtt.lemon.MsgConst;
 import fi.vtt.lemon.probe.Probe;
 import fi.vtt.lemon.probe.ServerClient;
 import fi.vtt.lemon.probe.measurement.MeasurementProvider;
@@ -178,14 +178,14 @@ public class SSHProbeAgent implements Probe {
    * @throws Exception If there is an error.
    */
   public static void main(String[] args) throws Exception {
-    MeasurementProvider mp = new MeasurementProvider(new ServerClient(Config.getString(RabbitConst.BROKER_ADDRESS, "::1")));
-    String measureURI = Config.getString(RabbitConst.PARAM_MEASURE_URI);
-    int precision = Config.getInt(RabbitConst.PROBE_PRECISION);
-    String target = Config.getString(RabbitConst.MEASUREMENT_TARGET);
-    String filename = Config.getString(RabbitConst.FILENAME);
-    String username = Config.getString(RabbitConst.USERNAME);
-    String password = Config.getString(RabbitConst.PASSWORD);
-    String command = Config.getString(RabbitConst.COMMAND);
+    MeasurementProvider mp = new MeasurementProvider(new ServerClient(Config.getString(MsgConst.BROKER_ADDRESS, "::1")));
+    String measureURI = Config.getString(MsgConst.PARAM_MEASURE_URI);
+    int precision = Config.getInt(MsgConst.PROBE_PRECISION);
+    String target = Config.getString(MsgConst.MEASUREMENT_TARGET);
+    String filename = Config.getString(MsgConst.FILENAME);
+    String username = Config.getString(MsgConst.USERNAME);
+    String password = Config.getString(MsgConst.PASSWORD);
+    String command = Config.getString(MsgConst.COMMAND);
     mp.startMeasuring(new SSHProbeAgent(measureURI, precision, target, filename, username, password, command));
   }
 }

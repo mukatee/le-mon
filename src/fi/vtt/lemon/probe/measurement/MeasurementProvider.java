@@ -5,12 +5,15 @@
 package fi.vtt.lemon.probe.measurement;
 
 import fi.vtt.lemon.Config;
-import fi.vtt.lemon.RabbitConst;
+import fi.vtt.lemon.MsgConst;
+import fi.vtt.lemon.probe.ProbeServer;
 import fi.vtt.lemon.probe.ServerClient;
 import fi.vtt.lemon.probe.Probe;
+import fi.vtt.lemon.probe.tasks.RegistrationSender;
+import fi.vtt.lemon.probe.tasks.UnRegistrationSender;
+import fi.vtt.lemon.server.MessagePooler;
 import osmo.common.log.Logger;
 
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Map;
@@ -45,8 +48,9 @@ public class MeasurementProvider {
    * Stops the measurement process (thread pool executor, watchdog).
    */
   public void stop() {
+    MessagePooler pooler = ProbeServer.getPooler();
     for (Probe probe : probes) {
-      server.unregister(probe.getMeasureURI());
+      pooler.schedule(new UnRegistrationSender(probe));
       log.info("Unregistering probe:"+probe.getMeasureURI());
     }
     executor.shutdown();
@@ -60,15 +64,16 @@ public class MeasurementProvider {
    */
   public synchronized void startMeasuring(Probe probe) {
     probes.add(probe);
-    server.register(probe.getMeasureURI(), probe.getPrecision());
-    int threadPoolSize = Config.getInt(RabbitConst.THREAD_POOL_SIZE, 5);
-    int taskTimeOut = Config.getInt(RabbitConst.TASK_TIMEOUT, 5);
+    MessagePooler pooler = ProbeServer.getPooler();
+    pooler.schedule(new RegistrationSender(probe.getMeasureURI(), probe.getPrecision()));
+    int threadPoolSize = Config.getInt(MsgConst.THREAD_POOL_SIZE, 5);
+    int taskTimeOut = Config.getInt(MsgConst.TASK_TIMEOUT, 5);
     if (executor == null) {
       executor = new ScheduledThreadPoolExecutor(threadPoolSize, new MeasurementThreadFactory());
       watchDog = new WatchDog(server, tasks, taskTimeOut);
     }
     MeasurementTask task = new MeasurementTask(server, probe);
-    int interval = Config.getInt(RabbitConst.MEASURE_INTERVAL, 1);
+    int interval = Config.getInt(MsgConst.MEASURE_INTERVAL, 1);
     Future future = executor.scheduleAtFixedRate(task, 0, interval, TimeUnit.SECONDS);
     WatchedTask watchMe = new WatchedTask(future, task, tasks);
     //TODO: the set of tasks for a probe should be a collection, otherwise we will overwrite old ones if several 

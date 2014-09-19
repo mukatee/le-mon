@@ -4,13 +4,16 @@
 
 package fi.vtt.lemon.server;
 
+import fi.vtt.lemon.server.data.ProbeDescription;
 import fi.vtt.lemon.server.persistence.Persistence;
 import osmo.common.log.Logger;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Maintains the runtime state of the server. This includes list of available measures, client subscriptions, etc.
@@ -23,6 +26,8 @@ public class Registry {
   private final Collection<String> availableBM = new HashSet<>();
   /** The list of measurements the client is subscribing to (id = MeasureURI). */
   private Collection<String> subscriptionRegistry = new HashSet<>();
+  private Map<String, ProbeDescription> probeMap = new HashMap<>();
+  private List<ProbeDescription> probes = new ArrayList<>();
   private final Persistence persistence;
 
   public Registry(Persistence persistence) {
@@ -31,25 +36,29 @@ public class Registry {
 
   /**
    * Adds a measurement type as available.
-   * 
-   * @param measureURI
    */
-  public void addBM(String measureURI) {
-    log.info("Adding BM:"+measureURI);
+  public void addProbe(ProbeDescription probe) {
+    log.info("Adding probe:"+probe);
     //TODO: add some watchdog to drop available if nothing received in time interval, or do keep-alive messages
-    availableBM.add(measureURI);
-    persistence.bmAdded(measureURI);
+    availableBM.add(probe.getMeasureURI());
+    persistence.bmAdded(probe.getMeasureURI());
+    probes.add(probe);
+    //TODO: precision should be checked before override
+    probeMap.put(probe.getMeasureURI(), probe);
   }
 
   /**
    * Removes a measurement type as available.
-   *
-   * @param measureURI
    */
-  public void removeBM(String measureURI) {
-    log.info("Removing BM:"+measureURI);
-    availableBM.remove(measureURI);
-    persistence.bmRemoved(measureURI);
+  public void removeProbe(ProbeDescription probe) {
+    log.info("Removing probe:"+probe);
+    //TODO: check if another probe still exist for the URI
+    availableBM.remove(probe.getMeasureURI());
+    //TODO: rename event to "probe removed" not "bm removed"
+    persistence.bmRemoved(probe.getMeasureURI());
+    probes.remove(probe);
+    //TODO: check if another probe exists..
+    probeMap.remove(probe.getMeasureURI());
   }
 
   /**
@@ -155,5 +164,9 @@ public class Registry {
 
   public boolean isRegistered(String measureURI) {
     return availableBM.contains(measureURI);
+  }
+
+  public ProbeDescription probeFor(String measureURI) {
+    return probeMap.get(measureURI);
   }
 }

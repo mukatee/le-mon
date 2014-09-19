@@ -4,7 +4,7 @@
 
 package fi.vtt.lemon.unittests;
 
-import fi.vtt.lemon.RabbitConst;
+import fi.vtt.lemon.MsgConst;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -40,13 +40,13 @@ public class HSQLDBTesting {
   public static void main(String[] args) {
     HSQLDBTesting testing = new HSQLDBTesting();
     Map<String, String> props = new HashMap<String, String>();
-    props.put(RabbitConst.PROBE_BM_CLASS, "bmclass");
-    props.put(RabbitConst.PROBE_BM_NAME, "bmname");
-    props.put(RabbitConst.PROBE_NAME, "probe name");
-    props.put(RabbitConst.PROBE_TARGET_TYPE, "target type");
-    props.put(RabbitConst.PROBE_TARGET_NAME, "target name");
-    props.put(RabbitConst.PROBE_BM_DESCRIPTION, "bm description");
-    props.put(RabbitConst.PROBE_PRECISION, "1");
+    props.put(MsgConst.PROBE_BM_CLASS, "bmclass");
+    props.put(MsgConst.PROBE_BM_NAME, "bmname");
+    props.put(MsgConst.PROBE_NAME, "probe name");
+    props.put(MsgConst.PROBE_TARGET_TYPE, "target type");
+    props.put(MsgConst.PROBE_TARGET_NAME, "target name");
+    props.put(MsgConst.PROBE_BM_DESCRIPTION, "bm description");
+    props.put(MsgConst.PROBE_PRECISION, "1");
 
   }
 }

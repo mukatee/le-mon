@@ -4,8 +4,11 @@
 
 package fi.vtt.lemon.probe.measurement;
 
+import fi.vtt.lemon.probe.ProbeServer;
 import fi.vtt.lemon.probe.ServerClient;
 import fi.vtt.lemon.probe.Probe;
+import fi.vtt.lemon.probe.tasks.EventSender;
+import fi.vtt.lemon.server.MessagePooler;
 import osmo.common.log.Logger;
 
 import java.util.Map;
@@ -13,7 +16,7 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
-import static fi.vtt.lemon.RabbitConst.*;
+import static fi.vtt.lemon.MsgConst.*;
 
 /**
  * Keeps track of measurement tasks and if one exceeds the given timeout threshold, cancels the task.
@@ -69,7 +72,8 @@ public class WatchDog implements Runnable {
         task.cancel();
         Probe probe = entry.getKey();
         tasks.remove(probe);
-        server.event(EVENT_PROBE_HANGS, task.getMeasureURI(), "Probe has become non-responsive:"+probe);
+        MessagePooler pooler = ProbeServer.getPooler();
+        pooler.schedule(new EventSender(EVENT_PROBE_HANGS, task.getMeasureURI(), "Probe has become non-responsive:" + probe));
       }
     }
   }

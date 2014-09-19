@@ -4,11 +4,15 @@
 
 package fi.vtt.lemon.probe.measurement;
 
+import fi.vtt.lemon.probe.ProbeServer;
 import fi.vtt.lemon.probe.ServerClient;
 import fi.vtt.lemon.probe.Probe;
+import fi.vtt.lemon.probe.tasks.BMSender;
+import fi.vtt.lemon.probe.tasks.EventSender;
+import fi.vtt.lemon.server.MessagePooler;
 import osmo.common.log.Logger;
 
-import static fi.vtt.lemon.RabbitConst.*;
+import static fi.vtt.lemon.MsgConst.*;
 
 /** 
  * A task for performing a single measurement.
@@ -55,11 +59,12 @@ public class MeasurementTask implements Runnable {
     log.debug("Received measure:" + measure + " from:" + measureURI);
     int precision = probe.getPrecision();
 
+    MessagePooler pooler = ProbeServer.getPooler();
     if (measure == null) {
-      server.event(EVENT_NO_VALUE_FOR_BM, measureURI, "No valid measure available.");
+      pooler.schedule(new EventSender(EVENT_NO_VALUE_FOR_BM, measureURI, "No valid measure available."));
       return;
-    }    
-    server.measurement(measureURI, precision, measure);
+    }
+    pooler.schedule(new BMSender(measureURI, precision, measure));
   }
 
   /**

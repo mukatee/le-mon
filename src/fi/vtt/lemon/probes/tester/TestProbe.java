@@ -4,10 +4,12 @@
 
 package fi.vtt.lemon.probes.tester;
 
+import fi.vtt.lemon.Config;
+import fi.vtt.lemon.probe.ProbeServer;
 import fi.vtt.lemon.probe.ServerClient;
 import fi.vtt.lemon.probe.measurement.MeasurementProvider;
 import fi.vtt.lemon.probe.Probe;
-import fi.vtt.lemon.probe.server.ClientRabbitServer;
+import fi.vtt.lemon.server.rest.RESTConst;
 import osmo.common.log.Logger;
 
 /**
@@ -21,7 +23,6 @@ public class TestProbe implements Probe {
   private final String measureURI;
   private final int precision;
   private MeasurementProvider mp;
-  private ClientRabbitServer server;
   private boolean stopped = false;
 
   public TestProbe(String result, String measureURI, int precision) {
@@ -41,16 +42,16 @@ public class TestProbe implements Probe {
   }
 
   public void start() throws Exception {
-    mp = new MeasurementProvider(new ServerClient("::1"));
+    String url = ProbeServer.getServerAgentAddress();
+    mp = new MeasurementProvider(new ServerClient(url));
     mp.startMeasuring(this);
-    server = new ClientRabbitServer(this);
-    server.start();
+    ProbeServer.addProbe(this);
   }
   
   public void stop() throws Exception {
     stopped = true;
     mp.stop();
-    server.stop();
+    ProbeServer.removeProbe(this);
   }
 
   public String getMeasureURI() {
