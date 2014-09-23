@@ -1,7 +1,3 @@
-/*
- * Copyright (c) 2012 VTT
- */
-
 package fi.vtt.lemon.rest;
 
 import fi.vtt.lemon.Config;
@@ -16,7 +12,7 @@ import fi.vtt.lemon.probes.tester.TimedTestProbe;
 import fi.vtt.lemon.server.LemonServer;
 import fi.vtt.lemon.server.data.Value;
 import fi.vtt.lemon.server.rest.RESTConst;
-import fi.vtt.lemon.server.rest.RestClient2;
+import fi.vtt.lemon.server.rest.RestClient;
 import org.codehaus.jettison.json.JSONArray;
 import org.codehaus.jettison.json.JSONObject;
 import org.testng.annotations.AfterTest;
@@ -38,7 +34,7 @@ import java.util.logging.Level;
 /** @author Teemu Kanstren */
 public class RESTCalls {
   private Collection<TestProbe> probes = new ArrayList<>();
-  private RestClient2 rs2 = null;
+  private RestClient rs2 = null;
   
   @BeforeClass
   public static void startServer() throws Exception {
@@ -54,7 +50,7 @@ public class RESTCalls {
     probes.clear();
     int port = Config.getInt(REST_SERVER_SERVER_PORT, 11112);
     String url = "http://localhost:"+port;
-    rs2 = new RestClient2(url);
+    rs2 = new RestClient(url);
   }
   
   @AfterTest

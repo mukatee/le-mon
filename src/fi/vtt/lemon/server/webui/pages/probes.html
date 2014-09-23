@@ -1,1 +1,30 @@
-hello from probes
+<html>
+<head>
+    <title>
+        Le-Mon: Available Probes
+    </title>
+</head>
+<body>
+<div ng-app="" ng-controller="lemonController">
+    <p>List of available base measures:</p>
+
+    <ul>
+        <li ng-repeat="bm in bms">
+            {{ bm.measure_uri }}
+        </li>
+    </ul>
+
+</div>
+
+<script>
+    function lemonController($scope,$http) {
+        $http.get("http://localhost:11112/availability").
+                success(function(response) {
+                    $scope.bms = response.availability;
+                }
+        );
+    }
+</script>
+<script src="http://ajax.googleapis.com/ajax/libs/angularjs/1.2.15/angular.min.js"></script>
+</body>
+</html>

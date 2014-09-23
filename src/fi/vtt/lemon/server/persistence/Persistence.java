@@ -1,7 +1,3 @@
-/*
- * Copyright (c) 2012 VTT
- */
-
 package fi.vtt.lemon.server.persistence;
 
 import fi.vtt.lemon.server.data.Event;
@@ -36,6 +32,7 @@ public class Persistence {
   private final static Logger log = new Logger(Persistence.class);
   /** Key=measureURI, Value=list of measurement values for the measureURI. */
   private Map<String, Collection<Value>> histories = new HashMap<>();
+  private List<Value> values = new ArrayList<>();
   private SqlSessionFactory sessionFactory;
 
   public Persistence() {
@@ -82,6 +79,7 @@ public class Persistence {
       histories.put(measureURI, history);
     }
     history.add(value);
+    values.add(value);
 
     log.debug("Persisting BM Value:"+value);
     try (SqlSession session = sessionFactory.openSession()) {
@@ -113,5 +111,11 @@ public class Persistence {
     } catch (Exception e) {
       log.error("Failed to persist event", e);
     }
+  }
+
+  public synchronized List<Value> getLatest(int count) {
+    int max = values.size();
+    if (max > count) max = count;
+    return values.subList(values.size() - max, values.size());
   }
 }

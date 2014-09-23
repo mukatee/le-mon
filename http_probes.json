@@ -1,0 +1,5 @@
+[
+    {"url":"measure1", "measure_uri":"MFW:\/\/minecraft-server\/firewall\/config_file\/contents", "precision":1, "ip":"192.168.1.73"},
+    {"url":"measure2", "measure_uri":"MFW:\/\/minecraft-server\/firewall\/config_file\/tpm_pcr", "precision":1, "ip":"192.168.1.73"},
+    {"url":"measure3", "measure_uri":"le-mon:\/\/my_test_probe", "precision":1, "ip":"192.168.1.73"}
+]

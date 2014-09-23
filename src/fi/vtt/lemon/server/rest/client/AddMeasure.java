@@ -5,7 +5,7 @@ import fi.vtt.lemon.server.MessagePooler;
 import fi.vtt.lemon.server.Registry;
 import fi.vtt.lemon.server.data.ProbeDescription;
 import fi.vtt.lemon.server.rest.RESTConst;
-import fi.vtt.lemon.server.rest.RestClient2;
+import fi.vtt.lemon.server.rest.RestClient;
 import org.codehaus.jettison.json.JSONException;
 import org.codehaus.jettison.json.JSONObject;
 import osmo.common.log.Logger;
@@ -40,7 +40,7 @@ public class AddMeasure extends HttpServlet {
     String auth = req.getParameter("auth");
     String msg = req.getParameter("msg");
 
-    System.out.println("received:"+msg);
+//    System.out.println("received:"+msg);
 
     log.debug("Add measure request received "+msg);
     Registry registry = LemonServer.getRegistry();
@@ -81,7 +81,7 @@ public class AddMeasure extends HttpServlet {
         json.put(PARAM_CONFIG, measurementConfig);
         Registry registry = LemonServer.getRegistry();
         ProbeDescription probe = registry.probeFor(measureURI);
-        RestClient2.sendPost(probe.getUrl() + RESTConst.PATH_ADD_MEASURE, json);
+        RestClient.sendPost(probe.getUrl() + RESTConst.PATH_ADD_MEASURE, json);
       } catch (JSONException e) {
         log.error("Failed to send measurement", e);
       }

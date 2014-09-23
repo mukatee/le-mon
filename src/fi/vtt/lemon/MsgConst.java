@@ -1,7 +1,3 @@
-/*
- * Copyright (c) 2012 VTT
- */
-
 package fi.vtt.lemon;
 
 /**
@@ -37,6 +33,7 @@ public class MsgConst {
   public static final String PARAM_EVENT_SOURCE = "event_source";
   public static final String PARAM_EVENT_MSG = "event_msg";
   public static final String PARAM_CONFIG = "config";
+  public static final String PARAM_ID = "id";
   public static final String PARAM_PUBLIC_KEY = "public_key";
 
   //property that defines the type of message being sent

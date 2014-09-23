@@ -50,4 +50,8 @@ public class ProbeServer {
     int serverPort = Config.getInt(RESTConst.REST_PROBE_SERVER_PORT, 11112);
     return Config.getString(RESTConst.REST_PROBE_SERVER_URL, "http://[::1]:"+serverPort);
   }
+
+  public static void registerIfNeeded(String measureURI, int precision) {
+    
+  }
 }

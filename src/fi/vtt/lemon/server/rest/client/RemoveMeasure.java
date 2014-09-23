@@ -5,7 +5,7 @@ import fi.vtt.lemon.server.MessagePooler;
 import fi.vtt.lemon.server.Registry;
 import fi.vtt.lemon.server.data.ProbeDescription;
 import fi.vtt.lemon.server.rest.RESTConst;
-import fi.vtt.lemon.server.rest.RestClient2;
+import fi.vtt.lemon.server.rest.RestClient;
 import org.codehaus.jettison.json.JSONException;
 import org.codehaus.jettison.json.JSONObject;
 import osmo.common.log.Logger;
@@ -39,7 +39,7 @@ public class RemoveMeasure extends HttpServlet {
   private void showPage(HttpServletRequest req, HttpServletResponse resp) throws IOException {
     String auth = req.getParameter("auth");
     String msg = req.getParameter("msg");
-    System.out.println("received:"+msg);
+//    System.out.println("received:"+msg);
 
     log.debug("Remove measure request received, " + req);
     Registry registry = LemonServer.getRegistry();
@@ -81,7 +81,7 @@ public class RemoveMeasure extends HttpServlet {
         Registry registry = LemonServer.getRegistry();
         ProbeDescription probe = registry.probeFor(measureURI);
         //TODO: this should check which probe the subscription is for, the latest and greatest may not be what we subscribed for long ago. instead need subscription id or something
-        RestClient2.sendPost(probe.getUrl() + RESTConst.PATH_REMOVE_MEASURE, json);
+        RestClient.sendPost(probe.getUrl() + RESTConst.PATH_REMOVE_MEASURE, json);
       } catch (JSONException e) {
         log.error("Failed to send measurement", e);
       }

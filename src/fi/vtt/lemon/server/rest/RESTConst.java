@@ -1,7 +1,3 @@
-/*
- * Copyright (c) 2012 VTT
- */
-
 package fi.vtt.lemon.server.rest;
 
 /** 
@@ -19,6 +15,7 @@ public class RESTConst {
   public static final String BM_LIST = "bm_list";
   public static final String INFO = "info";
   public static final String PRECISION = "precision";
+  public static final String COUNT = "count";
 
   public static final String PATH_AVAILABILITY = "/availability";
   public static final String PATH_HISTORY = "/history";
@@ -33,6 +30,7 @@ public class RESTConst {
   public static final String PATH_EVENT = "/event";
   public static final String PATH_REGISTER = "/register";
   public static final String PATH_UNREGISTER = "/unregister";
+  public static final String PATH_LATEST = "/latest";
   public static final String REST_CLIENT_URL = "rest_client_url";
   public static final String REST_PROBE_SERVER_URL = "rest_probe_server_url";
   public static final String REST_SERVER_SERVER_URL = "rest_server_server_url";

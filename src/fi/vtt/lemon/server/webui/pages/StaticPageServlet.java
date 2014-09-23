@@ -13,6 +13,12 @@ import java.io.PrintWriter;
  * @author Teemu Kanstren
  */
 public class StaticPageServlet extends HttpServlet {
+  private final String pageFile;
+
+  public StaticPageServlet(String pageFile) {
+    this.pageFile = pageFile;
+  }
+
   @Override
   protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
     showPage(req, resp);
@@ -25,7 +31,7 @@ public class StaticPageServlet extends HttpServlet {
   
   private void showPage(HttpServletRequest req, HttpServletResponse resp) throws IOException {
     PrintWriter out = resp.getWriter();
-    String resource = TestUtils.getResource(StaticPageServlet.class, "availability.html");
+    String resource = TestUtils.getResource(StaticPageServlet.class, pageFile);
     out.write(resource);
   }
 }

@@ -1,13 +1,9 @@
-/*
- * Copyright (c) 2012 VTT
- */
-
 package fi.vtt.lemon.probe.tasks;
 
 import fi.vtt.lemon.probe.Probe;
 import fi.vtt.lemon.probe.ProbeServer;
 import fi.vtt.lemon.server.rest.RESTConst;
-import fi.vtt.lemon.server.rest.RestClient2;
+import fi.vtt.lemon.server.rest.RestClient;
 import org.codehaus.jettison.json.JSONObject;
 import osmo.common.log.Logger;
 
@@ -43,7 +39,7 @@ public class UnRegistrationSender implements Runnable {
       json.put(PARAM_PROBE_URL, ProbeServer.getProbeAddress());
 
       String server = ProbeServer.getServerAgentAddress();
-      RestClient2.sendPost(server+ RESTConst.PATH_UNREGISTER, json);
+      RestClient.sendPost(server + RESTConst.PATH_UNREGISTER, json);
     } catch (Exception e) {
       e.printStackTrace();
     }

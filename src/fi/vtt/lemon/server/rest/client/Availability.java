@@ -34,7 +34,6 @@ public class Availability extends HttpServlet {
   }
 
   private void showPage(HttpServletRequest req, HttpServletResponse resp) throws IOException {
-
     List<String> bms = LemonServer.getRegistry().getAvailableBM();
     log.debug("requested bm list:"+ bms.size());
     System.out.println("requested bm list:"+ bms.size());
@@ -61,13 +60,6 @@ public class Availability extends HttpServlet {
 
       PrintWriter out = resp.getWriter();
       out.write(root.toString());
-
-//    try {
-//      JSONObject json = new JSONObject(req.getParameter("msg"));
-//      System.out.println("received:"+json);
-//    } catch (JSONException e) {
-//      e.printStackTrace();
-//    }
     }
   }
 }

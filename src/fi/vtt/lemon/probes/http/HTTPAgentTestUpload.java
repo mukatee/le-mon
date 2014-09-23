@@ -1,7 +1,3 @@
-/*
- * Copyright (c) 2012 VTT
- */
-
 package fi.vtt.lemon.probes.http;
 
 import java.io.BufferedReader;
@@ -19,7 +15,7 @@ public class HTTPAgentTestUpload {
   //for self-testing
   public static void main(String[] args) throws Exception {
     // URL of CGI-Bin script.
-    URL target = new URL("http://localhost:8081/mfw/bm/os_version");
+    URL target = new URL("http://localhost:22222/measure3");
     HttpURLConnection url = (HttpURLConnection) target.openConnection();
     // Let the run-time system (RTS) know that we want input.
     url.setDoInput(true);
@@ -28,7 +24,7 @@ public class HTTPAgentTestUpload {
     // No caching, we want the real thing.
     url.setUseCaches(false);
     // Specify the content type.
-    url.setRequestProperty("Content-Type", "text/plain");
+    url.setRequestProperty("Content-Type", "application/json");
     // Send POST output.
     url.setRequestMethod("POST");
     DataOutputStream printout = new DataOutputStream(url.getOutputStream());

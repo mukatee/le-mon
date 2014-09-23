@@ -1,16 +1,24 @@
-/*
- * Copyright (c) 2012 VTT
- */
-
 package fi.vtt.lemon.probes.http;
 
 import fi.vtt.lemon.Config;
 import fi.vtt.lemon.MsgConst;
 import fi.vtt.lemon.probe.ProbeServer;
 import fi.vtt.lemon.probe.tasks.BMSender;
+import fi.vtt.lemon.probe.tasks.RegistrationSender;
+import fi.vtt.lemon.server.LemonServer;
 import fi.vtt.lemon.server.MessagePooler;
+import fi.vtt.lemon.server.Registry;
+import fi.vtt.lemon.server.data.ProbeDescription;
+import fi.vtt.lemon.server.rest.RESTConst;
+import fi.vtt.lemon.server.rest.probe.BMValue;
+import fi.vtt.lemon.server.tasks.MeasurementProcessor;
+import org.codehaus.jettison.json.JSONArray;
+import org.codehaus.jettison.json.JSONException;
+import org.codehaus.jettison.json.JSONObject;
 import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.servlet.ServletContextHandler;
+import org.eclipse.jetty.servlet.ServletHolder;
+import osmo.common.TestUtils;
 import osmo.common.log.Logger;
 
 import javax.servlet.Filter;
@@ -19,77 +27,68 @@ import javax.servlet.FilterConfig;
 import javax.servlet.ServletException;
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
+import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
+import java.util.HashMap;
+import java.util.Map;
+
+import static fi.vtt.lemon.MsgConst.*;
 
 /**
  * Grabs a base measure from a HTTP request posted at the address http://host/port/uri.
  * The base measure information is given as configuration for this class, and the content is the body of the http request.
  * A new class is to be instantiated for different probes.
- * The address is the hostname+post+"http-probe". For example, http://localhost:11111/http-probe
+ * The address is the hostname+port+"http-probe". For example, http://localhost:11111/http-probe
  *
  * @author Teemu Kanstren
  */
-public class HTTPProbeAgent implements Filter {
+public class HTTPProbeAgent extends HttpServlet {
   private final static Logger log = new Logger(HTTPProbeAgent.class);
-  /** The ID for the measure provided. */
   private final String measureURI;
-  /** Precision of the probe providing the measure. */
   private final int precision;
 
-  /**
-   * Constructor.
-   * 
-   * @param measureURI The measure ID for the probe posting the data.
-   * @param precision The precision of the probe providing the measures.
-   */
   public HTTPProbeAgent(String measureURI, int precision) {
     this.measureURI = measureURI;
     this.precision = precision;
   }
 
-  /**
-   * The servlet filter method for capturing the posted data.
-   * 
-   * @param servletRequest The HTTP request.
-   * @param resp Provides access to the HTTP response.
-   * @param chain Chain of filters from the Servlet framework.
-   * @throws IOException Sure.
-   * @throws ServletException If there is a problem.
-   */
-  public void doFilter(ServletRequest servletRequest, ServletResponse resp, FilterChain chain) throws IOException, ServletException {
-    HttpServletRequest req = (HttpServletRequest) servletRequest;
-    resp.setContentType("text/plain");
+  @Override
+  protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+    showPage(req, resp);
+  }
 
-    // Get response data.
-    BufferedReader br = new BufferedReader(new InputStreamReader(req.getInputStream()));
-    String str;
-    String content = "";
-    //read the body, the base measure content
-    while (null != ((str = br.readLine()))) {
-      content += str;
+  @Override
+  protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+    showPage(req, resp);
+  }
+
+  private void showPage(HttpServletRequest req, HttpServletResponse resp) throws IOException {
+    System.out.println("processing msg...");
+    // Read from request
+    StringBuilder buffer = new StringBuilder();
+    BufferedReader reader = req.getReader();
+    String line;
+    while ((line = reader.readLine()) != null) {
+      buffer.append(line);
     }
-    br.close();
+    String data = buffer.toString();
+
+    log.debug("Measurement data received:"+data);
+    System.out.println("got data:"+data);
 
     MessagePooler pooler = ProbeServer.getPooler();
-    pooler.schedule(new BMSender(measureURI, precision, content));
-    log.debug("Received BM '"+measureURI+"' from '"+req.getRemoteAddr()+" with value:"+content);
 
+    log.debug("Received BM '"+measureURI+"' from '"+req.getRemoteAddr()+" with value:"+data);
+    pooler.schedule(new BMSender(measureURI, precision, data));
     PrintWriter out = resp.getWriter();
     //write back some silly response to allow testing this agent through the browser or other tools
-    out.println("hello:"+measureURI+" -- "+content);
+    out.println("hello:"+measureURI+" -- "+data);
     out.close();
-  }
-
-  @Override
-  public void init(FilterConfig filterConfig) throws ServletException {
-  }
-
-  @Override
-  public void destroy() {
   }
 
   /**
@@ -99,16 +98,28 @@ public class HTTPProbeAgent implements Filter {
    * @throws Exception IF there is an error.
    */
   public static void main(String[] args) throws Exception {
-    int port = Config.getInt(MsgConst.HTTP_PORT, 11111);
+    int port = Config.getInt(MsgConst.HTTP_PORT, 22222);
     Server server = new Server(port);
-    //define what should be the HTTP root of our application
-    ServletContextHandler handler = new ServletContextHandler();
-    handler.setContextPath("/");
-    //Wrap the servlet so we can deploy in programmatically with Jetty
-//    ServletHolder holder = new ServletHolder(new ServletContainer());
-    //and install the servlet on the HTTP root under this path
-//    handler.addServlet(holder, Config.getString(RabbitConst.HTTP_URI, "/http-probe/"));
-    server.setHandler(handler);
+    ServletContextHandler context = new ServletContextHandler(ServletContextHandler.SESSIONS);
+    context.setContextPath("/");
+
+
+    String httpConfig = TestUtils.readFile("http_probes.json", "UTF8");
+    JSONArray array = new JSONArray(httpConfig);
+    int length = array.length();
+    MessagePooler pooler = ProbeServer.getPooler();
+    for (int i = 0 ; i < length ; i++) {
+      JSONObject probej = array.getJSONObject(i);
+      String url = probej.getString("url");
+      String ip = probej.getString("ip");
+      String measureURI = probej.getString("measure_uri");
+      int precision = probej.getInt("precision");
+      pooler.schedule(new RegistrationSender(measureURI, precision));
+      context.addServlet(new ServletHolder(new HTTPProbeAgent(measureURI, precision)), "/" + url);
+    }
+
+    server.setHandler(context);
     server.start();
+
   }
 }

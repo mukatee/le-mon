@@ -28,15 +28,16 @@ public class JettyStarter {
     context.setContextPath("/");
     server.setHandler(context);
 
-    context.addServlet(new ServletHolder(new StaticPageServlet()),"/pages/availability");
-    context.addServlet(new ServletHolder(new StaticPageServlet()),"/pages/info");
-    context.addServlet(new ServletHolder(new StaticPageServlet()),"/pages/latest");
-    context.addServlet(new ServletHolder(new StaticPageServlet()),"/pages/probes");
+    context.addServlet(new ServletHolder(new StaticPageServlet("availability.html")),"/pages/availability");
+    context.addServlet(new ServletHolder(new StaticPageServlet("info.html")),"/pages/info");
+    context.addServlet(new ServletHolder(new StaticPageServlet("latest.html")),"/pages/latest");
+    context.addServlet(new ServletHolder(new StaticPageServlet("probes.html")),"/pages/probes");
 
     context.addServlet(new ServletHolder(new AddMeasure()), RESTConst.PATH_ADD_MEASURE);
     context.addServlet(new ServletHolder(new Availability()), RESTConst.PATH_AVAILABILITY);
     context.addServlet(new ServletHolder(new FWInfo()), RESTConst.PATH_FRAMEWORK_INFO);
     context.addServlet(new ServletHolder(new History()), RESTConst.PATH_HISTORY);
+    context.addServlet(new ServletHolder(new Latest()), RESTConst.PATH_LATEST);
     context.addServlet(new ServletHolder(new RemoveMeasure()), RESTConst.PATH_REMOVE_MEASURE);
     context.addServlet(new ServletHolder(new Shutdown()), RESTConst.PATH_SHUTDOWN);
     context.addServlet(new ServletHolder(new Subscribe()), RESTConst.PATH_SUBSCRIBE);

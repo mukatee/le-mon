@@ -1,1 +1,23 @@
-hello from info
+<html>
+<head>
+    <title>
+        Le-Mon: Info
+    </title>
+</head>
+<body>
+<div ng-app="" ng-controller="lemonController">
+    {{ info }}
+</div>
+
+<script>
+    function lemonController($scope,$http) {
+        $http.get("http://localhost:11112/info").
+                success(function(response) {
+                    $scope.info = response.info;
+                }
+        );
+    }
+</script>
+<script src="http://ajax.googleapis.com/ajax/libs/angularjs/1.2.15/angular.min.js"></script>
+</body>
+</html>

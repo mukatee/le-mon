@@ -1,7 +1,3 @@
-/*
- * Copyright (c) 2012 VTT
- */
-
 package fi.vtt.lemon.probe.measurement;
 
 import fi.vtt.lemon.probe.ProbeServer;

@@ -39,6 +39,7 @@ public class FakeClient extends HttpServlet {
     while ((line = reader.readLine()) != null) {
       sb.append(line);
     }
+    log.debug("received:"+sb);
     System.out.println("received:" + sb);
 
     try {
