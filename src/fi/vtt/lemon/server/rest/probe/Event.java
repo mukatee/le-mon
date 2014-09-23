@@ -37,7 +37,7 @@ public class Event extends HttpServlet {
     String auth = req.getParameter("auth");
     String msg = req.getParameter("msg");
 
-    System.out.println("received:"+msg);
+//    System.out.println("received:"+msg);
 
     log.debug("Add measure request received "+msg);
     MessagePooler pooler = LemonServer.getPooler();

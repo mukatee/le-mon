@@ -15,11 +15,11 @@ import java.net.URL;
 /**
  * @author Teemu Kanstren
  */
-public class RestClient2 {
-  private final static Logger log = new Logger(RestClient2.class);
+public class RestClient {
+  private final static Logger log = new Logger(RestClient.class);
   private final String base;
 
-  public RestClient2(String base) {
+  public RestClient(String base) {
     this.base = base;
   }
 
@@ -57,6 +57,52 @@ public class RestClient2 {
       DataOutputStream wr = new DataOutputStream(out);
       String msg = prefix+data;
       wr.writeBytes(msg);
+      wr.flush();
+      wr.close();
+
+      int responseCode = conn.getResponseCode();
+      log.debug("\nSending 'POST' request to URL : " + to);
+      log.debug("Post data : " + data.toString());
+      log.debug("Response Code : " + responseCode);
+    } catch (IOException e) {
+      e.printStackTrace();
+      return null;
+    }
+
+    StringBuilder response = new StringBuilder();
+    try (InputStream in = conn.getInputStream()) {
+      BufferedReader bin = new BufferedReader(new InputStreamReader(in));
+      String line = "";
+      while ((line = bin.readLine()) != null) {
+        response.append(line);
+      }
+    } catch (IOException e) {
+      e.printStackTrace();
+      return null;
+    }
+    //print result
+    System.out.println("response:"+response.toString());
+    return response.toString();
+  }
+
+  public static String sendAppJSON(String to, JSONObject data) {
+    HttpURLConnection conn = null;
+
+    try {
+      conn = (HttpURLConnection) new URL(to).openConnection();
+      conn.setRequestMethod("POST");
+    } catch (IOException e) {
+      e.printStackTrace();
+      return null;
+    }
+    conn.setRequestProperty("User-Agent", "le-mon");
+    conn.setRequestProperty("Content-Type", "application/json");
+    conn.setRequestProperty("Accept-Language", "en-US,en;q=0.5");
+
+    conn.setDoOutput(true);
+    try (OutputStream out = conn.getOutputStream()) {
+      DataOutputStream wr = new DataOutputStream(out);
+      wr.writeBytes(data.toString());
       wr.flush();
       wr.close();
 

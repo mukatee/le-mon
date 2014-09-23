@@ -38,8 +38,7 @@ public class PostToClientTask implements Runnable {
       json.put(TIME, value.getTime().getTime());
       json.put(PRECISION, value.getPrecision());
       json.put(VALUE, value.valueString());
-      RestClient2.sendPost(url+PATH_BM_RESULT, "", json);
-//      wr.path(PATH_BM_RESULT).type(MediaType.APPLICATION_JSON).post(json);
+      RestClient.sendAppJSON(url + PATH_BM_RESULT, json);
     } catch (Exception e) {
       //TODO: self-retry might need to be considered in case of network failure etc..
       log.error("Failed to post value to client", e);

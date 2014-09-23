@@ -1,12 +1,8 @@
-/*
- * Copyright (c) 2012 VTT
- */
-
 package fi.vtt.lemon.probe.tasks;
 
 import fi.vtt.lemon.probe.ProbeServer;
 import fi.vtt.lemon.server.rest.RESTConst;
-import fi.vtt.lemon.server.rest.RestClient2;
+import fi.vtt.lemon.server.rest.RestClient;
 import org.codehaus.jettison.json.JSONObject;
 import osmo.common.log.Logger;
 
@@ -43,7 +39,7 @@ public class EventSender implements Runnable {
       json.put(PARAM_EVENT_SOURCE, source);
       json.put(PARAM_EVENT_MSG, msg);
       String server = ProbeServer.getServerAgentAddress();
-      RestClient2.sendPost(server+ RESTConst.PATH_EVENT, json);
+      RestClient.sendPost(server + RESTConst.PATH_EVENT, json);
     } catch (Exception e) {
       e.printStackTrace();
     }

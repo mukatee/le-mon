@@ -1,12 +1,8 @@
-/*
- * Copyright (c) 2012 VTT
- */
-
 package fi.vtt.lemon.probe.tasks;
 
 import fi.vtt.lemon.probe.ProbeServer;
 import fi.vtt.lemon.server.rest.RESTConst;
-import fi.vtt.lemon.server.rest.RestClient2;
+import fi.vtt.lemon.server.rest.RestClient;
 import org.codehaus.jettison.json.JSONObject;
 import osmo.common.log.Logger;
 
@@ -15,14 +11,15 @@ import static fi.vtt.lemon.MsgConst.*;
 /**
  * Defines a task for the internal server to process measurements received from the measurement infrastructure.
  * Processed by a worker thread pool in the server.
- * 
- * @author Teemu Kanstren 
+ *
+ * @author Teemu Kanstren
  */
 public class BMSender implements Runnable {
   private final static Logger log = new Logger(BMSender.class);
   private final String measureURI;
   private final int precision;
   private final String value;
+  
 
   public BMSender(String measureURI, int precision, String value) {
     this.measureURI = measureURI;
@@ -44,7 +41,8 @@ public class BMSender implements Runnable {
       json.put(PARAM_VALUE, value);
 
       String server = ProbeServer.getServerAgentAddress();
-      RestClient2.sendPost(server+ RESTConst.PATH_BM_RESULT, json);
+      ProbeServer.registerIfNeeded(measureURI, precision);
+      RestClient.sendPost(server + RESTConst.PATH_BM_RESULT, json);
     } catch (Exception e) {
       e.printStackTrace();
     }

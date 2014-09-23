@@ -1,0 +1,4 @@
+[
+    {"command":"bash", "file":"ssh_test_script", "measure_uri":"MFW:\/\/minecraft-server\/firewall\/config_file\/contents", "precision":1, "target":"130.188.58.73", "username":"xtktuom", "password":"j3paj3pa"},
+    {"command":"bash", "file":"ssh_test_script2", "measure_uri":"MFW:\/\/minecraft-server\/firewall\/config_file\/tpm_pcr", "precision":1, "target":"130.188.58.73", "username":"xtktuom", "password":"j3paj3pa"}
+]

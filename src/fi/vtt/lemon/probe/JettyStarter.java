@@ -26,7 +26,7 @@ public class JettyStarter {
     context.setContextPath("/");
     server.setHandler(context);
 
-    context.addServlet(new ServletHolder(new StaticPageServlet()),"/pages/info");
+    context.addServlet(new ServletHolder(new StaticPageServlet("probe-info.html")),"/pages/info");
 
     context.addServlet(new ServletHolder(new AddMeasure()), RESTConst.PATH_ADD_MEASURE);
     context.addServlet(new ServletHolder(new RemoveMeasure()), RESTConst.PATH_REMOVE_MEASURE);

@@ -1,7 +1,7 @@
 package fi.vtt.lemon.server.webui;
 
 import fi.vtt.lemon.server.rest.RESTConst;
-import fi.vtt.lemon.server.rest.RestClient2;
+import fi.vtt.lemon.server.rest.RestClient;
 import org.codehaus.jettison.json.JSONObject;
 
 /**
@@ -11,6 +11,6 @@ public class RestTest {
   public static void main(String[] args) throws Exception {
     JSONObject data = new JSONObject();
     data.put("my_msg", "hello msg");
-    RestClient2.sendPost("http://localhost:11111"+ RESTConst.PATH_AVAILABILITY, data);
+    RestClient.sendPost("http://localhost:11111" + RESTConst.PATH_AVAILABILITY, data);
   }
 }

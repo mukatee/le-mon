@@ -1,7 +1,3 @@
-/*
- * Copyright (c) 2012 VTT
- */
-
 package fi.vtt.lemon.probes.ssh;
 
 import ch.ethz.ssh2.Connection;
@@ -11,8 +7,15 @@ import ch.ethz.ssh2.StreamGobbler;
 import fi.vtt.lemon.Config;
 import fi.vtt.lemon.MsgConst;
 import fi.vtt.lemon.probe.Probe;
+import fi.vtt.lemon.probe.ProbeServer;
 import fi.vtt.lemon.probe.ServerClient;
 import fi.vtt.lemon.probe.measurement.MeasurementProvider;
+import fi.vtt.lemon.probe.tasks.RegistrationSender;
+import fi.vtt.lemon.server.MessagePooler;
+import org.codehaus.jettison.json.JSONArray;
+import org.codehaus.jettison.json.JSONObject;
+import org.eclipse.jetty.servlet.ServletHolder;
+import osmo.common.TestUtils;
 import osmo.common.log.Logger;
 
 import java.io.BufferedReader;
@@ -178,14 +181,23 @@ public class SSHProbeAgent implements Probe {
    * @throws Exception If there is an error.
    */
   public static void main(String[] args) throws Exception {
-    MeasurementProvider mp = new MeasurementProvider(new ServerClient(Config.getString(MsgConst.BROKER_ADDRESS, "::1")));
-    String measureURI = Config.getString(MsgConst.PARAM_MEASURE_URI);
-    int precision = Config.getInt(MsgConst.PROBE_PRECISION);
-    String target = Config.getString(MsgConst.MEASUREMENT_TARGET);
-    String filename = Config.getString(MsgConst.FILENAME);
-    String username = Config.getString(MsgConst.USERNAME);
-    String password = Config.getString(MsgConst.PASSWORD);
-    String command = Config.getString(MsgConst.COMMAND);
-    mp.startMeasuring(new SSHProbeAgent(measureURI, precision, target, filename, username, password, command));
+    String httpConfig = TestUtils.readFile("ssh_probes.json", "UTF8");
+    JSONArray array = new JSONArray(httpConfig);
+    int length = array.length();
+    MessagePooler pooler = ProbeServer.getPooler();
+    for (int i = 0 ; i < length ; i++) {
+      JSONObject probej = array.getJSONObject(i);
+      String filename = probej.getString("file");
+      String command = probej.getString("command");
+      String target = probej.getString("target");
+      String username = probej.getString("username");
+      String password = probej.getString("password");
+      String measureURI = probej.getString("measure_uri");
+      int precision = probej.getInt("precision");
+      pooler.schedule(new RegistrationSender(measureURI, precision));
+      String url = ProbeServer.getServerAgentAddress();
+      MeasurementProvider mp = new MeasurementProvider(new ServerClient(url));
+      mp.startMeasuring(new SSHProbeAgent(measureURI, precision, target, filename, username, password, command));
+    }
   }
 }

@@ -1,7 +1,3 @@
-/*
- * Copyright (c) 2012 VTT
- */
-
 package fi.vtt.lemon.server;
 
 import fi.vtt.lemon.Config;
@@ -115,5 +111,9 @@ public class LemonServer {
 
   public static void setPooler(MessagePooler pooler) {
     LemonServer.pooler = pooler;
+  }
+
+  public static List<Value> getLatest(int count) {
+    return persistence.getLatest(count);
   }
 }

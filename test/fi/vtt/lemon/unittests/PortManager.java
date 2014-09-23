@@ -1,7 +1,3 @@
-/*
- * Copyright (c) 2012 VTT
- */
-
 package fi.vtt.lemon.unittests;
 
 import java.net.MalformedURLException;
