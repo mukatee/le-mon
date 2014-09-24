@@ -31,8 +31,8 @@ import static org.testng.Assert.assertEquals;
 public class Persistence {
   private final static Logger log = new Logger(Persistence.class);
   /** Key=measureURI, Value=list of measurement values for the measureURI. */
-  private Map<String, Collection<Value>> histories = new HashMap<>();
-  private List<Value> values = new ArrayList<>();
+  private Map<String, LimitedQueue<Value>> histories = new HashMap<>();
+  private LimitedQueue<Value> values = new LimitedQueue<>(100);
   private SqlSessionFactory sessionFactory;
 
   public Persistence() {
@@ -73,9 +73,9 @@ public class Persistence {
 
   public synchronized void store(Value value) {
     String measureURI = value.getMeasureURI();
-    Collection<Value> history = histories.get(measureURI);
+    LimitedQueue<Value> history = histories.get(measureURI);
     if (history == null) {
-      history = new ArrayList<>();
+      history = new LimitedQueue<>(100);
       histories.put(measureURI, history);
     }
     history.add(value);
