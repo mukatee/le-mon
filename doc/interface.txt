@@ -8,14 +8,7 @@ Thus "/" is shown as "\/", which is just because of the escape character, which 
 
 You may invoke the following resources:
 
-RESOURCE: http://localhost:8080/rest/shutdown
-HTTP METHOD: GET
-DESCRIPTION: System.exit() on the server-agent (nice feature!)
-PARAMETERS: none
-RETURN VALUES: nothing
-
-
-RESOURCE: http://localhost:8080/rest/availability
+RESOURCE: http://localhost:8080/availability
 HTTP METHOD: GET
 DESCRIPTION: Gives a list of available base measures.
 PARAMETERS: none
@@ -27,24 +20,20 @@ RETURNS:
 }
 
 
-RESOURCE: http://localhost:8080/rest/info
+RESOURCE: http://localhost:8080/info
 HTTP METHOD: GET
 DESCRIPTION: Request information about the deployed le-mon version.
 RETURNS:
 {"info":"LE-MON v0.1"}
 
  
-RESOURCE: http://localhost:8080/rest/history
+RESOURCE: http://localhost:8080/history
 HTTP METHOD: POST
-DESCRIPTION: Requests measurement history for given BMs
+DESCRIPTION: Requests measurement history for given BMs. At most 100 most recent values for each BM are returned.
 BODY PARAMETERS:
- start_time: long value for Java date time.
- end_time: long value for Java date time.
- bm_list: list of base measure for which history is required..
+ bm_list: list of base measure for which history is required.
 EXAMPLE:
 {
- {"start_time":34235324}
- {"end_time":34235666}
  {"bm_list":
  ["MFW:\/\/Communication protocol\/Bob3\/Encryption key length\/Bobby3",
   "MFW:\/\/Firewall\/Bob1\/Configuration file\/Bobby1",
@@ -59,7 +48,7 @@ RETURNS:
 }
 
 
-RESOURCE: http://localhost:8080/rest/subscribe
+RESOURCE: http://localhost:8080/subscribe
 HTTP METHOD: POST
 DESCRIPTION: Subscribes for a base measure
 RETURNS: nothing
@@ -68,7 +57,7 @@ BODY PARAMETERS:
 RETURNS:
   The server should make callbacks to a separate API function provided by the client.
 
-RESOURCE: Your endpoint: http://localhost:8080/rest/unsubscribe
+RESOURCE: Your endpoint: http://localhost:8080/unsubscribe
 HTTP METHOD: POST
 DESCRIPTION: Removes subscription for a base measure
 RETURNS: nothing
