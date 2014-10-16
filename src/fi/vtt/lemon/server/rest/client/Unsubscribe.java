@@ -11,6 +11,7 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.PrintWriter;
 
@@ -34,26 +35,34 @@ public class Unsubscribe extends HttpServlet {
   }
 
   private void showPage(HttpServletRequest req, HttpServletResponse resp) throws IOException {
-
     log.debug("UnSubcribeToBM request received, " + req);
-    String auth = req.getParameter("auth");
-    String msg = req.getParameter("msg");
+
+    // Read from request
+    StringBuilder buffer = new StringBuilder();
+    BufferedReader reader = req.getReader();
+    String line;
+    while ((line = reader.readLine()) != null) {
+      buffer.append(line);
+    }
+    String data = buffer.toString();
+
+    log.debug("Latest request:"+data);
 
     Registry registry = LemonServer.getRegistry();
     JSONArray root = new JSONArray();
 
-    if (registry.check(auth)) {
+//    if (registry.check(auth)) {
       try {
-        JSONObject json = new JSONObject(msg);
+        JSONObject json = new JSONObject(data);
         registry.removeSubscription(json.getString(MEASURE_URI));
       } catch (JSONException e) {
         log.error("Error while creating JSON for measurement history", e);
         return;
       }
-    } else {
-      log.debug("User does not have an authenticated session.");
-      return;
-    }
+//    } else {
+//      log.debug("User does not have an authenticated session.");
+//      return;
+//    }
     PrintWriter out = resp.getWriter();
     out.write(root.toString());
     return;

@@ -16,8 +16,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
-import static fi.vtt.lemon.server.rest.RESTConst.*;
 import static fi.vtt.lemon.MsgConst.*;
+import static fi.vtt.lemon.server.rest.RESTConst.*;
 
 
 /**

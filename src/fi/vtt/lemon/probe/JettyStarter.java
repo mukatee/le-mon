@@ -1,7 +1,6 @@
 package fi.vtt.lemon.probe;
 
 import fi.vtt.lemon.Config;
-
 import fi.vtt.lemon.probe.rest.AddMeasure;
 import fi.vtt.lemon.probe.rest.RemoveMeasure;
 import fi.vtt.lemon.server.rest.RESTConst;

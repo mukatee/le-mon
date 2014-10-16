@@ -1,7 +1,6 @@
 package fi.vtt.lemon.server.rest.client;
 
 import fi.vtt.lemon.server.LemonServer;
-import fi.vtt.lemon.server.Registry;
 import fi.vtt.lemon.server.data.Value;
 import org.codehaus.jettison.json.JSONArray;
 import org.codehaus.jettison.json.JSONException;
@@ -15,8 +14,6 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 
 import static fi.vtt.lemon.server.rest.RESTConst.*;

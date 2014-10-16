@@ -12,6 +12,7 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.ArrayList;
@@ -38,19 +39,26 @@ public class History extends HttpServlet {
   }
 
   private void showPage(HttpServletRequest req, HttpServletResponse resp) throws IOException {
+    // Read from request
+    StringBuilder buffer = new StringBuilder();
+    BufferedReader reader = req.getReader();
+    String line;
+    while ((line = reader.readLine()) != null) {
+      buffer.append(line);
+    }
+    String data = buffer.toString();
 
-    String auth = req.getParameter("auth");
-    String msg = req.getParameter("msg");
+    log.debug("Latest request:"+data);
 
     Registry registry = LemonServer.getRegistry();
     log.debug("History request");
     JSONArray root = new JSONArray();
 
-    if (registry.check(auth)) {
+//    if (registry.check(auth)) {
       // read measurements history from database according to requested time interval
       // and push it to the client
       try {
-        JSONObject json = new JSONObject(msg);
+        JSONObject json = new JSONObject(data);
         long start = json.getLong(START_TIME);
         long end = json.getLong(END_TIME);
         Collection<String> bmIds = new ArrayList<>();
@@ -75,10 +83,10 @@ public class History extends HttpServlet {
         log.error("Error while creating JSON for measurement history", e);
         return;
       }
-    } else {
-      log.debug("User does not have an authenticated session.");
-      return;
-    }
+//    } else {
+//      log.debug("User does not have an authenticated session.");
+//      return;
+//    }
     PrintWriter out = resp.getWriter();
     out.write(root.toString());
     return;

@@ -5,15 +5,8 @@ import fi.vtt.lemon.MsgConst;
 import fi.vtt.lemon.probe.ProbeServer;
 import fi.vtt.lemon.probe.tasks.BMSender;
 import fi.vtt.lemon.probe.tasks.RegistrationSender;
-import fi.vtt.lemon.server.LemonServer;
 import fi.vtt.lemon.server.MessagePooler;
-import fi.vtt.lemon.server.Registry;
-import fi.vtt.lemon.server.data.ProbeDescription;
-import fi.vtt.lemon.server.rest.RESTConst;
-import fi.vtt.lemon.server.rest.probe.BMValue;
-import fi.vtt.lemon.server.tasks.MeasurementProcessor;
 import org.codehaus.jettison.json.JSONArray;
-import org.codehaus.jettison.json.JSONException;
 import org.codehaus.jettison.json.JSONObject;
 import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.servlet.ServletContextHandler;
@@ -21,23 +14,13 @@ import org.eclipse.jetty.servlet.ServletHolder;
 import osmo.common.TestUtils;
 import osmo.common.log.Logger;
 
-import javax.servlet.Filter;
-import javax.servlet.FilterChain;
-import javax.servlet.FilterConfig;
 import javax.servlet.ServletException;
-import javax.servlet.ServletRequest;
-import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStreamReader;
 import java.io.PrintWriter;
-import java.util.HashMap;
-import java.util.Map;
-
-import static fi.vtt.lemon.MsgConst.*;
 
 /**
  * Grabs a base measure from a HTTP request posted at the address http://host/port/uri.

@@ -20,8 +20,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 
-import static org.testng.Assert.assertEquals;
-
 /**
  * Persists measurement data, events, ... If someone implements this that is.
  * Currently it stores history in memory but that is not a very scalable solution.

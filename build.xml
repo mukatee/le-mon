@@ -89,7 +89,7 @@
     </junit>
   </target>
 
-  <target name="build.jar" depends="compile" description="creates the jar file with all the code">
+  <target name="build.jar" depends="compile, copyresources" description="creates the jar file with all the code">
     <jar destfile="${jar.file}">
       <fileset dir="${prod-dest}"/>
     </jar>

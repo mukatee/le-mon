@@ -3,9 +3,9 @@ package fi.vtt.lemon.server;
 import fi.vtt.lemon.Config;
 import fi.vtt.lemon.server.data.ProbeDescription;
 import fi.vtt.lemon.server.data.Value;
+import fi.vtt.lemon.server.persistence.Persistence;
 import fi.vtt.lemon.server.rest.PostToClientTask;
 import fi.vtt.lemon.server.rest.RESTConst;
-import fi.vtt.lemon.server.persistence.Persistence;
 import osmo.common.log.Logger;
 
 import java.util.Collection;

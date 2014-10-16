@@ -4,8 +4,6 @@ import ch.ethz.ssh2.Connection;
 import ch.ethz.ssh2.SCPClient;
 import ch.ethz.ssh2.Session;
 import ch.ethz.ssh2.StreamGobbler;
-import fi.vtt.lemon.Config;
-import fi.vtt.lemon.MsgConst;
 import fi.vtt.lemon.probe.Probe;
 import fi.vtt.lemon.probe.ProbeServer;
 import fi.vtt.lemon.probe.ServerClient;
@@ -14,7 +12,6 @@ import fi.vtt.lemon.probe.tasks.RegistrationSender;
 import fi.vtt.lemon.server.MessagePooler;
 import org.codehaus.jettison.json.JSONArray;
 import org.codehaus.jettison.json.JSONObject;
-import org.eclipse.jetty.servlet.ServletHolder;
 import osmo.common.TestUtils;
 import osmo.common.log.Logger;
 

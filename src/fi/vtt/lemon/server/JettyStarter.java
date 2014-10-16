@@ -2,7 +2,15 @@ package fi.vtt.lemon.server;
 
 import fi.vtt.lemon.Config;
 import fi.vtt.lemon.server.rest.RESTConst;
-import fi.vtt.lemon.server.rest.client.*;
+import fi.vtt.lemon.server.rest.client.AddMeasure;
+import fi.vtt.lemon.server.rest.client.Availability;
+import fi.vtt.lemon.server.rest.client.FWInfo;
+import fi.vtt.lemon.server.rest.client.History;
+import fi.vtt.lemon.server.rest.client.Latest;
+import fi.vtt.lemon.server.rest.client.RemoveMeasure;
+import fi.vtt.lemon.server.rest.client.Shutdown;
+import fi.vtt.lemon.server.rest.client.Subscribe;
+import fi.vtt.lemon.server.rest.client.Unsubscribe;
 import fi.vtt.lemon.server.rest.probe.BMValue;
 import fi.vtt.lemon.server.rest.probe.Event;
 import fi.vtt.lemon.server.rest.probe.Register;
