@@ -26,7 +26,6 @@ public class MsgConst {
 
   public static final String PARAM_TIME = "time";
   public static final String PARAM_MEASURE_URI = "measure_uri";
-  public static final String PARAM_PRECISION = "precision";
   public static final String PARAM_PROBE_URL = "probe_url";
   public static final String PARAM_VALUE = "value";
   public static final String PARAM_EVENT_TYPE = "event_type";

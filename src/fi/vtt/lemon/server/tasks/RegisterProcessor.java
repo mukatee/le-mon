@@ -31,9 +31,8 @@ public class RegisterProcessor implements Runnable {
   public void run() {
     try {
       String measureURI = json.getString(PARAM_MEASURE_URI);
-      int precision = json.getInt(PARAM_PRECISION);
       String url = json.getString(PARAM_PROBE_URL);
-      LemonServer.register(url, measureURI, precision);
+      LemonServer.register(url, measureURI);
     } catch (JSONException e) {
       log.error("Failed to parse event data from JSON", e);
     }

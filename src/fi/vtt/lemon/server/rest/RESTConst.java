@@ -14,7 +14,6 @@ public class RESTConst {
   public static final String END_TIME = "end_time";
   public static final String BM_LIST = "bm_list";
   public static final String INFO = "info";
-  public static final String PRECISION = "precision";
   public static final String COUNT = "count";
 
   public static final String PATH_AVAILABILITY = "/availability";

@@ -35,7 +35,6 @@ public class PostToClientTask implements Runnable {
     try {
       json.put(MEASURE_URI, value.getMeasureURI());
       json.put(TIME, value.getTime().getTime());
-      json.put(PRECISION, value.getPrecision());
       json.put(VALUE, value.valueString());
       RestClient.sendAppJSON(url + PATH_BM_RESULT, json);
     } catch (Exception e) {

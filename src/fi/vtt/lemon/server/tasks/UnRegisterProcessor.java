@@ -32,8 +32,7 @@ public class UnRegisterProcessor implements Runnable {
     try {
       String measureURI = json.getString(PARAM_MEASURE_URI);
       String url = json.getString(PARAM_PROBE_URL);
-      int precision = json.getInt(PARAM_PRECISION);
-      LemonServer.unregister(url, measureURI, precision);
+      LemonServer.unregister(url, measureURI);
     } catch (JSONException e) {
       log.error("Failed to parse event data from JSON", e);
     }

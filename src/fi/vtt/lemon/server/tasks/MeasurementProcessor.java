@@ -29,9 +29,8 @@ public class MeasurementProcessor implements Runnable {
     try {
       long time = json.getLong(PARAM_TIME);
       String measureURI = json.getString(PARAM_MEASURE_URI);
-      int precision = json.getInt(PARAM_PRECISION);
       String value = json.getString(PARAM_VALUE);
-      LemonServer.measurement(measureURI, time, precision, value);
+      LemonServer.measurement(measureURI, time, value);
     } catch (Exception e) {
       e.printStackTrace();
     }

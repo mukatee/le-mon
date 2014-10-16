@@ -1,17 +1,19 @@
 package fi.vtt.lemon.server.data;
 
 /**
+ * Describes a measurement probe.
+ * 
  * @author Teemu Kanstren
  */
 public class ProbeDescription {
+  /** The address where we can send messages to this probe. */
   private final String url;
+  /** Measurement identifier. */
   private final String measureURI;
-  private final int precision;
 
-  public ProbeDescription(String url, String measureURI, int precision) {
+  public ProbeDescription(String url, String measureURI) {
     this.url = url;
     this.measureURI = measureURI;
-    this.precision = precision;
   }
 
   public String getUrl() {
@@ -22,16 +24,11 @@ public class ProbeDescription {
     return measureURI;
   }
 
-  public int getPrecision() {
-    return precision;
-  }
-
   @Override
   public String toString() {
     return "ProbeDescription{" +
             "url='" + url + '\'' +
             ", measureURI='" + measureURI + '\'' +
-            ", precision=" + precision +
             '}';
   }
 
@@ -42,7 +39,6 @@ public class ProbeDescription {
 
     ProbeDescription that = (ProbeDescription) o;
 
-    if (precision != that.precision) return false;
     if (measureURI != null ? !measureURI.equals(that.measureURI) : that.measureURI != null) return false;
     if (url != null ? !url.equals(that.url) : that.url != null) return false;
 
@@ -53,7 +49,6 @@ public class ProbeDescription {
   public int hashCode() {
     int result = url != null ? url.hashCode() : 0;
     result = 31 * result + (measureURI != null ? measureURI.hashCode() : 0);
-    result = 31 * result + precision;
     return result;
   }
 }

@@ -25,7 +25,9 @@ public class LemonServer {
   private static Registry registry;
   /** For persisting measurement results etc. Currently not implemented. */
   private static Persistence persistence;
+  /** For sending messages in a separate thread, not blocking the current thread. */
   private static MessagePooler pooler;
+  /** Address of the client (e.g., MVS) where we can send messages to. URL/IP+port. */
   private static String client;
 
   /**
@@ -60,12 +62,12 @@ public class LemonServer {
     registry = new Registry(persistence);
   }
 
-  public static void register(String url, String measureURI, int precision) {
-    registry.addProbe(new ProbeDescription(url, measureURI, precision));
+  public static void register(String url, String measureURI) {
+    registry.addProbe(new ProbeDescription(url, measureURI));
   }
 
-  public static void unregister(String url, String measureURI, int precision) {
-    registry.removeProbe(new ProbeDescription(url, measureURI, precision));
+  public static void unregister(String url, String measureURI) {
+    registry.removeProbe(new ProbeDescription(url, measureURI));
   }
 
   /**
@@ -73,15 +75,14 @@ public class LemonServer {
    * 
    * @param measureURI The identifier of the measurement.
    * @param time The time of the measurement.
-   * @param precision The precision of probe that performed the measure.
    * @param value The measurement value.
    */
-  public static void measurement(String measureURI, long time, int precision, String value) {
+  public static void measurement(String measureURI, long time, String value) {
     if (!registry.isRegistered(measureURI)) {
       log.warn("Trying to provide measurement for unregistered probe:"+measureURI);
       return;
     }
-    Value v = new Value(measureURI, precision, value, new Date(time));
+    Value v = new Value(measureURI, value, new Date(time));
     if (registry.isSubscribed(measureURI)) {
       PostToClientTask task = new PostToClientTask(client, v);
       pooler.schedule(task);
