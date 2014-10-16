@@ -1,7 +1,6 @@
 package fi.vtt.lemon.server.persistence;
 
 import fi.vtt.lemon.server.data.Event;
-import fi.vtt.lemon.server.data.Value;
 import org.apache.ibatis.annotations.Arg;
 import org.apache.ibatis.annotations.ConstructorArgs;
 import org.apache.ibatis.annotations.Insert;

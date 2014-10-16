@@ -1,7 +1,5 @@
 package fi.vtt.lemon.probe;
 
-import java.util.Properties;
-
 /**
  * Interface for requesting measurements from actual probes.
  *

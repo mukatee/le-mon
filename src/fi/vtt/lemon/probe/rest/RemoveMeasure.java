@@ -2,10 +2,7 @@ package fi.vtt.lemon.probe.rest;
 
 import fi.vtt.lemon.probe.Probe;
 import fi.vtt.lemon.probe.ProbeServer;
-import fi.vtt.lemon.probe.tasks.AddMeasureProcessor;
 import fi.vtt.lemon.probe.tasks.RemoveMeasureProcessor;
-import fi.vtt.lemon.server.LemonServer;
-import fi.vtt.lemon.server.Registry;
 import org.codehaus.jettison.json.JSONException;
 import org.codehaus.jettison.json.JSONObject;
 import osmo.common.log.Logger;

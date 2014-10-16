@@ -1,11 +1,9 @@
 package fi.vtt.lemon.probes.tester;
 
-import fi.vtt.lemon.Config;
+import fi.vtt.lemon.probe.Probe;
 import fi.vtt.lemon.probe.ProbeServer;
 import fi.vtt.lemon.probe.ServerClient;
 import fi.vtt.lemon.probe.measurement.MeasurementProvider;
-import fi.vtt.lemon.probe.Probe;
-import fi.vtt.lemon.server.rest.RESTConst;
 import osmo.common.log.Logger;
 
 /**

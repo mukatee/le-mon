@@ -2,9 +2,9 @@ package fi.vtt.lemon.probe.measurement;
 
 import fi.vtt.lemon.Config;
 import fi.vtt.lemon.MsgConst;
+import fi.vtt.lemon.probe.Probe;
 import fi.vtt.lemon.probe.ProbeServer;
 import fi.vtt.lemon.probe.ServerClient;
-import fi.vtt.lemon.probe.Probe;
 import fi.vtt.lemon.probe.tasks.RegistrationSender;
 import fi.vtt.lemon.probe.tasks.UnRegistrationSender;
 import fi.vtt.lemon.server.MessagePooler;

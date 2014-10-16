@@ -2,7 +2,6 @@ package fi.vtt.lemon.server.rest;
 
 
 import fi.vtt.lemon.server.data.Value;
-
 import org.codehaus.jettison.json.JSONObject;
 import osmo.common.log.Logger;
 
