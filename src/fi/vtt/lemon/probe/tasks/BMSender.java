@@ -37,7 +37,6 @@ public class BMSender implements Runnable {
       json.put(MSGTYPE, MSG_MEASUREMENT);
       json.put(PARAM_TIME, System.currentTimeMillis());
       json.put(PARAM_MEASURE_URI, measureURI);
-      json.put(PARAM_PRECISION, precision);
       json.put(PARAM_VALUE, value);
 
       String server = ProbeServer.getServerAgentAddress();

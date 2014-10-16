@@ -57,7 +57,6 @@ public class Latest extends HttpServlet {
         root.put(obj);
         obj.put(VALUE, value.valueString());
         obj.put(MEASURE_URI, value.getMeasureURI());
-        obj.put(PRECISION, value.getPrecision());
         obj.put(TIME, value.getTimeFormatted());
       }
     } catch (JSONException e) {

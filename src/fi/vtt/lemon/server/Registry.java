@@ -39,7 +39,6 @@ public class Registry {
     availableBM.add(probe.getMeasureURI());
     persistence.bmAdded(probe.getMeasureURI());
     probes.add(probe);
-    //TODO: precision should be checked before override
     probeMap.put(probe.getMeasureURI(), probe);
   }
 
