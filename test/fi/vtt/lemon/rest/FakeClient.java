@@ -47,8 +47,7 @@ public class FakeClient extends HttpServlet {
       String measureURI = json.getString(MEASURE_URI);
       long time = json.getLong(TIME);
       String data = json.getString(VALUE);
-      int precision = json.getInt(PRECISION);
-      Value value = new Value(measureURI, precision, data, new Date(time));
+      Value value = new Value(measureURI, data, new Date(time));
       values.add(value);
     } catch (JSONException e) {
       log.error("Failed to parse measure JSON", e);

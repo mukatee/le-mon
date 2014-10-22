@@ -30,7 +30,6 @@ CREATE TABLE lemon_db.bm_description (
 
 CREATE TABLE lemon_db.bm_value (
   value_id bigint(20) NOT NULL auto_increment,
-  value_precision int(11),
   value_time datetime,
   value_string varchar(255),
   bm_id bigint(20),

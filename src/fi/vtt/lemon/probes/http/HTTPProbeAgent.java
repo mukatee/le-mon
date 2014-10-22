@@ -33,11 +33,9 @@ import java.io.PrintWriter;
 public class HTTPProbeAgent extends HttpServlet {
   private final static Logger log = new Logger(HTTPProbeAgent.class);
   private final String measureURI;
-  private final int precision;
 
-  public HTTPProbeAgent(String measureURI, int precision) {
+  public HTTPProbeAgent(String measureURI) {
     this.measureURI = measureURI;
-    this.precision = precision;
   }
 
   @Override
@@ -67,7 +65,7 @@ public class HTTPProbeAgent extends HttpServlet {
     MessagePooler pooler = ProbeServer.getPooler();
 
     log.debug("Received BM '"+measureURI+"' from '"+req.getRemoteAddr()+" with value:"+data);
-    pooler.schedule(new BMSender(measureURI, precision, data));
+    pooler.schedule(new BMSender(measureURI, data));
     PrintWriter out = resp.getWriter();
     //write back some silly response to allow testing this agent through the browser or other tools
     out.println("hello:"+measureURI+" -- "+data);
@@ -96,9 +94,8 @@ public class HTTPProbeAgent extends HttpServlet {
       String url = probej.getString("url");
       String ip = probej.getString("ip");
       String measureURI = probej.getString("measure_uri");
-      int precision = probej.getInt("precision");
-      pooler.schedule(new RegistrationSender(measureURI, precision));
-      context.addServlet(new ServletHolder(new HTTPProbeAgent(measureURI, precision)), "/" + url);
+      pooler.schedule(new RegistrationSender(measureURI));
+      context.addServlet(new ServletHolder(new HTTPProbeAgent(measureURI)), "/" + url);
     }
 
     server.setHandler(context);

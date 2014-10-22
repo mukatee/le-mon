@@ -27,7 +27,7 @@ public class TestProbe1 extends TestProbe {
   }
 
   public static void main(String[] args) throws Exception {
-    MeasurementProvider mp = new MeasurementProvider(new ServerClient(Config.getString(MsgConst.BROKER_ADDRESS, "::1")));
+    MeasurementProvider mp = new MeasurementProvider();
     mp.startMeasuring(new TestProbe1());
   }
 }

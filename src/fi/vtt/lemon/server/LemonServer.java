@@ -4,6 +4,7 @@ import fi.vtt.lemon.Config;
 import fi.vtt.lemon.server.data.ProbeDescription;
 import fi.vtt.lemon.server.data.Value;
 import fi.vtt.lemon.server.persistence.Persistence;
+import fi.vtt.lemon.server.registry.Registry;
 import fi.vtt.lemon.server.rest.PostToClientTask;
 import fi.vtt.lemon.server.rest.RESTConst;
 import osmo.common.log.Logger;
@@ -116,5 +117,9 @@ public class LemonServer {
 
   public static List<Value> getLatest(int count) {
     return persistence.getLatest(count);
+  }
+
+  public static void keepAlive(String measureURI) {
+    registry.keepAlive(measureURI);
   }
 }

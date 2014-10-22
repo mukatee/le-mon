@@ -191,9 +191,9 @@ public class SSHProbeAgent implements Probe {
       String password = probej.getString("password");
       String measureURI = probej.getString("measure_uri");
       int precision = probej.getInt("precision");
-      pooler.schedule(new RegistrationSender(measureURI, precision));
+      pooler.schedule(new RegistrationSender(measureURI));
       String url = ProbeServer.getServerAgentAddress();
-      MeasurementProvider mp = new MeasurementProvider(new ServerClient(url));
+      MeasurementProvider mp = new MeasurementProvider();
       mp.startMeasuring(new SSHProbeAgent(measureURI, precision, target, filename, username, password, command));
     }
   }

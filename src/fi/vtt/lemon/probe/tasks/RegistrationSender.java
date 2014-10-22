@@ -17,11 +17,9 @@ import static fi.vtt.lemon.MsgConst.*;
 public class RegistrationSender implements Runnable {
   private final static Logger log = new Logger(RegistrationSender.class);
   private final String measureURI;
-  private final int precision;
 
-  public RegistrationSender(String measureURI, int precision) {
+  public RegistrationSender(String measureURI) {
     this.measureURI = measureURI;
-    this.precision = precision;
   }
 
   /**

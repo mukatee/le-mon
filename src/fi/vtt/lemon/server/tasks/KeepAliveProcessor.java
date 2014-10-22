@@ -10,8 +10,8 @@ import static fi.vtt.lemon.MsgConst.*;
 /**
  * @author Teemu Kanstren
  */
-public class RegisterProcessor implements Runnable {
-  private final static Logger log = new Logger(RegisterProcessor.class);
+public class KeepAliveProcessor implements Runnable {
+  private final static Logger log = new Logger(KeepAliveProcessor.class);
   /** The event data as received from the measurement infrastructure. */
   private final JSONObject json;
 
@@ -20,7 +20,7 @@ public class RegisterProcessor implements Runnable {
    *
    * @param json What was received from the measurement infrastructure.
    */
-  public RegisterProcessor(JSONObject json) {
+  public KeepAliveProcessor(JSONObject json) {
     this.json = json;
   }
 
@@ -31,8 +31,7 @@ public class RegisterProcessor implements Runnable {
   public void run() {
     try {
       String measureURI = json.getString(PARAM_MEASURE_URI);
-      String url = json.getString(PARAM_PROBE_URL);
-      LemonServer.register(url, measureURI);
+      LemonServer.keepAlive(measureURI);
     } catch (JSONException e) {
       log.error("Failed to parse event data from JSON", e);
     }

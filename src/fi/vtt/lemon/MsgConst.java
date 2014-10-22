@@ -23,6 +23,7 @@ public class MsgConst {
   public static final String PROBE_URL = "probe_url";
   public static final String THREAD_POOL_SIZE = "thread_pool_size";
   public static final String TASK_TIMEOUT = "task_timeout";
+  public static final String PROBE_TIMEOUT = "probe_timeout";
 
   public static final String PARAM_TIME = "time";
   public static final String PARAM_MEASURE_URI = "measure_uri";
@@ -43,17 +44,11 @@ public class MsgConst {
   public static final String MSG_EVENT = "msg_event";
   public static final String MSG_ADD_MEASURE = "msg_add_measure";
   public static final String MSG_REMOVE_MEASURE = "msg_remove_measure";
+  public static final String MSG_KEEP_ALIVE = "msg_keep_alive";
 
   public static final String EVENT_NO_VALUE_FOR_BM = "event_no_valid_value";
   public static final String EVENT_PROBE_HANGS = "event_probe_hangs";
-  public static final String MEASUREMENT_TARGET = "measurement_target";
-  public static final String FILENAME = "filename";
-  public static final String USERNAME = "username";
-  public static final String PASSWORD = "password";
-  public static final String COMMAND = "command";
   public static final String MEASURE_INTERVAL = "measure_interval";
-  public static final String BROKER_ADDRESS = "broker_address";
-  public static final String HTTP_URI = "http_uri";
   public static final String HTTP_PORT = "http_port";
 
   public static String createMeasureURI(String targetType, String targetName, String bmClass, String bmName) {

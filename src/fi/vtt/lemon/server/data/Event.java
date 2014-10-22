@@ -14,12 +14,17 @@ public class Event {
   private final int type;
   
   private static final Map<Integer, String> types = new HashMap<>();
-  public static final int ET_BM_ADD = 1;
-  public static final int ET_BM_REMOVE = 2;
+  public static final int ET_PROBE_ADD = 1;
+  public static final int ET_PROBE_REMOVE = 2;
+  public static final int ET_PROBE_LOST = 3;
+  public static final int ET_PROBE_FOUND = 4;
+  public static final int ET_PROBE_MISSING = 5;
   
   static {
-    types.put(ET_BM_ADD, "Add BM");
-    types.put(ET_BM_REMOVE, "Remove BM");
+    types.put(ET_PROBE_ADD, "Add Probe");
+    types.put(ET_PROBE_REMOVE, "Remove Probe");
+    types.put(ET_PROBE_LOST, "Lost Probe");
+    types.put(ET_PROBE_FOUND, "Found Probe");
   }
 
   public Event(String message, String sourceURI, Date time, int type) {

@@ -4,7 +4,7 @@ import fi.vtt.lemon.Config;
 import fi.vtt.lemon.MsgConst;
 import fi.vtt.lemon.probe.Probe;
 import fi.vtt.lemon.probe.ProbeServer;
-import fi.vtt.lemon.probe.ServerClient;
+import fi.vtt.lemon.probe.tasks.KeepAliveTask;
 import fi.vtt.lemon.probe.tasks.RegistrationSender;
 import fi.vtt.lemon.probe.tasks.UnRegistrationSender;
 import fi.vtt.lemon.server.MessagePooler;
@@ -31,14 +31,8 @@ public class MeasurementProvider {
   /** Currently running tasks for each probe. */
   private Map<Probe, WatchedTask> tasks = new ConcurrentHashMap<>();
   /** A separate task that checks running measurement tasks and cancels ones that are taking too long (assumes the task is hanging). */
-  private WatchDog watchDog = null;
-  /** For communicating with the le-mon server. */
-  private final ServerClient server;
+  private ProbeWatchDog watchDog = null;
   private Collection<Probe> probes = new HashSet<>();
-
-  public MeasurementProvider(ServerClient server) throws Exception {
-    this.server = server;
-  }
 
   /**
    * Stops the measurement process (thread pool executor, watchdog).
@@ -61,20 +55,21 @@ public class MeasurementProvider {
   public synchronized void startMeasuring(Probe probe) {
     probes.add(probe);
     MessagePooler pooler = ProbeServer.getPooler();
-    pooler.schedule(new RegistrationSender(probe.getMeasureURI(), probe.getPrecision()));
+    pooler.schedule(new RegistrationSender(probe.getMeasureURI()));
     int threadPoolSize = Config.getInt(MsgConst.THREAD_POOL_SIZE, 5);
     int taskTimeOut = Config.getInt(MsgConst.TASK_TIMEOUT, 5);
     if (executor == null) {
-      executor = new ScheduledThreadPoolExecutor(threadPoolSize, new MeasurementThreadFactory());
-      watchDog = new WatchDog(server, tasks, taskTimeOut);
+      executor = new ScheduledThreadPoolExecutor(threadPoolSize, new DaemonThreadFactory());
+      watchDog = new ProbeWatchDog(tasks, taskTimeOut);
     }
-    MeasurementTask task = new MeasurementTask(server, probe);
+    MeasurementTask task = new MeasurementTask(probe);
     int interval = Config.getInt(MsgConst.MEASURE_INTERVAL, 1);
     Future future = executor.scheduleAtFixedRate(task, 0, interval, TimeUnit.SECONDS);
     WatchedTask watchMe = new WatchedTask(future, task, tasks);
-    //TODO: the set of tasks for a probe should be a collection, otherwise we will overwrite old ones if several 
-    //measurements are started for a probe in a short time..
+    //TODO: the set of tasks for a probe should be a collection, otherwise we will overwrite old ones if several measurements are started for a probe in a short time..
     tasks.put(probe, watchMe);
     log.debug("measuring probe:" + probe);
+    KeepAliveTask kat = new KeepAliveTask(probe.getMeasureURI());
+    Future katFuture = executor.scheduleAtFixedRate(kat, 0, 5, TimeUnit.SECONDS);
   }
 }

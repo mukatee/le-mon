@@ -1,7 +1,7 @@
 package fi.vtt.lemon.server.rest.client;
 
 import fi.vtt.lemon.server.LemonServer;
-import fi.vtt.lemon.server.Registry;
+import fi.vtt.lemon.server.registry.Registry;
 import org.codehaus.jettison.json.JSONArray;
 import org.codehaus.jettison.json.JSONException;
 import org.codehaus.jettison.json.JSONObject;

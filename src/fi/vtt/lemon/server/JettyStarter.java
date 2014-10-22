@@ -13,6 +13,7 @@ import fi.vtt.lemon.server.rest.client.Subscribe;
 import fi.vtt.lemon.server.rest.client.Unsubscribe;
 import fi.vtt.lemon.server.rest.probe.BMValue;
 import fi.vtt.lemon.server.rest.probe.Event;
+import fi.vtt.lemon.server.rest.probe.KeepAlive;
 import fi.vtt.lemon.server.rest.probe.Register;
 import fi.vtt.lemon.server.rest.probe.UnRegister;
 import fi.vtt.lemon.server.webui.pages.StaticPageServlet;
@@ -55,6 +56,7 @@ public class JettyStarter {
     context.addServlet(new ServletHolder(new Event()), RESTConst.PATH_EVENT);
     context.addServlet(new ServletHolder(new Register()), RESTConst.PATH_REGISTER);
     context.addServlet(new ServletHolder(new UnRegister()), RESTConst.PATH_UNREGISTER);
+    context.addServlet(new ServletHolder(new KeepAlive()), RESTConst.PATH_KEEP_ALIVE);
 
     server.start();
   }

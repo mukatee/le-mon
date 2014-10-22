@@ -2,7 +2,7 @@ package fi.vtt.lemon.server.rest.probe;
 
 import fi.vtt.lemon.server.LemonServer;
 import fi.vtt.lemon.server.MessagePooler;
-import fi.vtt.lemon.server.Registry;
+import fi.vtt.lemon.server.registry.Registry;
 import fi.vtt.lemon.server.tasks.RegisterProcessor;
 import org.codehaus.jettison.json.JSONException;
 import org.codehaus.jettison.json.JSONObject;
