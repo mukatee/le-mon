@@ -31,8 +31,16 @@ public class RestClient {
     return sendPost(base+to, data);
   }
 
+  public String plainPost(String to, JSONObject data) {
+    return sendPlainPost(base+to, data);
+  }
+
   public static String sendPost(String to) {
     return sendPost(to, new JSONObject());
+  }
+
+  public static String sendPlainPost(String to, JSONObject data) {
+    return sendPost(to, "", data);
   }
 
   public static String sendPost(String to, JSONObject data) {

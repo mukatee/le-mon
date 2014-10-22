@@ -17,13 +17,11 @@ import static fi.vtt.lemon.MsgConst.*;
 public class BMSender implements Runnable {
   private final static Logger log = new Logger(BMSender.class);
   private final String measureURI;
-  private final int precision;
   private final String value;
   
 
-  public BMSender(String measureURI, int precision, String value) {
+  public BMSender(String measureURI, String value) {
     this.measureURI = measureURI;
-    this.precision = precision;
     this.value = value;
   }
 
@@ -40,7 +38,7 @@ public class BMSender implements Runnable {
       json.put(PARAM_VALUE, value);
 
       String server = ProbeServer.getServerAgentAddress();
-      ProbeServer.registerIfNeeded(measureURI, precision);
+      ProbeServer.registerIfNeeded(measureURI);
       RestClient.sendPost(server + RESTConst.PATH_BM_RESULT, json);
     } catch (Exception e) {
       e.printStackTrace();

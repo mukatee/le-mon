@@ -2,7 +2,7 @@ package fi.vtt.lemon.server.rest.probe;
 
 import fi.vtt.lemon.server.LemonServer;
 import fi.vtt.lemon.server.MessagePooler;
-import fi.vtt.lemon.server.Registry;
+import fi.vtt.lemon.server.registry.Registry;
 import fi.vtt.lemon.server.tasks.MeasurementProcessor;
 import org.codehaus.jettison.json.JSONException;
 import org.codehaus.jettison.json.JSONObject;
@@ -39,7 +39,7 @@ public class BMValue extends HttpServlet {
 
 //    System.out.println("received:"+msg);
 
-    log.debug("Add measure request received "+msg);
+    log.debug("BM value request received "+msg);
     MessagePooler pooler = LemonServer.getPooler();
     Registry registry = LemonServer.getRegistry();
 

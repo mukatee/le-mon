@@ -89,28 +89,60 @@ public class Persistence {
     }
   }
   
-  public void bmAdded(String uri) {
-    log.debug("Persisting BM Add Event:"+uri);
+  public void probeAdded(String uri) {
+    log.debug("Persisting Probe Add Event:"+uri);
     try (SqlSession session = sessionFactory.openSession()) {
       EventMapper mapper = session.getMapper(EventMapper.class);
-      mapper.insert(new Event("New BM registered", uri, new Date(), Event.ET_BM_ADD));
+      mapper.insert(new Event("New Probe registered", uri, new Date(), Event.ET_PROBE_ADD));
       session.commit();
     } catch (Exception e) {
       log.error("Failed to persist event", e);
     }
   }
   
-  public void bmRemoved(String uri) {
-    log.debug("Persisting BM Remove Event:"+uri);
+  public void probeRemoved(String uri) {
+    log.debug("Persisting Probe Remove Event:"+uri);
     try (SqlSession session = sessionFactory.openSession()) {
       EventMapper mapper = session.getMapper(EventMapper.class);
-      mapper.insert(new Event("BM removed", uri, new Date(), Event.ET_BM_REMOVE));
+      mapper.insert(new Event("Probe removed", uri, new Date(), Event.ET_PROBE_REMOVE));
       session.commit();
     } catch (Exception e) {
       log.error("Failed to persist event", e);
     }
   }
 
+  public void probeLost(String uri) {
+    log.debug("Persisting Probe Lost Event:"+uri);
+    try (SqlSession session = sessionFactory.openSession()) {
+      EventMapper mapper = session.getMapper(EventMapper.class);
+      mapper.insert(new Event("Probe lost", uri, new Date(), Event.ET_PROBE_LOST));
+      session.commit();
+    } catch (Exception e) {
+      log.error("Failed to persist event", e);
+    }
+  }
+
+  public void probeMissing(String uri) {
+    log.debug("Persisting Probe Missing Event:"+uri);
+    try (SqlSession session = sessionFactory.openSession()) {
+      EventMapper mapper = session.getMapper(EventMapper.class);
+      mapper.insert(new Event("Probe missing", uri, new Date(), Event.ET_PROBE_MISSING));
+      session.commit();
+    } catch (Exception e) {
+      log.error("Failed to persist event", e);
+    }
+  }
+
+  public void probeFound(String uri) {
+    log.debug("Persisting Probe Found Event:"+uri);
+    try (SqlSession session = sessionFactory.openSession()) {
+      EventMapper mapper = session.getMapper(EventMapper.class);
+      mapper.insert(new Event("Probe found", uri, new Date(), Event.ET_PROBE_FOUND));
+      session.commit();
+    } catch (Exception e) {
+      log.error("Failed to persist event", e);
+    }
+  }
   public synchronized List<Value> getLatest(int count) {
     int max = values.size();
     if (max > count) max = count;

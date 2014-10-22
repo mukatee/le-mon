@@ -13,17 +13,13 @@ import java.util.concurrent.TimeUnit;
  *
  * @author Teemu Kanstren
  */
-public class MeasurementThreadFactory implements ThreadFactory {
-  private final static Logger log = new Logger(MeasurementThreadFactory.class);
+public class DaemonThreadFactory implements ThreadFactory {
+  private final static Logger log = new Logger(DaemonThreadFactory.class);
   private final ThreadFactory delegate = Executors.defaultThreadFactory();
 
   public static void main(String[] args) throws Exception {
-    ScheduledThreadPoolExecutor executor = new ScheduledThreadPoolExecutor(1, new MeasurementThreadFactory());
-    executor.scheduleAtFixedRate(new Runnable() {
-      public void run() {
-        System.out.println("hello");
-      }
-    }, 0, 100, TimeUnit.MILLISECONDS);
+    ScheduledThreadPoolExecutor executor = new ScheduledThreadPoolExecutor(1, new DaemonThreadFactory());
+    executor.scheduleAtFixedRate(() -> System.out.println("hello"), 0, 100, TimeUnit.MILLISECONDS);
     Thread.sleep(500);
   }
 

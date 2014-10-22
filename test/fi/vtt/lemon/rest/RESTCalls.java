@@ -161,7 +161,7 @@ public class RESTCalls {
     
     JSONObject measureReq = new JSONObject();
     measureReq.put(MEASURE_URI, "le-mon://configurable/test-probe");
-    rs2.post(PATH_SUBSCRIBE, measureReq);
+    rs2.plainPost(PATH_SUBSCRIBE, measureReq);
 
     Thread.sleep(2222);
 
@@ -174,7 +174,7 @@ public class RESTCalls {
     json.put(PARAM_CONFIG, "my little measure");
     rs2.post(PATH_ADD_MEASURE, json);
 
-    System.out.println("set to my little measure");
+//    System.out.println("set to my little measure");
 
     Thread.sleep(2222);
 
@@ -210,7 +210,7 @@ public class RESTCalls {
 
     JSONObject unsubReq = new JSONObject();
     unsubReq.put(MEASURE_URI, "le-mon://configurable/test-probe");
-    rs2.post(PATH_UNSUBSCRIBE, unsubReq);
+    rs2.plainPost(PATH_UNSUBSCRIBE, unsubReq);
 
     Thread.sleep(2222);
     

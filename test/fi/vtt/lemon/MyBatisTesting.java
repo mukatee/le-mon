@@ -31,7 +31,6 @@ public class MyBatisTesting {
       Value value = mapper.selectValue(2);
       assertEquals(value.valueString(), "data1", "Value read from DB");
       assertEquals(value.getMeasureURI(), "le-mon://hello", "Measure URI read from DB");
-      assertEquals(value.getPrecision(), 1, "Precision read from DB");
       assertEquals(value.getTimeFormatted(), "1.1.1970 3:14:04", "Time read from DB");
     }
   }

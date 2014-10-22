@@ -1,5 +1,7 @@
-package fi.vtt.lemon.server;
+package fi.vtt.lemon.server.registry;
 
+import fi.vtt.lemon.Config;
+import fi.vtt.lemon.MsgConst;
 import fi.vtt.lemon.server.data.ProbeDescription;
 import fi.vtt.lemon.server.persistence.Persistence;
 import osmo.common.log.Logger;
@@ -22,22 +24,32 @@ public class Registry {
   private final Collection<String> availableBM = new HashSet<>();
   /** The list of measurements the client is subscribing to (id = MeasureURI). */
   private Collection<String> subscriptionRegistry = new HashSet<>();
+  /** Maps a measureURI to a specific probe. */ 
   private Map<String, ProbeDescription> probeMap = new HashMap<>();
+  /** Description for all probes registered. */
   private List<ProbeDescription> probes = new ArrayList<>();
+  /** For database storage. */
   private final Persistence persistence;
+  private final ProbeAgentWatchDog watchDog;
 
   public Registry(Persistence persistence) {
+    int timeout = Config.getInt(MsgConst.PROBE_TIMEOUT, 5);
+    this.watchDog = new ProbeAgentWatchDog(timeout, this);
     this.persistence = persistence;
+  }
+
+  public List<ProbeDescription> getProbes() {
+    return probes;
   }
 
   /**
    * Adds a measurement type as available.
+   * //TODO: log error if registering with same URI several times, send error back to probe too
    */
   public void addProbe(ProbeDescription probe) {
     log.info("Adding probe:"+probe);
-    //TODO: add some watchdog to drop available if nothing received in time interval, or do keep-alive messages
     availableBM.add(probe.getMeasureURI());
-    persistence.bmAdded(probe.getMeasureURI());
+    persistence.probeAdded(probe.getMeasureURI());
     probes.add(probe);
     probeMap.put(probe.getMeasureURI(), probe);
   }
@@ -47,13 +59,44 @@ public class Registry {
    */
   public void removeProbe(ProbeDescription probe) {
     log.info("Removing probe:"+probe);
-    //TODO: check if another probe still exist for the URI
     availableBM.remove(probe.getMeasureURI());
-    //TODO: rename event to "probe removed" not "bm removed"
-    persistence.bmRemoved(probe.getMeasureURI());
+    persistence.probeRemoved(probe.getMeasureURI());
     probes.remove(probe);
-    //TODO: check if another probe exists..
     probeMap.remove(probe.getMeasureURI());
+  }
+
+  //missing means we lost connection to a probe, it might still come back later
+  public void missing(ProbeDescription probe) {
+    log.info("Missing probe:" + probe);
+    availableBM.remove(probe.getMeasureURI());
+    persistence.probeMissing(probe.getMeasureURI());
+  }
+
+  //this means a probe was permanently lost and should be removed from all lists
+  public void lost(ProbeDescription probe) {
+    log.info("Lost probe:"+probe);
+    persistence.probeLost(probe.getMeasureURI());
+    probes.remove(probe);
+    probeMap.remove(probe.getMeasureURI());
+  }
+
+  //this means we found the probe while it was missing but before it was completely lost
+  public void found(ProbeDescription probe) {
+    log.info("Probe found again:" + probe);
+    availableBM.add(probe.getMeasureURI());
+    persistence.probeFound(probe.getMeasureURI());
+    probe.setAvailable(true);
+  }
+
+  public void keepAlive(String measureURI) {
+    log.debug("Keep-Alive for:"+measureURI);
+    ProbeDescription probe = probeMap.get(measureURI);
+    if (probe == null) {
+      log.warn("Received keep-alive for non-existing measure URI:"+measureURI);
+      return;
+    }
+    probe.setLastHeard(0);
+    if (!probe.isAvailable()) found(probe);
   }
 
   /**

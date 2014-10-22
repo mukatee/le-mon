@@ -1,7 +1,7 @@
 package fi.vtt.lemon.server.rest.client;
 
 import fi.vtt.lemon.server.LemonServer;
-import fi.vtt.lemon.server.Registry;
+import fi.vtt.lemon.server.registry.Registry;
 import org.codehaus.jettison.json.JSONArray;
 import org.codehaus.jettison.json.JSONException;
 import org.codehaus.jettison.json.JSONObject;
@@ -35,7 +35,7 @@ public class Unsubscribe extends HttpServlet {
   }
 
   private void showPage(HttpServletRequest req, HttpServletResponse resp) throws IOException {
-    log.debug("UnSubcribeToBM request received, " + req);
+    log.debug("Unsubcribe request received, " + req);
 
     // Read from request
     StringBuilder buffer = new StringBuilder();
@@ -56,7 +56,7 @@ public class Unsubscribe extends HttpServlet {
         JSONObject json = new JSONObject(data);
         registry.removeSubscription(json.getString(MEASURE_URI));
       } catch (JSONException e) {
-        log.error("Error while creating JSON for measurement history", e);
+        log.error("Error while creating JSON for unsubscribe request", e);
         return;
       }
 //    } else {

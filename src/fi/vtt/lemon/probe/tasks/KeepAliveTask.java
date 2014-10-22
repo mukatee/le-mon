@@ -1,6 +1,5 @@
 package fi.vtt.lemon.probe.tasks;
 
-import fi.vtt.lemon.probe.Probe;
 import fi.vtt.lemon.probe.ProbeServer;
 import fi.vtt.lemon.server.rest.RESTConst;
 import fi.vtt.lemon.server.rest.RestClient;
@@ -10,17 +9,14 @@ import osmo.common.log.Logger;
 import static fi.vtt.lemon.MsgConst.*;
 
 /**
- * Defines a task for the internal server to process measurements received from the measurement infrastructure.
- * Processed by a worker thread pool in the server.
- * 
- * @author Teemu Kanstren 
+ * @author Teemu Kanstren
  */
-public class UnRegistrationSender implements Runnable {
-  private final static Logger log = new Logger(UnRegistrationSender.class);
+public class KeepAliveTask implements Runnable {
+  private final static Logger log = new Logger(KeepAliveTask.class);
   private final String measureURI;
 
-  public UnRegistrationSender(Probe probe) {
-    this.measureURI = probe.getMeasureURI();
+  public KeepAliveTask(String measureURI) {
+    this.measureURI = measureURI;
   }
 
   /**
@@ -30,13 +26,13 @@ public class UnRegistrationSender implements Runnable {
   public void run() {
     try {
       JSONObject json = new JSONObject();
-      json.put(MSGTYPE, MSG_UNREGISTER);
+      json.put(MSGTYPE, MSG_KEEP_ALIVE);
       json.put(PARAM_TIME, System.currentTimeMillis());
       json.put(PARAM_MEASURE_URI, measureURI);
       json.put(PARAM_PROBE_URL, ProbeServer.getProbeAddress());
 
       String server = ProbeServer.getServerAgentAddress();
-      RestClient.sendPost(server + RESTConst.PATH_UNREGISTER, json);
+      RestClient.sendPost(server + RESTConst.PATH_KEEP_ALIVE, json);
     } catch (Exception e) {
       e.printStackTrace();
     }

@@ -21,17 +21,14 @@ public class MeasurementTask implements Runnable {
   private final Probe probe;
   /** Identifies the measurement. */
   private final String measureURI;
-  /** Provides a connection to the le-mon server. */
-  private final ServerClient server;
   /** When the task was started, allows checking if it is hanging or not. */
   private long startTime;
   /** Has it finished? */
   private boolean running = false;
 
-  public MeasurementTask(ServerClient server, Probe probe) {
+  public MeasurementTask(Probe probe) {
     this.probe = probe;
     this.measureURI = probe.getMeasureURI();
-    this.server = server;
   }
 
   public String getMeasureURI() {
@@ -53,14 +50,13 @@ public class MeasurementTask implements Runnable {
     }
     running = false;
     log.debug("Received measure:" + measure + " from:" + measureURI);
-    int precision = probe.getPrecision();
 
     MessagePooler pooler = ProbeServer.getPooler();
     if (measure == null) {
       pooler.schedule(new EventSender(EVENT_NO_VALUE_FOR_BM, measureURI, "No valid measure available."));
       return;
     }
-    pooler.schedule(new BMSender(measureURI, precision, measure));
+    pooler.schedule(new BMSender(measureURI, measure));
   }
 
   /**

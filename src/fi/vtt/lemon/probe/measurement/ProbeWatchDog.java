@@ -2,7 +2,6 @@ package fi.vtt.lemon.probe.measurement;
 
 import fi.vtt.lemon.probe.Probe;
 import fi.vtt.lemon.probe.ProbeServer;
-import fi.vtt.lemon.probe.ServerClient;
 import fi.vtt.lemon.probe.tasks.EventSender;
 import fi.vtt.lemon.server.MessagePooler;
 import osmo.common.log.Logger;
@@ -20,31 +19,25 @@ import static fi.vtt.lemon.MsgConst.*;
  *
  * @author Teemu Kanstren
  */
-public class WatchDog implements Runnable {
-  private final static Logger log = new Logger(WatchDog.class);
+public class ProbeWatchDog implements Runnable {
+  private final static Logger log = new Logger(ProbeWatchDog.class);
   /** The set of tasks to be watched. */
   private final Map<Probe, WatchedTask> tasks;
   /** Timeout for canceling a task (in milliseconds). */
   private final int timeout;
-  /** The thread pool executor. */
-  private final ScheduledExecutorService executor;
-  /** The connection to the le-mon servere. */
-  private final ServerClient server;
+  /** Create a thread pool of size one, allowing scheduling, using daemon threads*/
+  private final ScheduledExecutorService executor = Executors.newScheduledThreadPool(1, new DaemonThreadFactory());
 
   /**
    * Creates a dog for watching all the probes and their tasks..
    * 
-   * @param server Connection to the le-mon server to provide events.
    * @param tasks The tasks to be watched, may change during runtime.
    * @param timeout The timeout (in seconds) until failure is assumed.
    */
-  public WatchDog(ServerClient server, Map<Probe, WatchedTask> tasks, int timeout) {
-    this.server = server;
+  public ProbeWatchDog(Map<Probe, WatchedTask> tasks, int timeout) {
     this.tasks = tasks;
     //multiply by 1000 to turn seconds into milliseconds
     this.timeout = timeout*1000;
-    //create a thread pool of size one, allowing scheduling, using daemon threads
-    executor = Executors.newScheduledThreadPool(1, new MeasurementThreadFactory());
     //schedule the watchdog task starting one second from now, and to run with one second delay in between
     executor.scheduleWithFixedDelay(this, 1, 1, TimeUnit.SECONDS);
     log.debug("WatchDog started with timeout "+timeout);

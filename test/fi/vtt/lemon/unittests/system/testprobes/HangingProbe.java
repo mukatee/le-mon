@@ -7,11 +7,6 @@ import fi.vtt.lemon.probe.Probe;
  */
 public class HangingProbe implements Probe {
   @Override
-  public int getPrecision() {
-    return 0;
-  }
-
-  @Override
   public String getMeasureURI() {
     return "This-one-hangs";
   }

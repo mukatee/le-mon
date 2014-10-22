@@ -26,7 +26,7 @@ public class ConfigurableTestProbe extends TestProbe {
 
   @Override
   public void addMeasure(String config) {
-    log.info("Adding measure:"+config);
+    log.info("Setting measure to:"+config);
     measure = config;
   }
 
@@ -40,7 +40,7 @@ public class ConfigurableTestProbe extends TestProbe {
   }
 
   public static void main(String[] args) throws Exception {
-    MeasurementProvider mp = new MeasurementProvider(new ServerClient(Config.getString(MsgConst.BROKER_ADDRESS, "::1")));
+    MeasurementProvider mp = new MeasurementProvider();
     ConfigurableTestProbe probe = new ConfigurableTestProbe();
     mp.startMeasuring(probe);
     probe.addMeasure("new measurement");

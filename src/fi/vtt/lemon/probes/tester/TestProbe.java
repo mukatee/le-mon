@@ -36,8 +36,7 @@ public class TestProbe implements Probe {
   }
 
   public void start() throws Exception {
-    String url = ProbeServer.getServerAgentAddress();
-    mp = new MeasurementProvider(new ServerClient(url));
+    mp = new MeasurementProvider();
     mp.startMeasuring(this);
     ProbeServer.addProbe(this);
   }

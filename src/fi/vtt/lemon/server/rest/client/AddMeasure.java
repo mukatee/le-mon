@@ -2,7 +2,7 @@ package fi.vtt.lemon.server.rest.client;
 
 import fi.vtt.lemon.server.LemonServer;
 import fi.vtt.lemon.server.MessagePooler;
-import fi.vtt.lemon.server.Registry;
+import fi.vtt.lemon.server.registry.Registry;
 import fi.vtt.lemon.server.data.ProbeDescription;
 import fi.vtt.lemon.server.rest.RESTConst;
 import fi.vtt.lemon.server.rest.RestClient;

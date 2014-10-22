@@ -1,6 +1,6 @@
 package fi.vtt.lemon.unittests.agent.server;
 
-import fi.vtt.lemon.server.Registry;
+import fi.vtt.lemon.server.registry.Registry;
 import org.testng.annotations.Test;
 
 import static org.testng.Assert.*;

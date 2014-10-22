@@ -16,12 +16,11 @@ public interface ValueMapper {
   @Select("SELECT * FROM bm_value, bm_description WHERE bm_value.value_id = #{id} AND bm_description.bm_id = bm_value.bm_id")
   @ConstructorArgs({
           @Arg(column="measure_uri", javaType=String.class),
-          @Arg(column="value_precision", javaType=int.class),
           @Arg(column="value_string", javaType=String.class),
           @Arg(column="value_time", javaType=Date.class)
   })
   public Value selectValue(int id);
 
-  @Insert("INSERT INTO bm_value (value_precision, value_time, value_string) VALUES (#{precision}, #{time}, #{value})")
+  @Insert("INSERT INTO bm_value (value_time, value_string) VALUES (#{time}, #{value})")
   public void insert(Value value);
 }
