@@ -35,23 +35,26 @@ public class Registry {
   public Registry(Persistence persistence) {
     int timeout = Config.getInt(MsgConst.PROBE_TIMEOUT, 5);
     this.watchDog = new ProbeAgentWatchDog(timeout, this);
+    watchDog.start();
     this.persistence = persistence;
   }
 
   public List<ProbeDescription> getProbes() {
     return probes;
   }
-
+  
   /**
    * Adds a measurement type as available.
    * //TODO: log error if registering with same URI several times, send error back to probe too
    */
   public void addProbe(ProbeDescription probe) {
     log.info("Adding probe:"+probe);
-    availableBM.add(probe.getMeasureURI());
-    persistence.probeAdded(probe.getMeasureURI());
+    String measureURI = probe.getMeasureURI();
+    availableBM.add(measureURI);
+    persistence.probeAdded(measureURI);
     probes.add(probe);
-    probeMap.put(probe.getMeasureURI(), probe);
+    probeMap.put(measureURI, probe);
+    keepAlive(measureURI);
   }
 
   /**
@@ -95,7 +98,7 @@ public class Registry {
       log.warn("Received keep-alive for non-existing measure URI:"+measureURI);
       return;
     }
-    probe.setLastHeard(0);
+    probe.setLastHeard(System.currentTimeMillis());
     if (!probe.isAvailable()) found(probe);
   }
 
@@ -162,7 +165,8 @@ public class Registry {
 
   /**
    * Client has provided a new subscription.
-   * @param measureURI
+   * 
+   * @param measureURI Data subscribed to.
    */
   public void addSubscription(String measureURI) {
     log.debug("New measurement subscription URI:" + measureURI);
