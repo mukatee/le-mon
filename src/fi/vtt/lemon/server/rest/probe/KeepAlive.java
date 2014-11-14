@@ -3,6 +3,7 @@ package fi.vtt.lemon.server.rest.probe;
 import fi.vtt.lemon.server.LemonServer;
 import fi.vtt.lemon.server.MessagePooler;
 import fi.vtt.lemon.server.registry.Registry;
+import fi.vtt.lemon.server.tasks.KeepAliveProcessor;
 import fi.vtt.lemon.server.tasks.RegisterProcessor;
 import org.codehaus.jettison.json.JSONException;
 import org.codehaus.jettison.json.JSONObject;
@@ -49,11 +50,10 @@ public class KeepAlive extends HttpServlet {
         log.debug(" [x] Received '" + json + "'");
         String type = (String) json.get(MSGTYPE);
         String url = (String) json.get(PROBE_URL);
-        //TODO: check msg type is correct..
-        Runnable task = new RegisterProcessor(json);
+        Runnable task = new KeepAliveProcessor(json);
         pooler.schedule(task);
       } catch (JSONException e) {
-        log.error("Failed to parse measurement v alue JSON", e);
+        log.error("Failed to parse keepalive JSON", e);
         return;
       }
     } else {

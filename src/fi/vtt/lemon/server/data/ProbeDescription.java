@@ -12,8 +12,8 @@ public class ProbeDescription {
   private final String measureURI;
   /** Is the probe available, reporting keep-alive. */
   private boolean available = true;
-  /** Time in milliseconds since last tiem we heard about this probe (keep-alive). */
-  private int lastHeard = 0;
+  /** Time in milliseconds when we last heard about this probe (keep-alive). */
+  private long lastHeard = 0;
 
   public ProbeDescription(String url, String measureURI) {
     this.url = url;
@@ -28,11 +28,11 @@ public class ProbeDescription {
     this.available = available;
   }
 
-  public int getLastHeard() {
+  public long getLastHeard() {
     return lastHeard;
   }
 
-  public void setLastHeard(int lastHeard) {
+  public void setLastHeard(long lastHeard) {
     this.lastHeard = lastHeard;
   }
 

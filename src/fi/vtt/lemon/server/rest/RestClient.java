@@ -51,10 +51,11 @@ public class RestClient {
     HttpURLConnection conn = null;
 
     try {
+      log.debug("Sending msg to:"+to+" data:"+data);
       conn = (HttpURLConnection) new URL(to).openConnection();
       conn.setRequestMethod("POST");
     } catch (IOException e) {
-      e.printStackTrace();
+      log.error("Failed to connect", e);
       return null;
     }
     conn.setRequestProperty("User-Agent", "le-mon");
@@ -73,7 +74,7 @@ public class RestClient {
       log.debug("Post data : " + data.toString());
       log.debug("Response Code : " + responseCode);
     } catch (IOException e) {
-      e.printStackTrace();
+      log.error("Failed to send message", e);
       return null;
     }
 
