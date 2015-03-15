@@ -1,0 +1,31 @@
+<html>
+<head>
+    <title>
+        Le-Mon: Latest BM Values
+    </title>
+</head>
+<body>
+<div ng-app="" ng-controller="lemonController">
+    <p>List of latest measurement values:</p>
+
+    <ul>
+        <li ng-repeat="value in values">
+            URI: {{ value.measure_uri }}, P: {{value.precision}}, V: {{value.value}}, T: {{value.time}}  
+        </li>
+    </ul>
+
+</div>
+
+<script>
+    function lemonController($scope,$http) {
+        var data = JSON.stringify({count:10});
+        $http.post("http://localhost:11112/latest", data).
+                success(function(response) {
+                    $scope.values = response;
+                }
+        );
+    }
+</script>
+<script src="http://ajax.googleapis.com/ajax/libs/angularjs/1.2.15/angular.min.js"></script>
+</body>
+</html>

@@ -116,8 +116,8 @@
   <target name="javadocs">
     <javadoc destdir="${javadoc-dir}" author="true" version="true" use="true" windowtitle="le-mon API">
       <packageset dir="${prod-src}" defaultexcludes="yes">
-        <include name="fi/vtt/lemon/**"/>
-        <exclude name="fi/vtt/lemon/server/webui/**"/>
+        <include name="le/mon/**"/>
+        <exclude name="le/mon/server/webui/**"/>
       </packageset>
     </javadoc>
   </target>
