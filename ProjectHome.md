@@ -1,0 +1,5 @@
+le-mon is a framework for implementing basic monitoring features on a distributed system. It provides integration points for attaching various measurement providers (any software you have that can provide a value you want to capture), and provides the mechanisms for providing these values to a server component. The client software can then query the available measurements through the REST interfaces provided by the server.
+
+The system is currently in beta stage as not all base functionality is there. Mainly it does not support measurement history requests. Also resiliency in terms of failure recovery is not implemented. However, it provides the measurements as requested and available so can be used for basic testing.
+
+Previously the system has also included some slightly advanced abstractions over the measurements but these are currently disabled and waiting for actual use cases where their usefulness if validated.
