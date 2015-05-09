@@ -2,14 +2,7 @@ package le.mon.server;
 
 import le.mon.Config;
 import le.mon.server.rest.RESTConst;
-import le.mon.server.rest.client.AddMeasure;
-import le.mon.server.rest.client.Availability;
-import le.mon.server.rest.client.FWInfo;
-import le.mon.server.rest.client.History;
-import le.mon.server.rest.client.Latest;
-import le.mon.server.rest.client.RemoveMeasure;
-import le.mon.server.rest.client.Subscribe;
-import le.mon.server.rest.client.Unsubscribe;
+import le.mon.server.rest.client.*;
 import le.mon.server.rest.probe.BMValue;
 import le.mon.server.rest.probe.Event;
 import le.mon.server.rest.probe.KeepAlive;
