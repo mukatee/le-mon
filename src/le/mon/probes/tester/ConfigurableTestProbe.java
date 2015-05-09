@@ -1,8 +1,5 @@
 package le.mon.probes.tester;
 
-import le.mon.Config;
-import le.mon.MsgConst;
-import le.mon.probe.ServerClient;
 import le.mon.probe.measurement.MeasurementProvider;
 import osmo.common.log.Logger;
 
@@ -26,14 +23,14 @@ public class ConfigurableTestProbe extends TestProbe {
 
   @Override
   public void addMeasure(String config) {
-    log.info("Setting measure to:"+config);
+    log.info("Setting measure to:" + config);
     measure = config;
   }
 
   @Override
   public void removeMeasure(String config) {
     if (!measure.equals(config)) {
-      log.debug("Attempt to remove non-existent measure:"+config);
+      log.debug("Attempt to remove non-existent measure:" + config);
       return;
     }
     measure = "removed";

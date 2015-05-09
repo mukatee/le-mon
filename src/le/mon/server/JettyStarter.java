@@ -8,7 +8,6 @@ import le.mon.server.rest.client.FWInfo;
 import le.mon.server.rest.client.History;
 import le.mon.server.rest.client.Latest;
 import le.mon.server.rest.client.RemoveMeasure;
-import le.mon.server.rest.client.Shutdown;
 import le.mon.server.rest.client.Subscribe;
 import le.mon.server.rest.client.Unsubscribe;
 import le.mon.server.rest.probe.BMValue;
@@ -17,7 +16,6 @@ import le.mon.server.rest.probe.KeepAlive;
 import le.mon.server.rest.probe.Register;
 import le.mon.server.rest.probe.UnRegister;
 import le.mon.server.webui.pages.StaticPageServlet;
-import le.mon.server.rest.probe.Event;
 import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.servlet.ServletContextHandler;
 import org.eclipse.jetty.servlet.ServletHolder;
@@ -38,10 +36,10 @@ public class JettyStarter {
     context.setContextPath("/");
     server.setHandler(context);
 
-    context.addServlet(new ServletHolder(new StaticPageServlet("availability.html")),"/pages/availability");
-    context.addServlet(new ServletHolder(new StaticPageServlet("info.html")),"/pages/info");
-    context.addServlet(new ServletHolder(new StaticPageServlet("latest.html")),"/pages/latest");
-    context.addServlet(new ServletHolder(new StaticPageServlet("probes.html")),"/pages/probes");
+    context.addServlet(new ServletHolder(new StaticPageServlet("availability.html")), "/pages/availability");
+    context.addServlet(new ServletHolder(new StaticPageServlet("info.html")), "/pages/info");
+    context.addServlet(new ServletHolder(new StaticPageServlet("latest.html")), "/pages/latest");
+    context.addServlet(new ServletHolder(new StaticPageServlet("probes.html")), "/pages/probes");
 
     context.addServlet(new ServletHolder(new AddMeasure()), RESTConst.PATH_ADD_MEASURE);
     context.addServlet(new ServletHolder(new Availability()), RESTConst.PATH_AVAILABILITY);

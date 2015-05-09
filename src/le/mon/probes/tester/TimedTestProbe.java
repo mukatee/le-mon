@@ -1,8 +1,5 @@
 package le.mon.probes.tester;
 
-import le.mon.Config;
-import le.mon.MsgConst;
-import le.mon.probe.ServerClient;
 import le.mon.probe.measurement.MeasurementProvider;
 import osmo.common.log.Logger;
 
@@ -17,12 +14,12 @@ public class TimedTestProbe extends TestProbe {
   private final int n;
 
   public TimedTestProbe(int n) {
-    super("LM://Test/Timed/"+n, 1);
+    super("LM://Test/Timed/" + n, 1);
     this.n = n;
   }
 
   public String measure() {
-    String result = "timed measure nr."+counter;
+    String result = "timed measure nr." + counter;
     counter++;
     log.debug("Performed measure:" + result);
     try {

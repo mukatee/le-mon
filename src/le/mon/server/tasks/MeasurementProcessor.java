@@ -1,11 +1,9 @@
 package le.mon.server.tasks;
 
-import le.mon.server.LemonServer;
 import le.mon.MsgConst;
+import le.mon.server.LemonServer;
 import org.codehaus.jettison.json.JSONObject;
 import osmo.common.log.Logger;
-
-import static le.mon.MsgConst.*;
 
 /**
  * Defines a task for the internal server to process measurements received from the measurement infrastructure.

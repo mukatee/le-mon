@@ -1,11 +1,9 @@
 package le.mon.probe.tasks;
 
-import le.mon.probe.Probe;
 import le.mon.MsgConst;
+import le.mon.probe.Probe;
 import org.codehaus.jettison.json.JSONObject;
 import osmo.common.log.Logger;
-
-import static le.mon.MsgConst.*;
 
 /**
  * Defines a task for the adding a new measurement to the probe.
@@ -33,9 +31,9 @@ public class AddMeasureProcessor implements Runnable {
       long time = json.getLong(MsgConst.PARAM_TIME);
       config = json.getString(MsgConst.PARAM_CONFIG);
       probe.addMeasure(config);
-      log.info("Measurent added to probe:"+config);
+      log.info("Measurent added to probe:" + config);
     } catch (Exception e) {
-      log.error("Failed to add measure:"+config, e);
+      log.error("Failed to add measure:" + config, e);
     }
   }
 }

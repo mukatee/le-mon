@@ -43,12 +43,12 @@ public class ProbeServer {
 
   public static String getServerAgentAddress() {
     int serverPort = Config.getInt(RESTConst.REST_SERVER_SERVER_PORT, 11112);
-    return Config.getString(RESTConst.REST_SERVER_SERVER_URL, "http://[::1]:"+serverPort);
+    return Config.getString(RESTConst.REST_SERVER_SERVER_URL, "http://[::1]:" + serverPort);
   }
 
   public static String getProbeAddress() {
     int serverPort = Config.getInt(RESTConst.REST_PROBE_SERVER_PORT, 11112);
-    return Config.getString(RESTConst.REST_PROBE_SERVER_URL, "http://[::1]:"+serverPort);
+    return Config.getString(RESTConst.REST_PROBE_SERVER_URL, "http://[::1]:" + serverPort);
   }
 
   public static void registerIfNeeded(String measureURI) {

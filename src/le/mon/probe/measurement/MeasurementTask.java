@@ -1,11 +1,5 @@
 package le.mon.probe.measurement;
 
-import le.mon.probe.Probe;
-import le.mon.probe.ProbeServer;
-import le.mon.probe.ServerClient;
-import le.mon.probe.tasks.BMSender;
-import le.mon.probe.tasks.EventSender;
-import le.mon.server.MessagePooler;
 import le.mon.MsgConst;
 import le.mon.probe.Probe;
 import le.mon.probe.ProbeServer;
@@ -13,8 +7,6 @@ import le.mon.probe.tasks.BMSender;
 import le.mon.probe.tasks.EventSender;
 import le.mon.server.MessagePooler;
 import osmo.common.log.Logger;
-
-import static le.mon.MsgConst.*;
 
 /**
  * A task for performing a single measurement.

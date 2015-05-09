@@ -2,9 +2,7 @@ package le.mon.probes.tester;
 
 import le.mon.probe.Probe;
 import le.mon.probe.ProbeServer;
-import le.mon.probe.ServerClient;
 import le.mon.probe.measurement.MeasurementProvider;
-import le.mon.probe.Probe;
 import osmo.common.log.Logger;
 
 /**

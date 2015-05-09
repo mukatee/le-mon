@@ -1,6 +1,5 @@
 package le.mon;
 
-import java.io.FileInputStream;
 import java.io.IOException;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
@@ -19,8 +18,8 @@ public class SHATest {
 
     byte[] pcrData = hexStringToBytes(oldPcr);
     byte[] hashData = hexStringToBytes(hash);
-    assert(pcrData.length == 20);
-    assert(hashData.length == 20);
+    assert (pcrData.length == 20);
+    assert (hashData.length == 20);
     byte[] data = new byte[40];
     System.arraycopy(pcrData, 0, data, 0, 20);
     System.arraycopy(hashData, 0, data, 20, 20);
@@ -38,9 +37,9 @@ public class SHATest {
   public static byte[] hexStringToBytes(String s) {
     int len = s.length();
     byte[] data = new byte[len / 2];
-    for (int i = 0; i < len; i += 2) {
+    for (int i = 0 ; i < len ; i += 2) {
       data[i / 2] = (byte) ((Character.digit(s.charAt(i), 16) << 4)
-              + Character.digit(s.charAt(i+1), 16));
+              + Character.digit(s.charAt(i + 1), 16));
     }
     return data;
   }

@@ -7,11 +7,6 @@ import le.mon.server.persistence.Persistence;
 import le.mon.server.registry.Registry;
 import le.mon.server.rest.PostToClientTask;
 import le.mon.server.rest.RESTConst;
-import le.mon.Config;
-import le.mon.server.data.ProbeDescription;
-import le.mon.server.data.Value;
-import le.mon.server.registry.Registry;
-import le.mon.server.rest.PostToClientTask;
 import osmo.common.log.Logger;
 
 import java.util.Collection;
@@ -80,12 +75,12 @@ public class LemonServer {
    * When a measurement is received.
    *
    * @param measureURI The identifier of the measurement.
-   * @param time The time of the measurement.
-   * @param value The measurement value.
+   * @param time       The time of the measurement.
+   * @param value      The measurement value.
    */
   public static void measurement(String measureURI, long time, String value) {
     if (!registry.isRegistered(measureURI)) {
-      log.warn("Trying to provide measurement for unregistered probe:"+measureURI);
+      log.warn("Trying to provide measurement for unregistered probe:" + measureURI);
       return;
     }
     Value v = new Value(measureURI, value, new Date(time));
@@ -104,7 +99,7 @@ public class LemonServer {
    * To provide access to measurement history where interesting. Currently not implemented.
    *
    * @param start Start time for requested history.
-   * @param end End time for requested history.
+   * @param end   End time for requested history.
    * @param bmIds The list of measurements that are requested (history).
    * @return The list of measurements matching the given criteria.
    */

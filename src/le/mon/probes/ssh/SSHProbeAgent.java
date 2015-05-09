@@ -6,7 +6,6 @@ import ch.ethz.ssh2.Session;
 import ch.ethz.ssh2.StreamGobbler;
 import le.mon.probe.Probe;
 import le.mon.probe.ProbeServer;
-import le.mon.probe.ServerClient;
 import le.mon.probe.measurement.MeasurementProvider;
 import le.mon.probe.tasks.RegistrationSender;
 import le.mon.server.MessagePooler;
@@ -27,7 +26,7 @@ import java.util.Map;
  * sends a (configured) script file over with SCP to the host, does a login over SSH using the given credentials,
  * and uses the configured shell command to execute the script in question. Provides the system.out output of the
  * script as a base measure.
- *
+ * <p>
  * For example, script = "measure.sh", command = "bash" the following is the process.
  * Login using username and password.
  * Upload the script file using SCP (from local working directory to remote working directory).
@@ -100,7 +99,7 @@ public class SSHProbeAgent implements Probe {
     Connection conn = connections.get(target);
     if (conn == null) {
       conn = new Connection(target);
-      log.debug("connecting now to:"+target);
+      log.debug("connecting now to:" + target);
       /* Now connect */
       conn.connect();
       log.debug("connected ok");
@@ -112,7 +111,7 @@ public class SSHProbeAgent implements Probe {
       log.debug("authenticated ok");
       connections.put(target, conn);
     }
-    log.debug("executing script on target:"+target);
+    log.debug("executing script on target:" + target);
 
     SCPClient client = conn.createSCPClient();
     client.put(filename, ".");
@@ -127,7 +126,7 @@ public class SSHProbeAgent implements Probe {
     String output = readOutput(stdout);
     errors = readOutput(stderr);
 
-    System.out.println("done reading, errors:"+errors);
+    System.out.println("done reading, errors:" + errors);
 
     /* Show exit status, if available (otherwise "null") */
 //    System.out.println("ExitCode: " + sess.getExitStatus());
@@ -161,12 +160,12 @@ public class SSHProbeAgent implements Probe {
 
   @Override
   public void addMeasure(String config) {
-    log.debug("should add measurement but NOT IMPLEMENTED:"+config);
+    log.debug("should add measurement but NOT IMPLEMENTED:" + config);
   }
 
   @Override
   public void removeMeasure(String config) {
-    log.debug("should remove measurement but NOT IMPLEMENTED:"+config);
+    log.debug("should remove measurement but NOT IMPLEMENTED:" + config);
   }
 
   /**

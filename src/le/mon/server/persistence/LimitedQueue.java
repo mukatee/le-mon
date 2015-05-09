@@ -15,7 +15,9 @@ public class LimitedQueue<T> extends LinkedList<T> {
   @Override
   public boolean add(T o) {
     super.add(o);
-    while (size() > limit) { super.remove(); }
+    while (size() > limit) {
+      super.remove();
+    }
     return true;
   }
 }

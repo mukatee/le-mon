@@ -8,11 +8,6 @@ import le.mon.probe.tasks.KeepAliveTask;
 import le.mon.probe.tasks.RegistrationSender;
 import le.mon.probe.tasks.UnRegistrationSender;
 import le.mon.server.MessagePooler;
-import le.mon.MsgConst;
-import le.mon.probe.Probe;
-import le.mon.probe.tasks.KeepAliveTask;
-import le.mon.probe.tasks.RegistrationSender;
-import le.mon.probe.tasks.UnRegistrationSender;
 import osmo.common.log.Logger;
 
 import java.util.Collection;
@@ -46,7 +41,7 @@ public class MeasurementProvider {
     MessagePooler pooler = ProbeServer.getPooler();
     for (Probe probe : probes) {
       pooler.schedule(new UnRegistrationSender(probe));
-      log.info("Unregistering probe:"+probe.getMeasureURI());
+      log.info("Unregistering probe:" + probe.getMeasureURI());
     }
     executor.shutdown();
     watchDog.shutdown();

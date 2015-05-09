@@ -1,7 +1,5 @@
 package le.mon.server.registry;
 
-import le.mon.Config;
-import le.mon.MsgConst;
 import le.mon.probe.measurement.DaemonThreadFactory;
 import le.mon.server.data.ProbeDescription;
 import osmo.common.log.Logger;
@@ -41,7 +39,7 @@ public class ProbeAgentWatchDog implements Runnable {
     log.debug("Running watchdog");
     List<ProbeDescription> probes = registry.getProbes();
     long thresholdMissing = timeout;
-    long thresholdGone = timeout+thresholdMissing;
+    long thresholdGone = timeout + thresholdMissing;
     Collection<ProbeDescription> lost = new ArrayList<>();
     Collection<ProbeDescription> missing = new ArrayList<>();
     for (ProbeDescription probe : probes) {
@@ -57,11 +55,11 @@ public class ProbeAgentWatchDog implements Runnable {
         }
       }
     }
-    if (missing.size() > 0) log.info("probes missing:"+missing);
+    if (missing.size() > 0) log.info("probes missing:" + missing);
     for (ProbeDescription probe : missing) {
       registry.missing(probe);
     }
-    if (lost.size() > 0) log.info("lost probes:"+lost);
+    if (lost.size() > 0) log.info("lost probes:" + lost);
     for (ProbeDescription probe : lost) {
       registry.lost(probe);
     }

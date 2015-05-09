@@ -30,7 +30,7 @@ public class Config {
    * Get a configuration property parsed as an integer number.
    * This is a getter for an optional configuration value that has a default value if the property is not present.
    *
-   * @param property The name of the property (key in file).
+   * @param property     The name of the property (key in file).
    * @param defaultValue Give this value if no valid value is found.
    * @return The integer as parsed or the default value if no valid value found.
    */
@@ -38,7 +38,7 @@ public class Config {
     try {
       return Integer.parseInt(props.getProperty(property));
     } catch (NumberFormatException e) {
-      log.error("No value found for property "+property+", using default of "+defaultValue, e);
+      log.error("No value found for property " + property + ", using default of " + defaultValue, e);
       return defaultValue;
     }
   }
@@ -53,7 +53,7 @@ public class Config {
   public static int getInt(String property) {
     int value = getInt(property, Integer.MIN_VALUE);
     if (value == Integer.MIN_VALUE) {
-      throw new RuntimeException("Required configuration parameter '"+property+"' not found. Aborting.'");
+      throw new RuntimeException("Required configuration parameter '" + property + "' not found. Aborting.'");
     }
     return value;
   }
@@ -62,7 +62,7 @@ public class Config {
    * Get a configuration property as a String object.
    * This is a getter for an optional configuration value that has a default value if the property is not present.
    *
-   * @param property The name of the property (key in file).
+   * @param property     The name of the property (key in file).
    * @param defaultValue Give this value if no valid value is found.
    * @return The String value as defined or the default value if no valid value found.
    */
@@ -80,7 +80,7 @@ public class Config {
   public static String getString(String property) {
     String value = props.getProperty(property);
     if (value == null) {
-      throw new RuntimeException("Required configuration parameter '"+property+"' not found. Aborting.'");
+      throw new RuntimeException("Required configuration parameter '" + property + "' not found. Aborting.'");
     }
     return value;
   }

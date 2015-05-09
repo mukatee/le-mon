@@ -16,6 +16,6 @@ public class TestProbe3 extends TestProbe {
   }
 
   public String measure() {
-    return Integer.toString( random.nextInt( 100 ) + 1 );
+    return Integer.toString(random.nextInt(100) + 1);
   }
 }

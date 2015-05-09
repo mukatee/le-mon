@@ -1,11 +1,9 @@
 package le.mon.probe.tasks;
 
-import le.mon.probe.Probe;
 import le.mon.MsgConst;
+import le.mon.probe.Probe;
 import org.codehaus.jettison.json.JSONObject;
 import osmo.common.log.Logger;
-
-import static le.mon.MsgConst.*;
 
 /**
  * Defines a task for the adding a new measurement to the probe.
@@ -35,13 +33,13 @@ public class RemoveMeasureProcessor implements Runnable {
       String measureURI = json.getString(MsgConst.PARAM_MEASURE_URI);
       if (!measureURI.equals(probe.getMeasureURI())) {
         //TODO: this would not be necessary if probes used own msg queues, which they need to be modified to do
-        log.debug("Not a request for this probe:'"+measureURI+"' I have '"+probe.getMeasureURI()+"'");
+        log.debug("Not a request for this probe:'" + measureURI + "' I have '" + probe.getMeasureURI() + "'");
         return;
       }
       probe.removeMeasure(config);
-      log.debug("Measurent removed from probe:"+config);
+      log.debug("Measurent removed from probe:" + config);
     } catch (Exception e) {
-      log.error("Failed to remove measure:"+config, e);
+      log.error("Failed to remove measure:" + config, e);
     }
   }
 }

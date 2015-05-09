@@ -1,7 +1,6 @@
 package le.mon.server.persistence;
 
 import le.mon.server.data.Event;
-import le.mon.server.data.Event;
 import org.apache.ibatis.annotations.Arg;
 import org.apache.ibatis.annotations.ConstructorArgs;
 import org.apache.ibatis.annotations.Insert;
@@ -15,10 +14,10 @@ import java.util.Date;
 public interface EventMapper {
   @Select("SELECT * FROM event")
   @ConstructorArgs({
-          @Arg(column="message", javaType=String.class),
-          @Arg(column="event_source", javaType=String.class),
-          @Arg(column="event_time", javaType=Date.class),
-          @Arg(column="event_type", javaType=int.class)
+          @Arg(column = "message", javaType = String.class),
+          @Arg(column = "event_source", javaType = String.class),
+          @Arg(column = "event_time", javaType = Date.class),
+          @Arg(column = "event_type", javaType = int.class)
   })
   public Event selectEvent(int id);
 

@@ -1,15 +1,11 @@
 package le.mon.probe.tasks;
 
+import le.mon.MsgConst;
 import le.mon.probe.ProbeServer;
 import le.mon.server.rest.RESTConst;
 import le.mon.server.rest.RestClient;
-import le.mon.MsgConst;
-import le.mon.probe.ProbeServer;
-import le.mon.server.rest.RestClient;
 import org.codehaus.jettison.json.JSONObject;
 import osmo.common.log.Logger;
-
-import static le.mon.MsgConst.*;
 
 /**
  * Defines a task for the internal server to process measurements received from the measurement infrastructure.

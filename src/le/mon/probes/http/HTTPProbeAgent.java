@@ -6,10 +6,6 @@ import le.mon.probe.ProbeServer;
 import le.mon.probe.tasks.BMSender;
 import le.mon.probe.tasks.RegistrationSender;
 import le.mon.server.MessagePooler;
-import le.mon.MsgConst;
-import le.mon.probe.ProbeServer;
-import le.mon.probe.tasks.BMSender;
-import le.mon.probe.tasks.RegistrationSender;
 import org.codehaus.jettison.json.JSONArray;
 import org.codehaus.jettison.json.JSONObject;
 import org.eclipse.jetty.server.Server;
@@ -63,16 +59,16 @@ public class HTTPProbeAgent extends HttpServlet {
     }
     String data = buffer.toString();
 
-    log.debug("Measurement data received:"+data);
-    System.out.println("got data:"+data);
+    log.debug("Measurement data received:" + data);
+    System.out.println("got data:" + data);
 
     MessagePooler pooler = ProbeServer.getPooler();
 
-    log.debug("Received BM '"+measureURI+"' from '"+req.getRemoteAddr()+" with value:"+data);
+    log.debug("Received BM '" + measureURI + "' from '" + req.getRemoteAddr() + " with value:" + data);
     pooler.schedule(new BMSender(measureURI, data));
     PrintWriter out = resp.getWriter();
     //write back some silly response to allow testing this agent through the browser or other tools
-    out.println("hello:"+measureURI+" -- "+data);
+    out.println("hello:" + measureURI + " -- " + data);
     out.close();
   }
 

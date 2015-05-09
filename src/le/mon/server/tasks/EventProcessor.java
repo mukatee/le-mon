@@ -5,8 +5,6 @@ import org.codehaus.jettison.json.JSONException;
 import org.codehaus.jettison.json.JSONObject;
 import osmo.common.log.Logger;
 
-import static le.mon.MsgConst.*;
-
 /**
  * Defines a task for the internal server to process events received from the measurement infrastructure.
  * Processed by a worker thread pool in the server.

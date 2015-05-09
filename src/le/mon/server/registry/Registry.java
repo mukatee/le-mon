@@ -4,7 +4,6 @@ import le.mon.Config;
 import le.mon.MsgConst;
 import le.mon.server.data.ProbeDescription;
 import le.mon.server.persistence.Persistence;
-import le.mon.MsgConst;
 import osmo.common.log.Logger;
 
 import java.util.ArrayList;
@@ -49,7 +48,7 @@ public class Registry {
    * //TODO: log error if registering with same URI several times, send error back to probe too
    */
   public void addProbe(ProbeDescription probe) {
-    log.info("Adding probe:"+probe);
+    log.info("Adding probe:" + probe);
     String measureURI = probe.getMeasureURI();
     availableBM.add(measureURI);
     persistence.probeAdded(measureURI);
@@ -62,7 +61,7 @@ public class Registry {
    * Removes a measurement type as available.
    */
   public void removeProbe(ProbeDescription probe) {
-    log.info("Removing probe:"+probe);
+    log.info("Removing probe:" + probe);
     availableBM.remove(probe.getMeasureURI());
     persistence.probeRemoved(probe.getMeasureURI());
     probes.remove(probe);
@@ -78,7 +77,7 @@ public class Registry {
 
   //this means a probe was permanently lost and should be removed from all lists
   public void lost(ProbeDescription probe) {
-    log.info("Lost probe:"+probe);
+    log.info("Lost probe:" + probe);
     persistence.probeLost(probe.getMeasureURI());
     probes.remove(probe);
     probeMap.remove(probe.getMeasureURI());
@@ -93,10 +92,10 @@ public class Registry {
   }
 
   public void keepAlive(String measureURI) {
-    log.debug("Keep-Alive for:"+measureURI);
+    log.debug("Keep-Alive for:" + measureURI);
     ProbeDescription probe = probeMap.get(measureURI);
     if (probe == null) {
-      log.warn("Received keep-alive for non-existing measure URI:"+measureURI);
+      log.warn("Received keep-alive for non-existing measure URI:" + measureURI);
       return;
     }
     probe.setLastHeard(System.currentTimeMillis());

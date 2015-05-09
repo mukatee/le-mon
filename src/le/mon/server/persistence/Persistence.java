@@ -2,8 +2,6 @@ package le.mon.server.persistence;
 
 import le.mon.server.data.Event;
 import le.mon.server.data.Value;
-import le.mon.server.data.Event;
-import le.mon.server.data.Value;
 import org.apache.ibatis.io.Resources;
 import org.apache.ibatis.session.Configuration;
 import org.apache.ibatis.session.SqlSession;
@@ -81,7 +79,7 @@ public class Persistence {
     history.add(value);
     values.add(value);
 
-    log.debug("Persisting BM Value:"+value);
+    log.debug("Persisting BM Value:" + value);
     try (SqlSession session = sessionFactory.openSession()) {
       ValueMapper mapper = session.getMapper(ValueMapper.class);
       mapper.insert(value);
@@ -92,7 +90,7 @@ public class Persistence {
   }
 
   public void probeAdded(String uri) {
-    log.debug("Persisting Probe Add Event:"+uri);
+    log.debug("Persisting Probe Add Event:" + uri);
     try (SqlSession session = sessionFactory.openSession()) {
       EventMapper mapper = session.getMapper(EventMapper.class);
       mapper.insert(new Event("New Probe registered", uri, new Date(), Event.ET_PROBE_ADD));
@@ -103,7 +101,7 @@ public class Persistence {
   }
 
   public void probeRemoved(String uri) {
-    log.debug("Persisting Probe Remove Event:"+uri);
+    log.debug("Persisting Probe Remove Event:" + uri);
     try (SqlSession session = sessionFactory.openSession()) {
       EventMapper mapper = session.getMapper(EventMapper.class);
       mapper.insert(new Event("Probe removed", uri, new Date(), Event.ET_PROBE_REMOVE));
@@ -114,7 +112,7 @@ public class Persistence {
   }
 
   public void probeLost(String uri) {
-    log.debug("Persisting Probe Lost Event:"+uri);
+    log.debug("Persisting Probe Lost Event:" + uri);
     try (SqlSession session = sessionFactory.openSession()) {
       EventMapper mapper = session.getMapper(EventMapper.class);
       mapper.insert(new Event("Probe lost", uri, new Date(), Event.ET_PROBE_LOST));
@@ -125,7 +123,7 @@ public class Persistence {
   }
 
   public void probeMissing(String uri) {
-    log.debug("Persisting Probe Missing Event:"+uri);
+    log.debug("Persisting Probe Missing Event:" + uri);
     try (SqlSession session = sessionFactory.openSession()) {
       EventMapper mapper = session.getMapper(EventMapper.class);
       mapper.insert(new Event("Probe missing", uri, new Date(), Event.ET_PROBE_MISSING));
@@ -136,7 +134,7 @@ public class Persistence {
   }
 
   public void probeFound(String uri) {
-    log.debug("Persisting Probe Found Event:"+uri);
+    log.debug("Persisting Probe Found Event:" + uri);
     try (SqlSession session = sessionFactory.openSession()) {
       EventMapper mapper = session.getMapper(EventMapper.class);
       mapper.insert(new Event("Probe found", uri, new Date(), Event.ET_PROBE_FOUND));
@@ -145,6 +143,7 @@ public class Persistence {
       log.error("Failed to persist event", e);
     }
   }
+
   public synchronized List<Value> getLatest(int count) {
     int max = values.size();
     if (max > count) max = count;

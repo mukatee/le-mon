@@ -2,8 +2,6 @@ package le.mon.server;
 
 import le.mon.Config;
 import le.mon.MsgConst;
-import le.mon.Config;
-import le.mon.MsgConst;
 import osmo.common.log.Logger;
 
 import java.util.concurrent.ScheduledThreadPoolExecutor;

@@ -52,7 +52,7 @@ public class MsgConst {
   public static final String HTTP_PORT = "http_port";
 
   public static String createMeasureURI(String targetType, String targetName, String bmClass, String bmName) {
-    return "MFW://"+targetType+"/"+targetName+"/"+bmClass+"/"+bmName;
+    return "MFW://" + targetType + "/" + targetName + "/" + bmClass + "/" + bmName;
   }
 }
 
