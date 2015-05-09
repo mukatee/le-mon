@@ -35,7 +35,7 @@ public class HSQLDBTesting {
 
   public static void main(String[] args) {
     HSQLDBTesting testing = new HSQLDBTesting();
-    Map<String, String> props = new HashMap<String, String>();
+    Map<String, String> props = new HashMap<>();
     props.put(MsgConst.PROBE_BM_CLASS, "bmclass");
     props.put(MsgConst.PROBE_BM_NAME, "bmname");
     props.put(MsgConst.PROBE_NAME, "probe name");
